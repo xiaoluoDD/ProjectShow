@@ -1,0 +1,11 @@
+release/main.o
+release/mainwindow.o
+release/projectpanelwidget.o
+release/debugpanelwidget.o
+release/logpanelwidget.o
+release/applogger.o
+release/moc_mainwindow.o
+release/moc_projectpanelwidget.o
+release/moc_debugpanelwidget.o
+release/moc_logpanelwidget.o
+release/moc_applogger.o

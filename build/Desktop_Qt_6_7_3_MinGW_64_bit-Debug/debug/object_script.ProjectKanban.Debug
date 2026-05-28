@@ -1,0 +1,11 @@
+debug/main.o
+debug/mainwindow.o
+debug/projectpanelwidget.o
+debug/debugpanelwidget.o
+debug/logpanelwidget.o
+debug/applogger.o
+debug/moc_mainwindow.o
+debug/moc_projectpanelwidget.o
+debug/moc_debugpanelwidget.o
+debug/moc_logpanelwidget.o
+debug/moc_applogger.o
