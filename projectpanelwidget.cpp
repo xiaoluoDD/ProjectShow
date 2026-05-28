@@ -159,8 +159,9 @@ void ProjectPanelWidget::startGet(const QString &path, RequestKind kind)
     m_statusLabel->setText(QStringLiteral("正在请求 %1 …").arg(path));
     AppLogger::instance().info(QStringLiteral("Project"), QStringLiteral("GET %1%2").arg(base, path));
 
-    QNetworkRequest req(QUrl(base + path));
-    QNetworkReply *reply = mainWindow()->networkManager()->get(req);
+    QNetworkRequest netRequest;
+    netRequest.setUrl(QUrl(base + path));
+    QNetworkReply *reply = mainWindow()->networkManager()->get(netRequest);
     reply->setProperty(kRequestKind, static_cast<int>(kind));
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }
@@ -175,9 +176,10 @@ void ProjectPanelWidget::startPost(const QString &path, RequestKind kind, const 
     m_statusLabel->setText(QStringLiteral("正在发送 …"));
     AppLogger::instance().info(QStringLiteral("Project"), QStringLiteral("POST %1%2").arg(base, path));
 
-    QNetworkRequest req(QUrl(base + path));
-    req.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
-    QNetworkReply *reply = mainWindow()->networkManager()->post(req, body);
+    QNetworkRequest netRequest;
+    netRequest.setUrl(QUrl(base + path));
+    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    QNetworkReply *reply = mainWindow()->networkManager()->post(netRequest, body);
     reply->setProperty(kRequestKind, static_cast<int>(kind));
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }

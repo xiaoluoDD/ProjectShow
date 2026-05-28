@@ -5,3 +5,14 @@
 2026-05-28 10:16:01 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
 2026-05-28 10:16:02 [INFO][Project] 成员列表已更新，共 3 人
 2026-05-28 10:16:05 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 10:25:22 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 10:25:22 [INFO][Project] GET http://106.53.181.55:8081/api/wecom/users
+2026-05-28 10:25:22 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 10:25:22 [INFO][LogUI] 日志页已就绪
+2026-05-28 10:25:22 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 10:25:23 [INFO][Project] 成员列表已更新，共 3 人
+2026-05-28 10:25:31 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 10:25:31 [INFO][LogUI] GET http://106.53.181.55:8081/api/logs
+2026-05-28 10:25:31 [INFO][LogUI] 后端日志 1 个，目录：logs
+2026-05-28 10:25:41 [INFO][LogUI] 下载后端日志：http.log
+2026-05-28 10:25:41 [INFO][LogUI] 已保存后端日志：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/server/http.log

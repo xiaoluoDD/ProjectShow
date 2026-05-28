@@ -127,12 +127,13 @@ void DebugPanelWidget::startGet(const QString &path, RequestKind kind)
     if (!checkServerUrl(&base))
         return;
 
-    const QUrl url(base + path);
-    logInfo(QStringLiteral("GET %1").arg(url.toString()));
+    const QUrl targetUrl(base + path);
+    logInfo(QStringLiteral("GET %1").arg(targetUrl.toString()));
     setButtonsEnabled(false);
 
-    QNetworkRequest req(url);
-    QNetworkReply *reply = mainWindow()->networkManager()->get(req);
+    QNetworkRequest netRequest;
+    netRequest.setUrl(targetUrl);
+    QNetworkReply *reply = mainWindow()->networkManager()->get(netRequest);
     reply->setProperty(kRequestKind, static_cast<int>(kind));
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }
@@ -143,13 +144,14 @@ void DebugPanelWidget::startPost(const QString &path, RequestKind kind, const QB
     if (!checkServerUrl(&base))
         return;
 
-    const QUrl url(base + path);
-    logInfo(QStringLiteral("POST %1").arg(url.toString()));
+    const QUrl targetUrl(base + path);
+    logInfo(QStringLiteral("POST %1").arg(targetUrl.toString()));
     setButtonsEnabled(false);
 
-    QNetworkRequest req(url);
-    req.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
-    QNetworkReply *reply = mainWindow()->networkManager()->post(req, body);
+    QNetworkRequest netRequest;
+    netRequest.setUrl(targetUrl);
+    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    QNetworkReply *reply = mainWindow()->networkManager()->post(netRequest, body);
     reply->setProperty(kRequestKind, static_cast<int>(kind));
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }

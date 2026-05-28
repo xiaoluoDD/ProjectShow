@@ -44,7 +44,12 @@ constexpr auto qt_meta_stringdata_CLASSLogPanelWidgetENDCLASS = QtMocHelpers::st
     "onClearClicked",
     "onOpenFolderClicked",
     "onLevelFilterChanged",
-    "index"
+    "index",
+    "onFetchServerLogsClicked",
+    "onOpenServerLogClicked",
+    "onNetworkReplyFinished",
+    "QNetworkReply*",
+    "reply"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -57,7 +62,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSLogPanelWidgetENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,16 +70,22 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSLogPanelWidgetENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    2,   38,    2, 0x08,    1 /* Private */,
-       6,    0,   43,    2, 0x08,    4 /* Private */,
-       7,    0,   44,    2, 0x08,    5 /* Private */,
-       8,    1,   45,    2, 0x08,    6 /* Private */,
+       1,    2,   56,    2, 0x08,    1 /* Private */,
+       6,    0,   61,    2, 0x08,    4 /* Private */,
+       7,    0,   62,    2, 0x08,    5 /* Private */,
+       8,    1,   63,    2, 0x08,    6 /* Private */,
+      10,    0,   66,    2, 0x08,    8 /* Private */,
+      11,    0,   67,    2, 0x08,    9 /* Private */,
+      12,    1,   68,    2, 0x08,   10 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QString, 0x80000000 | 4,    3,    5,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    9,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 13,   14,
 
        0        // eod
 };
@@ -98,7 +109,14 @@ Q_CONSTINIT const QMetaObject LogPanelWidget::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onLevelFilterChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 'onFetchServerLogsClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onOpenServerLogClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onNetworkReplyFinished'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QNetworkReply *, std::false_type>
     >,
     nullptr
 } };
@@ -113,6 +131,9 @@ void LogPanelWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 1: _t->onClearClicked(); break;
         case 2: _t->onOpenFolderClicked(); break;
         case 3: _t->onLevelFilterChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 4: _t->onFetchServerLogsClicked(); break;
+        case 5: _t->onOpenServerLogClicked(); break;
+        case 6: _t->onNetworkReplyFinished((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
         default: ;
         }
     }
@@ -137,13 +158,13 @@ int LogPanelWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 7)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 7;
     }
     return _id;
 }

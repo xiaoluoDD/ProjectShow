@@ -5,9 +5,12 @@
 
 #include <QWidget>
 
+class MainWindow;
 class QComboBox;
+class QListWidget;
 class QPlainTextEdit;
 class QPushButton;
+class QNetworkReply;
 
 class LogPanelWidget : public QWidget
 {
@@ -21,15 +24,26 @@ private slots:
     void onClearClicked();
     void onOpenFolderClicked();
     void onLevelFilterChanged(int index);
+    void onFetchServerLogsClicked();
+    void onOpenServerLogClicked();
+    void onNetworkReplyFinished(QNetworkReply *reply);
 
 private:
+    enum class RequestKind { ListServerLogs, DownloadServerLog };
+
+    MainWindow *mainWindow() const;
+    bool checkServerUrl(QString *baseOut = nullptr);
     void appendLine(const QString &line, AppLogger::Level level);
     bool passFilter(AppLogger::Level level) const;
+    QString serverLogCacheDir() const;
 
     QPlainTextEdit *m_view = nullptr;
     QComboBox *m_levelFilter = nullptr;
     QPushButton *m_clearBtn = nullptr;
     QPushButton *m_openFolderBtn = nullptr;
+    QPushButton *m_fetchServerLogsBtn = nullptr;
+    QPushButton *m_openServerLogBtn = nullptr;
+    QListWidget *m_serverLogList = nullptr;
     AppLogger::Level m_filterMin = AppLogger::Level::Debug;
 };
 
