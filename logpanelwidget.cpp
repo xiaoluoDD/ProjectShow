@@ -48,19 +48,24 @@ LogPanelWidget::LogPanelWidget(QWidget *parent)
     auto *root = new QVBoxLayout(this);
     root->setContentsMargins(0, 8, 0, 0);
 
+    auto *title = new QLabel(QStringLiteral("运行日志"), this);
+    title->setObjectName(QStringLiteral("pageTitle"));
+    root->addWidget(title);
+
     auto *hint = new QLabel(
         QStringLiteral("本地日志在 exe 同级 logs/；可从服务器拉取后端 logs/ 目录下的日志文件并打开。"),
         this);
+    hint->setObjectName(QStringLiteral("pageHint"));
     hint->setWordWrap(true);
-    hint->setStyleSheet(QStringLiteral("color: #666;"));
     root->addWidget(hint);
 
     auto *serverTitle = new QLabel(QStringLiteral("后端日志"), this);
-    serverTitle->setStyleSheet(QStringLiteral("font-weight: bold;"));
+    serverTitle->setObjectName(QStringLiteral("sectionTitle"));
     root->addWidget(serverTitle);
 
     auto *serverTool = new QHBoxLayout;
     m_fetchServerLogsBtn = new QPushButton(QStringLiteral("获取后端日志列表"), this);
+    m_fetchServerLogsBtn->setObjectName(QStringLiteral("btnPrimary"));
     m_openServerLogBtn = new QPushButton(QStringLiteral("打开选中日志"), this);
     m_openServerLogBtn->setEnabled(false);
     serverTool->addWidget(m_fetchServerLogsBtn);
@@ -69,12 +74,13 @@ LogPanelWidget::LogPanelWidget(QWidget *parent)
     root->addLayout(serverTool);
 
     m_serverLogList = new QListWidget(this);
+    m_serverLogList->setObjectName(QStringLiteral("dataList"));
     m_serverLogList->setMaximumHeight(120);
     m_serverLogList->setSelectionMode(QAbstractItemView::SingleSelection);
     root->addWidget(m_serverLogList);
 
     auto *localTitle = new QLabel(QStringLiteral("本地运行日志"), this);
-    localTitle->setStyleSheet(QStringLiteral("font-weight: bold;"));
+    localTitle->setObjectName(QStringLiteral("sectionTitle"));
     root->addWidget(localTitle);
 
     auto *tool = new QHBoxLayout;
@@ -93,6 +99,7 @@ LogPanelWidget::LogPanelWidget(QWidget *parent)
     root->addLayout(tool);
 
     m_view = new QPlainTextEdit(this);
+    m_view->setObjectName(QStringLiteral("logView"));
     m_view->setReadOnly(true);
     m_view->setLineWrapMode(QPlainTextEdit::NoWrap);
     QFont mono = m_view->font();
@@ -213,7 +220,7 @@ void LogPanelWidget::onFetchServerLogsClicked()
     QNetworkRequest netRequest;
     netRequest.setUrl(QUrl(base + QStringLiteral("/api/logs")));
     QNetworkReply *reply = mainWindow()->networkManager()->get(netRequest);
-    reply->setProperty(kRequestKind, static_cast<int>(RequestKind::ListServerLogs));
+    reply->setProperty(kRequestKind, static_cast<int>(LogPanelRequests::Kind::ListServerLogs));
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }
 
@@ -238,7 +245,7 @@ void LogPanelWidget::onOpenServerLogClicked()
     QNetworkRequest netRequest;
     netRequest.setUrl(QUrl(downloadUrl));
     QNetworkReply *reply = mainWindow()->networkManager()->get(netRequest);
-    reply->setProperty(kRequestKind, static_cast<int>(RequestKind::DownloadServerLog));
+    reply->setProperty(kRequestKind, static_cast<int>(LogPanelRequests::Kind::DownloadServerLog));
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
     reply->setProperty("logFileName", name);
 }
@@ -248,10 +255,10 @@ void LogPanelWidget::onNetworkReplyFinished(QNetworkReply *reply)
     if (reply->property(kOwnerPanel).toULongLong() != reinterpret_cast<quintptr>(this))
         return;
 
-    const auto kind = static_cast<RequestKind>(reply->property(kRequestKind).toInt());
+    const auto kind = static_cast<LogPanelRequests::Kind>(reply->property(kRequestKind).toInt());
     reply->deleteLater();
 
-    if (kind == RequestKind::ListServerLogs)
+    if (kind == LogPanelRequests::Kind::ListServerLogs)
         m_fetchServerLogsBtn->setEnabled(true);
     else
         m_openServerLogBtn->setEnabled(m_serverLogList->currentItem() != nullptr);
@@ -264,7 +271,7 @@ void LogPanelWidget::onNetworkReplyFinished(QNetworkReply *reply)
 
     const QByteArray body = reply->readAll();
 
-    if (kind == RequestKind::ListServerLogs) {
+    if (kind == LogPanelRequests::Kind::ListServerLogs) {
         QJsonParseError err;
         const QJsonDocument doc = QJsonDocument::fromJson(body, &err);
         if (err.error != QJsonParseError::NoError || !doc.isObject()) {
@@ -302,7 +309,7 @@ void LogPanelWidget::onNetworkReplyFinished(QNetworkReply *reply)
         return;
     }
 
-    if (kind == RequestKind::DownloadServerLog) {
+    if (kind == LogPanelRequests::Kind::DownloadServerLog) {
         const QString name = reply->property("logFileName").toString();
         if (name.isEmpty()) {
             QMessageBox::warning(this, QStringLiteral("失败"), QStringLiteral("文件名为空"));

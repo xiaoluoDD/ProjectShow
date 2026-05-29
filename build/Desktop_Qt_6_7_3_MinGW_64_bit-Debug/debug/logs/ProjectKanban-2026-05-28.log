@@ -16,3 +16,172 @@
 2026-05-28 10:25:31 [INFO][LogUI] 后端日志 1 个，目录：logs
 2026-05-28 10:25:41 [INFO][LogUI] 下载后端日志：http.log
 2026-05-28 10:25:41 [INFO][LogUI] 已保存后端日志：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/server/http.log
+2026-05-28 10:37:00 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 10:37:00 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 10:37:00 [INFO][LogUI] 日志页已就绪
+2026-05-28 10:37:00 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 10:37:00 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 10:37:05 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 10:37:05 [INFO][Member] 已选择成员：LuoRenYang
+2026-05-28 10:37:06 [INFO][Member] 已选择成员：LuoXian
+2026-05-28 10:37:07 [INFO][Member] 已选择成员：LuoRenYang
+2026-05-28 10:37:08 [INFO][Member] 已选择成员：LuoXian
+2026-05-28 10:37:08 [INFO][Member] 已选择成员：ZuoMuShuai
+2026-05-28 10:37:54 [INFO][Member] 开始同步可见成员
+2026-05-28 10:37:55 [INFO][Member] 同步完成 3 人
+2026-05-28 10:37:56 [INFO][Member] 已取消成员选择
+2026-05-28 10:37:56 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 10:38:02 [INFO][Member] 已选择成员：左木帅（ZuoMuShuai）
+2026-05-28 10:39:55 [INFO][LogUI] GET http://106.53.181.55:8081/api/logs
+2026-05-28 10:39:55 [INFO][LogUI] 后端日志 1 个，目录：logs
+2026-05-28 10:39:57 [INFO][LogUI] 下载后端日志：http.log
+2026-05-28 10:39:57 [INFO][LogUI] 已保存后端日志：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/server/http.log
+2026-05-28 10:40:23 [INFO][Debug] POST http://106.53.181.55:8081/api/wecom/sync
+2026-05-28 10:40:24 [INFO][Debug] 同步完成：3 人
+2026-05-28 10:40:25 [INFO][Debug] GET http://106.53.181.55:8081/api/wecom/users
+2026-05-28 10:40:25 [INFO][Debug] 成员列表已更新，共 3 人
+2026-05-28 10:40:29 [INFO][Debug] 向 左木帅 (ZuoMuShuai) 发送测试
+2026-05-28 10:40:29 [INFO][Debug] POST http://106.53.181.55:8081/api/wecom/test
+2026-05-28 10:40:29 [INFO][Debug] 已发送至 ZuoMuShuai
+2026-05-28 11:08:57 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:08:57 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:08:57 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:08:57 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:08:57 [INFO][Project] 项目列表已加载，共 2 条
+2026-05-28 11:08:57 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:08:59 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:09:11 [INFO][Project] 项目列表已加载，共 2 条
+2026-05-28 11:09:15 [INFO][Project] 项目列表已加载，共 2 条
+2026-05-28 11:09:42 [INFO][Project] 项目列表已加载，共 2 条
+2026-05-28 11:09:44 [INFO][Project] 项目列表已加载，共 2 条
+2026-05-28 11:15:33 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:15:33 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:15:33 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:15:33 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:15:33 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:15:36 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:25:43 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:25:43 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:25:43 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:25:43 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:25:43 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:25:46 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:26:42 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:26:42 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:26:42 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:26:42 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:26:42 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:26:55 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:36:38 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:36:38 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:36:38 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:36:38 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:36:38 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:36:51 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:36:51 [INFO][Data] 已保存：snapshot-2026-05-28_113651.json
+成员 3 人，项目 2 条
+2026-05-28 11:46:47 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:46:47 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:46:47 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:46:47 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:46:48 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:46:54 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:46:55 [INFO][Data] 已保存 wecom-2026-05-28_114655.db（40960 字节）
+2026-05-28 11:52:37 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:52:37 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:52:37 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:52:38 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:52:38 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:52:41 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:53:06 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:53:06 [INFO][Debug] 调试页就绪，详细输出见「日志」标签。
+2026-05-28 11:53:06 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:53:07 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:53:07 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:53:33 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 11:53:33 [INFO][Debug] GET http://106.53.181.55:8081/ping
+2026-05-28 11:53:33 [INFO][Debug] ping：pong
+2026-05-28 11:55:38 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 11:55:39 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-28 11:55:39 [INFO][LogUI] 日志页已就绪
+2026-05-28 11:55:39 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 11:55:40 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 11:56:14 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 12:03:16 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 12:03:17 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-28 12:03:17 [INFO][LogUI] 日志页已就绪
+2026-05-28 12:03:17 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 12:03:17 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:03:27 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 12:03:27 [INFO][Debug] GET http://106.53.181.55:8081/ping
+2026-05-28 12:03:27 [INFO][Debug] ping：pong
+2026-05-28 12:03:31 [INFO][Member] 已选择成员：左木帅（ZuoMuShuai）
+2026-05-28 12:03:32 [INFO][Member] 已选择成员：罗人洋（LuoRenYang）
+2026-05-28 12:03:32 [INFO][Member] 已选择成员：罗贤（LuoXian）
+2026-05-28 12:08:32 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 12:08:33 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-28 12:08:33 [INFO][LogUI] 日志页已就绪
+2026-05-28 12:08:33 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 12:08:33 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:08:38 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 12:08:39 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:08:45 [INFO][Member] 开始同步可见成员
+2026-05-28 12:08:47 [INFO][Member] 同步完成 3 人
+2026-05-28 12:08:48 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:08:50 [INFO][Member] 已选择成员：左木帅（ZuoMuShuai）
+2026-05-28 12:09:40 [INFO][Member] 已取消成员选择
+2026-05-28 12:09:40 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:09:41 [INFO][Member] 开始同步可见成员
+2026-05-28 12:09:42 [INFO][Member] 同步完成 3 人
+2026-05-28 12:09:43 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:09:55 [INFO][App] 后端地址已保存：q
+2026-05-28 12:10:02 [INFO][App] 后端地址已保存：
+2026-05-28 12:10:05 [INFO][Member] 已选择成员：罗贤（LuoXian）
+2026-05-28 12:12:49 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 12:12:57 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-28 12:12:57 [INFO][LogUI] 日志页已就绪
+2026-05-28 12:12:57 [INFO][App] 主窗口已启动，后端：
+2026-05-28 12:13:36 [INFO][App] 后端地址已保存：
+2026-05-28 12:14:06 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 12:14:07 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 12:14:08 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-28 12:14:08 [INFO][LogUI] 日志页已就绪
+2026-05-28 12:14:08 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 12:14:09 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:14:12 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 12:14:12 [INFO][Member] 开始同步可见成员
+2026-05-28 12:14:13 [INFO][Member] 同步完成 3 人
+2026-05-28 12:14:14 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:14:22 [INFO][LogUI] GET http://106.53.181.55:8081/api/logs
+2026-05-28 12:14:22 [INFO][LogUI] 后端日志 1 个，目录：logs
+2026-05-28 12:14:24 [INFO][LogUI] 下载后端日志：http.log
+2026-05-28 12:14:24 [INFO][LogUI] 已保存后端日志：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/server/http.log
+2026-05-28 12:21:21 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 12:21:22 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-28 12:21:22 [INFO][LogUI] 日志页已就绪
+2026-05-28 12:21:22 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 12:21:23 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:21:27 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 12:21:27 [INFO][Member] 开始同步可见成员
+2026-05-28 12:21:28 [INFO][Member] 同步完成 3 人
+2026-05-28 12:21:29 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:21:47 [INFO][LogUI] GET http://106.53.181.55:8081/api/logs
+2026-05-28 12:21:47 [INFO][LogUI] 后端日志 1 个，目录：logs
+2026-05-28 12:21:49 [INFO][LogUI] 下载后端日志：http.log
+2026-05-28 12:21:49 [INFO][LogUI] 已保存后端日志：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/server/http.log
+2026-05-28 12:25:25 [INFO][Member] 开始同步可见成员
+2026-05-28 12:25:26 [INFO][Member] 同步完成 3 人
+2026-05-28 12:25:28 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:25:39 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-28.log
+2026-05-28 12:25:40 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-28 12:25:40 [INFO][LogUI] 日志页已就绪
+2026-05-28 12:25:40 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-28 12:25:40 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:25:43 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-28 12:25:43 [INFO][Member] 开始同步可见成员
+2026-05-28 12:25:44 [INFO][Member] 同步完成 3 人
+2026-05-28 12:25:45 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-28 12:25:59 [INFO][LogUI] GET http://106.53.181.55:8081/api/logs
+2026-05-28 12:25:59 [INFO][LogUI] 后端日志 1 个，目录：logs
+2026-05-28 12:26:00 [INFO][LogUI] 下载后端日志：http.log
+2026-05-28 12:26:00 [INFO][LogUI] 已保存后端日志：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/server/http.log

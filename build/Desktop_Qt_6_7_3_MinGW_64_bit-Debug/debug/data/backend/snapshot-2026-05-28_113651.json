@@ -1,0 +1,79 @@
+{
+    "count": {
+        "projects": 2,
+        "users": 3
+    },
+    "exported_at": "2026-05-28 11:36:52",
+    "ok": true,
+    "projects": [
+        {
+            "end_date": "",
+            "group_chat": "",
+            "group_chat_id": "",
+            "id": 2,
+            "manager_name": "（待填写）",
+            "manager_userid": "",
+            "name": "示例项目 B",
+            "start_date": "2026-03-01",
+            "status": "待启动",
+            "tasks": "立项评审",
+            "updated_at": "2026-05-28T11:08:47+08:00",
+            "work_no": "B-002",
+            "year": "2026"
+        },
+        {
+            "end_date": "2026-12-31",
+            "group_chat": "（待绑定群聊）",
+            "group_chat_id": "",
+            "id": 1,
+            "manager_name": "罗人洋",
+            "manager_userid": "LuoRenYang",
+            "name": "可视化系统",
+            "start_date": "2026-01-01",
+            "status": "进行中",
+            "tasks": "需求确认；开发；验收",
+            "updated_at": "2026-05-28T11:26:18+08:00",
+            "work_no": "GW52215",
+            "year": "2026"
+        }
+    ],
+    "server_now": "2026-05-28 11:36:52",
+    "stats": {
+        "active_users": 3,
+        "corp_info": {
+            "agent_id": "1000005",
+            "corp_id": "ww411e84e02e63af6d",
+            "to_user": "LuoRenYang"
+        },
+        "last_sync": {
+            "finished_at": "2026-05-28T10:40:24+08:00",
+            "id": 5,
+            "started_at": "2026-05-28T10:40:23+08:00",
+            "status": "ok",
+            "user_count": 3
+        }
+    },
+    "users": [
+        {
+            "departments": "[]",
+            "name": "左木帅",
+            "sources": "allow_user",
+            "updated_at": "2026-05-28T10:40:24+08:00",
+            "userid": "ZuoMuShuai"
+        },
+        {
+            "departments": "[]",
+            "name": "罗人洋",
+            "sources": "allow_user",
+            "updated_at": "2026-05-28T10:40:24+08:00",
+            "userid": "LuoRenYang"
+        },
+        {
+            "departments": "[]",
+            "name": "罗贤",
+            "sources": "allow_user",
+            "updated_at": "2026-05-28T10:40:24+08:00",
+            "userid": "LuoXian"
+        }
+    ]
+}

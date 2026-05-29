@@ -32,16 +32,21 @@ DebugPanelWidget::DebugPanelWidget(QWidget *parent)
     auto *root = new QVBoxLayout(this);
     root->setContentsMargins(0, 8, 0, 0);
 
+    auto *title = new QLabel(QStringLiteral("接口调试"), this);
+    title->setObjectName(QStringLiteral("pageTitle"));
+    root->addWidget(title);
+
     auto *hint = new QLabel(
-        QStringLiteral("开发调试：连接检测、成员同步、接口测试。正式使用请切换到「项目面板」。"), this);
+        QStringLiteral("连接检测、成员同步、接口测试；日志与数据备份见本页其他子标签。日常使用请用「项目面板」。"),
+        this);
+    hint->setObjectName(QStringLiteral("pageHint"));
     hint->setWordWrap(true);
-    hint->setStyleSheet(QStringLiteral("color: #666;"));
     root->addWidget(hint);
 
     auto *btnRow1 = new QHBoxLayout;
     m_pingBtn = new QPushButton(QStringLiteral("检测连接"), this);
     m_sendTestBtn = new QPushButton(QStringLiteral("向选中成员发送测试"), this);
-    m_sendTestBtn->setStyleSheet(QStringLiteral("font-weight: bold;"));
+    m_sendTestBtn->setObjectName(QStringLiteral("btnAction"));
     m_sendTestBtn->setToolTip(QStringLiteral("请先在成员列表中选中一人"));
     btnRow1->addWidget(m_pingBtn);
     btnRow1->addWidget(m_sendTestBtn);
@@ -50,6 +55,7 @@ DebugPanelWidget::DebugPanelWidget(QWidget *parent)
 
     auto *btnRow2 = new QHBoxLayout;
     m_syncBtn = new QPushButton(QStringLiteral("同步可见成员"), this);
+    m_syncBtn->setObjectName(QStringLiteral("btnPrimary"));
     m_usersBtn = new QPushButton(QStringLiteral("查看已保存成员"), this);
     m_statsBtn = new QPushButton(QStringLiteral("同步概览"), this);
     btnRow2->addWidget(m_syncBtn);
@@ -60,6 +66,7 @@ DebugPanelWidget::DebugPanelWidget(QWidget *parent)
 
     root->addWidget(new QLabel(QStringLiteral("可见范围成员："), this));
     m_memberList = new QListWidget(this);
+    m_memberList->setObjectName(QStringLiteral("dataList"));
     m_memberList->setSelectionMode(QAbstractItemView::SingleSelection);
     root->addWidget(m_memberList, 1);
 
@@ -71,7 +78,7 @@ DebugPanelWidget::DebugPanelWidget(QWidget *parent)
     connect(mainWindow()->networkManager(), &QNetworkAccessManager::finished, this,
             &DebugPanelWidget::onReplyFinished);
 
-    logInfo(QStringLiteral("调试页就绪，详细输出见「日志」标签。"));
+    logInfo(QStringLiteral("接口调试就绪，运行日志见「日志」子标签。"));
 }
 
 MainWindow *DebugPanelWidget::mainWindow() const
@@ -121,7 +128,7 @@ bool DebugPanelWidget::checkServerUrl(QString *baseOut)
     return true;
 }
 
-void DebugPanelWidget::startGet(const QString &path, RequestKind kind)
+void DebugPanelWidget::startGet(const QString &path, DebugPanelRequests::Kind kind)
 {
     QString base;
     if (!checkServerUrl(&base))
@@ -138,7 +145,7 @@ void DebugPanelWidget::startGet(const QString &path, RequestKind kind)
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }
 
-void DebugPanelWidget::startPost(const QString &path, RequestKind kind, const QByteArray &body)
+void DebugPanelWidget::startPost(const QString &path, DebugPanelRequests::Kind kind, const QByteArray &body)
 {
     QString base;
     if (!checkServerUrl(&base))
@@ -158,7 +165,7 @@ void DebugPanelWidget::startPost(const QString &path, RequestKind kind, const QB
 
 void DebugPanelWidget::onPingClicked()
 {
-    startGet(QStringLiteral("/ping"), RequestKind::Ping);
+    startGet(QStringLiteral("/ping"), DebugPanelRequests::Kind::Ping);
 }
 
 void DebugPanelWidget::onSendTestClicked()
@@ -177,23 +184,23 @@ void DebugPanelWidget::onSendTestClicked()
         body.insert(QStringLiteral("name"), name);
 
     logInfo(QStringLiteral("向 %1 (%2) 发送测试").arg(name.isEmpty() ? userid : name, userid));
-    startPost(QStringLiteral("/api/wecom/test"), RequestKind::WecomTest,
+    startPost(QStringLiteral("/api/wecom/test"), DebugPanelRequests::Kind::WecomTest,
               QJsonDocument(body).toJson(QJsonDocument::Compact));
 }
 
 void DebugPanelWidget::onSyncClicked()
 {
-    startPost(QStringLiteral("/api/wecom/sync"), RequestKind::WecomSync);
+    startPost(QStringLiteral("/api/wecom/sync"), DebugPanelRequests::Kind::WecomSync);
 }
 
 void DebugPanelWidget::onUsersClicked()
 {
-    startGet(QStringLiteral("/api/wecom/users"), RequestKind::WecomUsers);
+    startGet(QStringLiteral("/api/wecom/users"), DebugPanelRequests::Kind::WecomUsers);
 }
 
 void DebugPanelWidget::onStatsClicked()
 {
-    startGet(QStringLiteral("/api/wecom/stats"), RequestKind::WecomStats);
+    startGet(QStringLiteral("/api/wecom/stats"), DebugPanelRequests::Kind::WecomStats);
 }
 
 void DebugPanelWidget::showMembers(const QJsonArray &users, int count)
@@ -238,7 +245,7 @@ void DebugPanelWidget::onReplyFinished(QNetworkReply *reply)
     if (reply->property(kOwnerPanel).toULongLong() != reinterpret_cast<quintptr>(this))
         return;
 
-    const auto kind = static_cast<RequestKind>(reply->property(kRequestKind).toInt());
+    const auto kind = static_cast<DebugPanelRequests::Kind>(reply->property(kRequestKind).toInt());
 
     reply->deleteLater();
     setButtonsEnabled(true);
@@ -254,7 +261,7 @@ void DebugPanelWidget::onReplyFinished(QNetworkReply *reply)
 
     const QByteArray body = reply->readAll();
 
-    if (kind == RequestKind::Ping) {
+    if (kind == DebugPanelRequests::Kind::Ping) {
         const QString text = QString::fromUtf8(body).trimmed();
         logInfo(QStringLiteral("ping：") + text);
         if (text == QStringLiteral("pong")) {
@@ -275,7 +282,7 @@ void DebugPanelWidget::onReplyFinished(QNetworkReply *reply)
     const bool ok = obj.value(QStringLiteral("ok")).toBool(false);
 
     switch (kind) {
-    case RequestKind::WecomTest:
+    case DebugPanelRequests::Kind::WecomTest:
         if (ok) {
             const QString toUser = obj.value(QStringLiteral("to_user")).toString();
             logInfo(QStringLiteral("已发送至 %1").arg(toUser));
@@ -286,14 +293,14 @@ void DebugPanelWidget::onReplyFinished(QNetworkReply *reply)
         }
         break;
 
-    case RequestKind::WecomSync: {
+    case DebugPanelRequests::Kind::WecomSync: {
         const QJsonObject sync = obj.value(QStringLiteral("sync")).toObject();
         if (ok) {
             const int count = sync.value(QStringLiteral("user_count")).toInt();
             logInfo(QStringLiteral("同步完成：%1 人").arg(count));
             QMessageBox::information(this, QStringLiteral("同步成功"),
                                      QStringLiteral("已同步 %1 名成员。").arg(count));
-            startGet(QStringLiteral("/api/wecom/users"), RequestKind::WecomUsers);
+            startGet(QStringLiteral("/api/wecom/users"), DebugPanelRequests::Kind::WecomUsers);
             setButtonsEnabled(false);
         } else {
             handleJsonError(obj, QStringLiteral("同步失败"));
@@ -301,7 +308,7 @@ void DebugPanelWidget::onReplyFinished(QNetworkReply *reply)
         break;
     }
 
-    case RequestKind::WecomUsers:
+    case DebugPanelRequests::Kind::WecomUsers:
         if (ok) {
             const QJsonArray users = obj.value(QStringLiteral("users")).toArray();
             const int count = obj.value(QStringLiteral("count")).toInt(users.size());
@@ -311,7 +318,7 @@ void DebugPanelWidget::onReplyFinished(QNetworkReply *reply)
         }
         break;
 
-    case RequestKind::WecomStats:
+    case DebugPanelRequests::Kind::WecomStats:
         if (ok) {
             const QJsonObject stats = obj.value(QStringLiteral("stats")).toObject();
             const int active = stats.value(QStringLiteral("active_users")).toInt();

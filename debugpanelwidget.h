@@ -10,6 +10,10 @@ class QNetworkReply;
 class QJsonArray;
 class QJsonObject;
 
+namespace DebugPanelRequests {
+enum class Kind { Ping, WecomTest, WecomSync, WecomUsers, WecomStats };
+}
+
 class DebugPanelWidget : public QWidget
 {
     Q_OBJECT
@@ -26,18 +30,11 @@ private slots:
     void onReplyFinished(QNetworkReply *reply);
 
 private:
-    enum class RequestKind {
-        Ping,
-        WecomTest,
-        WecomSync,
-        WecomUsers,
-        WecomStats,
-    };
-
     MainWindow *mainWindow() const;
     bool checkServerUrl(QString *baseOut = nullptr);
-    void startGet(const QString &path, RequestKind kind);
-    void startPost(const QString &path, RequestKind kind, const QByteArray &body = QByteArray("{}"));
+    void startGet(const QString &path, DebugPanelRequests::Kind kind);
+    void startPost(const QString &path, DebugPanelRequests::Kind kind,
+                  const QByteArray &body = QByteArray("{}"));
     void logInfo(const QString &message) const;
     void logWarn(const QString &message) const;
     void logError(const QString &message) const;

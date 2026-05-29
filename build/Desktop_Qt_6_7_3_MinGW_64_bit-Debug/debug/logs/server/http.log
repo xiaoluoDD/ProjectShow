@@ -1,0 +1,246 @@
+time=2026-05-28T09:39:44.098+08:00 level=INFO msg="starting http api" service=http addr=:8081 log_dir=""
+time=2026-05-28T09:39:44.098+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test"
+time=2026-05-28T09:40:13.299+08:00 level=INFO msg="http request" service=http method=GET path=/ping query="" status=200 bytes=4 duration_ms=0 remote=116.21.124.60:52325 user_agent=Mozilla/5.0
+time=2026-05-28T09:40:15.112+08:00 level=INFO msg="wecom test requested" service=http remote=116.21.124.60:52325
+time=2026-05-28T09:40:15.112+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=76
+time=2026-05-28T09:40:15.515+08:00 level=INFO msg="wecom send ok" service=http msgid=cgT-8_6jBd9XftD4PxPpAp5MX77GRk5oNcFHG-crmY0HHZSZpf4-VOfOfz5U7jYxnOXo1Egp_Wm1oo6kuGjD4oh4cbOzaNkwOxORZBuzBsY
+time=2026-05-28T09:40:15.515+08:00 level=INFO msg="wecom test sent" service=http msgid=cgT-8_6jBd9XftD4PxPpAp5MX77GRk5oNcFHG-crmY0HHZSZpf4-VOfOfz5U7jYxnOXo1Egp_Wm1oo6kuGjD4oh4cbOzaNkwOxORZBuzBsY
+time=2026-05-28T09:40:15.515+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/test query="" status=200 bytes=207 duration_ms=402 remote=116.21.124.60:52325 user_agent=Mozilla/5.0
+time=2026-05-28T09:48:48.978+08:00 level=INFO msg="database ready" service=http path=""
+time=2026-05-28T09:48:48.979+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T09:48:48.979+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats"
+time=2026-05-28T09:49:10.512+08:00 level=INFO msg="http request" service=http method=GET path=/ping query="" status=200 bytes=4 duration_ms=0 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T09:49:12.439+08:00 level=INFO msg="wecom test requested" service=http remote=116.21.124.60:49683
+time=2026-05-28T09:49:12.440+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=76
+time=2026-05-28T09:49:12.999+08:00 level=INFO msg="wecom send ok" service=http msgid=cgT-8_6jBd9XftD4PxPpAp5MX77GRk5oNcFHG-crmY3sIXMnf0V1_OLGQkjnHEgYWnKaECdrUeVJ7TqgHzXbswolYJue08oBiKkB0Mc2i3M
+time=2026-05-28T09:49:12.999+08:00 level=INFO msg="wecom test sent" service=http msgid=cgT-8_6jBd9XftD4PxPpAp5MX77GRk5oNcFHG-crmY3sIXMnf0V1_OLGQkjnHEgYWnKaECdrUeVJ7TqgHzXbswolYJue08oBiKkB0Mc2i3M
+time=2026-05-28T09:49:12.999+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/test query="" status=200 bytes=207 duration_ms=559 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T09:49:37.129+08:00 level=INFO msg="wecom sync requested" service=http remote=127.0.0.1:49808
+time=2026-05-28T09:49:37.134+08:00 level=INFO msg="wecom sync started" service=http run_id=1
+time=2026-05-28T09:49:37.439+08:00 level=INFO msg="wecom sync ok" service=http run_id=1 user_count=3
+time=2026-05-28T09:49:37.444+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=314 remote=127.0.0.1:49808 user_agent=curl/7.81.0
+time=2026-05-28T09:49:58.746+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=127.0.0.1:52606 user_agent=curl/7.81.0
+time=2026-05-28T09:51:08.690+08:00 level=WARN msg="http request" service=http method=GET path=/ query="" status=404 bytes=19 duration_ms=0 remote=18.145.46.244:35386 user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+time=2026-05-28T09:53:39.286+08:00 level=INFO msg="http request" service=http method=GET path=/ping query="" status=200 bytes=4 duration_ms=0 remote=116.21.124.60:65516 user_agent=Mozilla/5.0
+time=2026-05-28T09:53:42.057+08:00 level=INFO msg="wecom test requested" service=http remote=116.21.124.60:65516
+time=2026-05-28T09:53:42.057+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=76
+time=2026-05-28T09:53:42.344+08:00 level=INFO msg="wecom send ok" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2Ao5okR8q_8zbsJNFKY_Qj0UpzlEb5w7igYUEKuJNz4nKs8ZQ8kM-5VwV-FIIj2uZPw
+time=2026-05-28T09:53:42.344+08:00 level=INFO msg="wecom test sent" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2Ao5okR8q_8zbsJNFKY_Qj0UpzlEb5w7igYUEKuJNz4nKs8ZQ8kM-5VwV-FIIj2uZPw
+time=2026-05-28T09:53:42.344+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/test query="" status=200 bytes=207 duration_ms=287 remote=116.21.124.60:65516 user_agent=Mozilla/5.0
+time=2026-05-28T09:53:48.221+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:65516
+time=2026-05-28T09:53:48.225+08:00 level=INFO msg="wecom sync started" service=http run_id=2
+time=2026-05-28T09:53:48.465+08:00 level=INFO msg="wecom sync ok" service=http run_id=2 user_count=3
+time=2026-05-28T09:53:48.467+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=246 remote=116.21.124.60:65516 user_agent=Mozilla/5.0
+time=2026-05-28T09:53:51.562+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:65516 user_agent=Mozilla/5.0
+time=2026-05-28T09:53:53.654+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:65516 user_agent=Mozilla/5.0
+time=2026-05-28T09:54:06.668+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/stats query="" status=200 bytes=261 duration_ms=0 remote=116.21.124.60:65516 user_agent=Mozilla/5.0
+time=2026-05-28T09:59:34.482+08:00 level=INFO msg="database ready" service=http path=""
+time=2026-05-28T09:59:34.482+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T09:59:34.483+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats"
+time=2026-05-28T09:59:51.720+08:00 level=INFO msg="http request" service=http method=GET path=/ping query="" status=200 bytes=4 duration_ms=0 remote=116.21.124.60:65521 user_agent=Mozilla/5.0
+time=2026-05-28T09:59:53.812+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:65521 user_agent=Mozilla/5.0
+time=2026-05-28T09:59:58.473+08:00 level=INFO msg="wecom test requested" service=http remote=116.21.124.60:65521 userid=LuoRenYang
+time=2026-05-28T09:59:58.474+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=76
+time=2026-05-28T09:59:58.828+08:00 level=INFO msg="wecom send ok" service=http msgid=cgT-8_6jBd9XftD4PxPpAp5MX77GRk5oNcFHG-crmY25PvB9xgB6xrEywDnYrCrDnE_zS_8SMs1aWNCxs3RMTd6UZx2WgKBrcCo7qEjRPFA
+time=2026-05-28T09:59:58.828+08:00 level=INFO msg="wecom test sent" service=http msgid=cgT-8_6jBd9XftD4PxPpAp5MX77GRk5oNcFHG-crmY25PvB9xgB6xrEywDnYrCrDnE_zS_8SMs1aWNCxs3RMTd6UZx2WgKBrcCo7qEjRPFA userid=LuoRenYang
+time=2026-05-28T09:59:58.828+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/test query="" status=200 bytes=230 duration_ms=354 remote=116.21.124.60:65521 user_agent=Mozilla/5.0
+time=2026-05-28T10:00:06.651+08:00 level=INFO msg="wecom test requested" service=http remote=116.21.124.60:65521 userid=ZuoMuShuai
+time=2026-05-28T10:00:06.651+08:00 level=INFO msg="wecom send text" service=http to_user=ZuoMuShuai agent_id=1000005 content_len=76
+time=2026-05-28T10:00:07.013+08:00 level=INFO msg="wecom send ok" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2AoXoaMjtiPz3qET9LmUEr5-lNfMxP2EdM-XzvSfUL5fQ-aVJCLJWwMPaTgWHPhlwmw
+time=2026-05-28T10:00:07.013+08:00 level=INFO msg="wecom test sent" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2AoXoaMjtiPz3qET9LmUEr5-lNfMxP2EdM-XzvSfUL5fQ-aVJCLJWwMPaTgWHPhlwmw userid=ZuoMuShuai
+time=2026-05-28T10:00:07.013+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/test query="" status=200 bytes=230 duration_ms=362 remote=116.21.124.60:65521 user_agent=Mozilla/5.0
+time=2026-05-28T10:05:42.876+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/stats query="" status=200 bytes=261 duration_ms=0 remote=180.101.245.252:36268 user_agent=Mozilla/5.0
+time=2026-05-28T10:06:12.385+08:00 level=INFO msg="wecom sync requested" service=http remote=180.101.244.15:18126
+time=2026-05-28T10:06:12.391+08:00 level=INFO msg="wecom sync started" service=http run_id=3
+time=2026-05-28T10:06:12.698+08:00 level=INFO msg="wecom sync ok" service=http run_id=3 user_count=3
+time=2026-05-28T10:06:12.703+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=317 remote=180.101.244.15:18126 user_agent=Mozilla/5.0
+time=2026-05-28T10:07:19.971+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:53886 user_agent=Mozilla/5.0
+time=2026-05-28T10:07:30.543+08:00 level=INFO msg="http request" service=http method=GET path=/ping query="" status=200 bytes=4 duration_ms=0 remote=116.21.124.60:53886 user_agent=Mozilla/5.0
+time=2026-05-28T10:07:36.033+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:53886 user_agent=Mozilla/5.0
+time=2026-05-28T10:07:41.888+08:00 level=INFO msg="wecom test requested" service=http remote=116.21.124.60:53886 userid=LuoRenYang
+time=2026-05-28T10:07:41.888+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=76
+time=2026-05-28T10:07:42.203+08:00 level=INFO msg="wecom send ok" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2AqHSwgs-VoIpl3LvoNgOE_WE542cXlFVoulGxSbtHdxGhC9fYkP3hgJjgItfdz52KU
+time=2026-05-28T10:07:42.203+08:00 level=INFO msg="wecom test sent" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2AqHSwgs-VoIpl3LvoNgOE_WE542cXlFVoulGxSbtHdxGhC9fYkP3hgJjgItfdz52KU userid=LuoRenYang
+time=2026-05-28T10:07:42.203+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/test query="" status=200 bytes=230 duration_ms=315 remote=116.21.124.60:53886 user_agent=Mozilla/5.0
+time=2026-05-28T10:07:57.550+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:53886 user_agent=Mozilla/5.0
+time=2026-05-28T10:14:07.603+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:65233 user_agent=Mozilla/5.0
+time=2026-05-28T10:16:02.590+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:64392 user_agent=Mozilla/5.0
+time=2026-05-28T10:22:00.372+08:00 level=INFO msg="database ready" service=http path=""
+time=2026-05-28T10:22:00.372+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T10:22:00.372+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T10:23:57.321+08:00 level=WARN msg="http request" service=http method=HEAD path=/ query="" status=404 bytes=19 duration_ms=0 remote=51.158.203.224:48474 user_agent=curl/7.81.0
+time=2026-05-28T10:23:59.229+08:00 level=WARN msg="http request" service=http method=GET path=/ query="" status=404 bytes=19 duration_ms=0 remote=51.158.203.224:57393 user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3"
+time=2026-05-28T10:23:59.465+08:00 level=WARN msg="http request" service=http method=GET path=/favicon.ico query="" status=404 bytes=19 duration_ms=0 remote=51.158.203.224:57393 user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3"
+time=2026-05-28T10:24:03.810+08:00 level=WARN msg="http request" service=http method=GET path=/favicon.ico query="" status=404 bytes=19 duration_ms=0 remote=51.158.203.224:48480 user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3"
+time=2026-05-28T10:24:04.330+08:00 level=WARN msg="http request" service=http method=GET path=/ads.txt query="" status=404 bytes=19 duration_ms=0 remote=51.158.203.224:51224 user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3"
+time=2026-05-28T10:24:04.755+08:00 level=WARN msg="http request" service=http method=GET path=/app-ads.txt query="" status=404 bytes=19 duration_ms=0 remote=51.158.203.224:51232 user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3"
+time=2026-05-28T10:24:05.190+08:00 level=WARN msg="http request" service=http method=GET path=/sellers.json query="" status=404 bytes=19 duration_ms=0 remote=51.158.203.224:51238 user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3"
+time=2026-05-28T10:25:23.213+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:60213 user_agent=Mozilla/5.0
+time=2026-05-28T10:25:31.540+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=120 duration_ms=1 remote=116.21.124.60:60213 user_agent=Mozilla/5.0
+time=2026-05-28T10:25:41.556+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=14102 duration_ms=0 remote=116.21.124.60:60213 user_agent=Mozilla/5.0
+time=2026-05-28T10:36:45.339+08:00 level=INFO msg="database ready" service=http path=""
+time=2026-05-28T10:36:45.339+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T10:36:45.339+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T10:37:00.953+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=629 duration_ms=0 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T10:37:54.416+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:49683
+time=2026-05-28T10:37:54.423+08:00 level=INFO msg="wecom sync started" service=http run_id=4
+time=2026-05-28T10:37:55.529+08:00 level=INFO msg="wecom sync ok" service=http run_id=4 user_count=3
+time=2026-05-28T10:37:55.531+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=1114 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T10:37:56.891+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T10:39:55.307+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=120 duration_ms=0 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T10:39:57.413+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=15936 duration_ms=0 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T10:40:23.427+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:49683
+time=2026-05-28T10:40:23.431+08:00 level=INFO msg="wecom sync started" service=http run_id=5
+time=2026-05-28T10:40:24.503+08:00 level=INFO msg="wecom sync ok" service=http run_id=5 user_count=3
+time=2026-05-28T10:40:24.507+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=1080 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T10:40:25.855+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T10:40:29.600+08:00 level=INFO msg="wecom test requested" service=http remote=116.21.124.60:49683 userid=ZuoMuShuai
+time=2026-05-28T10:40:29.600+08:00 level=INFO msg="wecom send text" service=http to_user=ZuoMuShuai agent_id=1000005 content_len=76
+time=2026-05-28T10:40:29.945+08:00 level=INFO msg="wecom send ok" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2AoyS2xLGpPR5LlBzsaufG0-K02_ImD5QO0rd53Vj8rFw7wWbPG2XXPIsyo6Lw2wVac
+time=2026-05-28T10:40:29.945+08:00 level=INFO msg="wecom test sent" service=http msgid=-k0v1xV6DAwY50e7tkh-GVT9Zx3p_-4PZmy5cbIF2AoyS2xLGpPR5LlBzsaufG0-K02_ImD5QO0rd53Vj8rFw7wWbPG2XXPIsyo6Lw2wVac userid=ZuoMuShuai
+time=2026-05-28T10:40:29.945+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/test query="" status=200 bytes=230 duration_ms=344 remote=116.21.124.60:49683 user_agent=Mozilla/5.0
+time=2026-05-28T11:08:47.475+08:00 level=INFO msg="database ready" service=http path=""
+time=2026-05-28T11:08:47.475+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T11:08:47.475+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET /api/projects" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T11:08:58.051+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=640 duration_ms=0 remote=116.21.124.60:52335 user_agent=Mozilla/5.0
+time=2026-05-28T11:08:58.052+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=1 remote=116.21.124.60:52336 user_agent=Mozilla/5.0
+time=2026-05-28T11:09:12.027+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=640 duration_ms=0 remote=116.21.124.60:52335 user_agent=Mozilla/5.0
+time=2026-05-28T11:09:16.061+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=640 duration_ms=0 remote=116.21.124.60:52335 user_agent=Mozilla/5.0
+time=2026-05-28T11:09:42.321+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=640 duration_ms=0 remote=116.21.124.60:52335 user_agent=Mozilla/5.0
+time=2026-05-28T11:09:45.118+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=640 duration_ms=0 remote=116.21.124.60:52335 user_agent=Mozilla/5.0
+time=2026-05-28T11:15:11.913+08:00 level=INFO msg="database ready" service=http path=""
+time=2026-05-28T11:15:11.913+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T11:15:11.913+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET|POST|PUT|DELETE /api/projects" wecom_send_group="POST /api/wecom/send-group" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T11:15:33.554+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=640 duration_ms=0 remote=116.21.124.60:59365 user_agent=Mozilla/5.0
+time=2026-05-28T11:15:33.556+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:59366 user_agent=Mozilla/5.0
+time=2026-05-28T11:16:54.637+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:59365 user_agent=Mozilla/5.0
+time=2026-05-28T11:25:43.877+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=640 duration_ms=0 remote=116.21.124.60:52742 user_agent=Mozilla/5.0
+time=2026-05-28T11:25:43.878+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:52741 user_agent=Mozilla/5.0
+time=2026-05-28T11:25:49.459+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:52741 user_agent=Mozilla/5.0
+time=2026-05-28T11:26:18.684+08:00 level=INFO msg="http request" service=http method=PUT path=/api/projects query="" status=200 bytes=380 duration_ms=4 remote=116.21.124.60:52741 user_agent=Mozilla/5.0
+time=2026-05-28T11:26:20.023+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:52741 user_agent=Mozilla/5.0
+time=2026-05-28T11:26:34.951+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:52741 user_agent=Mozilla/5.0
+time=2026-05-28T11:26:43.063+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:52770 user_agent=Mozilla/5.0
+time=2026-05-28T11:26:43.064+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:52769 user_agent=Mozilla/5.0
+time=2026-05-28T11:28:23.220+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:52769 user_agent=Mozilla/5.0
+time=2026-05-28T11:31:18.410+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=106.55.255.207:7917 user_agent="Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Mobile Safari/537.36 MicroMessenger/7.0.1"
+time=2026-05-28T11:36:17.883+08:00 level=INFO msg="database ready" service=http path=""
+time=2026-05-28T11:36:17.883+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T11:36:17.883+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET|POST|PUT|DELETE /api/projects" db_export="GET /api/db/export" wecom_send_group="POST /api/wecom/send-group" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T11:36:38.419+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:51884 user_agent=Mozilla/5.0
+time=2026-05-28T11:36:38.420+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:51883 user_agent=Mozilla/5.0
+time=2026-05-28T11:36:52.164+08:00 level=INFO msg="http request" service=http method=GET path=/api/db/export query="" status=200 bytes=1372 duration_ms=0 remote=116.21.124.60:51883 user_agent=Mozilla/5.0
+time=2026-05-28T11:41:39.870+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-05-28T11:41:39.870+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T11:41:39.870+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET|POST|PUT|DELETE /api/projects" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T11:43:02.963+08:00 level=INFO msg="http request" service=http method=GET path=/api/db/export query="" status=200 bytes=1372 duration_ms=0 remote=220.196.160.124:25102 user_agent=Mozilla/5.0
+time=2026-05-28T11:46:47.519+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:55495 user_agent=Mozilla/5.0
+time=2026-05-28T11:46:47.521+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:55494 user_agent=Mozilla/5.0
+time=2026-05-28T11:46:55.508+08:00 level=INFO msg="http request" service=http method=GET path=/api/db/download query="" status=200 bytes=40960 duration_ms=11 remote=116.21.124.60:55494 user_agent=Mozilla/5.0
+time=2026-05-28T11:48:03.802+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:55494 user_agent=Mozilla/5.0
+time=2026-05-28T11:48:56.575+08:00 level=INFO msg="http request" service=http method=POST path=/api/projects query="" status=200 bytes=325 duration_ms=5 remote=116.21.124.60:55494 user_agent=Mozilla/5.0
+time=2026-05-28T11:48:57.893+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=926 duration_ms=0 remote=116.21.124.60:55494 user_agent=Mozilla/5.0
+time=2026-05-28T11:49:53.554+08:00 level=INFO msg="http request" service=http method=GET path=/api/db/download query="" status=200 bytes=40960 duration_ms=10 remote=220.196.160.45:19474 user_agent=Mozilla/5.0
+time=2026-05-28T11:52:38.000+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=926 duration_ms=0 remote=116.21.124.60:56392 user_agent=Mozilla/5.0
+time=2026-05-28T11:52:38.001+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:56391 user_agent=Mozilla/5.0
+time=2026-05-28T11:52:44.189+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:56391 user_agent=Mozilla/5.0
+time=2026-05-28T11:52:46.253+08:00 level=INFO msg="http request" service=http method=PUT path=/api/projects query="" status=200 bytes=309 duration_ms=3 remote=116.21.124.60:56391 user_agent=Mozilla/5.0
+time=2026-05-28T11:52:47.747+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=911 duration_ms=0 remote=116.21.124.60:56391 user_agent=Mozilla/5.0
+time=2026-05-28T11:52:55.049+08:00 level=INFO msg="http request" service=http method=DELETE path=/api/projects query="id=2" status=200 bytes=43 duration_ms=3 remote=116.21.124.60:56391 user_agent=Mozilla/5.0
+time=2026-05-28T11:52:56.651+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:56391 user_agent=Mozilla/5.0
+time=2026-05-28T11:53:06.609+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:56408 user_agent=Mozilla/5.0
+time=2026-05-28T11:53:06.610+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:56409 user_agent=Mozilla/5.0
+time=2026-05-28T11:53:33.865+08:00 level=INFO msg="http request" service=http method=GET path=/ping query="" status=200 bytes=4 duration_ms=0 remote=116.21.124.60:56408 user_agent=Mozilla/5.0
+time=2026-05-28T11:55:39.377+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:62345 user_agent=Mozilla/5.0
+time=2026-05-28T11:55:39.378+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=1 remote=116.21.124.60:62344 user_agent=Mozilla/5.0
+time=2026-05-28T11:56:21.469+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:62344 user_agent=Mozilla/5.0
+time=2026-05-28T12:03:17.645+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:56611 user_agent=Mozilla/5.0
+time=2026-05-28T12:03:17.649+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:56610 user_agent=Mozilla/5.0
+time=2026-05-28T12:03:27.737+08:00 level=INFO msg="http request" service=http method=GET path=/ping query="" status=200 bytes=4 duration_ms=0 remote=116.21.124.60:56610 user_agent=Mozilla/5.0
+time=2026-05-28T12:08:19.471+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-05-28T12:08:19.471+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T12:08:19.471+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET|POST|PUT|DELETE /api/projects" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T12:08:33.419+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:54830 user_agent=Mozilla/5.0
+time=2026-05-28T12:08:33.422+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:54829 user_agent=Mozilla/5.0
+time=2026-05-28T12:08:39.359+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=653 duration_ms=0 remote=116.21.124.60:54829 user_agent=Mozilla/5.0
+time=2026-05-28T12:08:45.970+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:54829
+time=2026-05-28T12:08:45.975+08:00 level=INFO msg="wecom sync started" service=http run_id=6
+time=2026-05-28T12:08:47.119+08:00 level=INFO msg="wecom sync ok" service=http run_id=6 user_count=3
+time=2026-05-28T12:08:47.123+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=1152 remote=116.21.124.60:54829 user_agent=Mozilla/5.0
+time=2026-05-28T12:08:49.249+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:54829 user_agent=Mozilla/5.0
+time=2026-05-28T12:09:40.535+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:54829 user_agent=Mozilla/5.0
+time=2026-05-28T12:09:41.655+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:54829
+time=2026-05-28T12:09:41.658+08:00 level=INFO msg="wecom sync started" service=http run_id=7
+time=2026-05-28T12:09:42.600+08:00 level=INFO msg="wecom sync ok" service=http run_id=7 user_count=3
+time=2026-05-28T12:09:42.603+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=948 remote=116.21.124.60:54829 user_agent=Mozilla/5.0
+time=2026-05-28T12:09:43.608+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:54829 user_agent=Mozilla/5.0
+time=2026-05-28T12:12:45.394+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-05-28T12:12:45.394+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T12:12:45.395+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET|POST|PUT|DELETE /api/projects" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T12:14:09.490+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:55134 user_agent=Mozilla/5.0
+time=2026-05-28T12:14:09.491+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:55133 user_agent=Mozilla/5.0
+time=2026-05-28T12:14:12.729+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:55133
+time=2026-05-28T12:14:12.733+08:00 level=INFO msg="wecom sync started" service=http run_id=8
+time=2026-05-28T12:14:13.834+08:00 level=INFO msg="wecom sync ok" service=http run_id=8 user_count=3
+time=2026-05-28T12:14:13.837+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=1107 remote=116.21.124.60:55133 user_agent=Mozilla/5.0
+time=2026-05-28T12:14:15.214+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:55133 user_agent=Mozilla/5.0
+time=2026-05-28T12:14:22.841+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=120 duration_ms=0 remote=116.21.124.60:55133 user_agent=Mozilla/5.0
+time=2026-05-28T12:14:24.623+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=34606 duration_ms=0 remote=116.21.124.60:55133 user_agent=Mozilla/5.0
+time=2026-05-28T12:19:31.293+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=34828 duration_ms=0 remote=59.83.208.107:50702 user_agent=Mozilla/5.0
+time=2026-05-28T12:20:24.589+08:00 level=WARN msg="http request" service=http method=CONNECT path="" query="" status=404 bytes=19 duration_ms=0 remote=45.135.193.193:41018
+time=2026-05-28T12:21:15.686+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-05-28T12:21:15.688+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T12:21:15.688+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET|POST|PUT|DELETE /api/projects" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T12:21:23.323+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:54946 user_agent=Mozilla/5.0
+time=2026-05-28T12:21:23.324+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:54947 user_agent=Mozilla/5.0
+time=2026-05-28T12:21:27.498+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:54946
+time=2026-05-28T12:21:27.504+08:00 level=INFO msg="wecom sync started" service=http run_id=9
+time=2026-05-28T12:21:27.785+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:21:28.061+08:00 level=INFO msg="sync: user/get result" service=http userid=ZuoMuShuai dept_ids=0 main_department=0
+time=2026-05-28T12:21:28.061+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=LuoRenYang has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:21:28.323+08:00 level=INFO msg="sync: user/get result" service=http userid=LuoRenYang dept_ids=0 main_department=0
+time=2026-05-28T12:21:28.323+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=LuoXian has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:21:28.524+08:00 level=INFO msg="sync: user/get result" service=http userid=LuoXian dept_ids=0 main_department=0
+time=2026-05-28T12:21:28.610+08:00 level=INFO msg="sync: member has no department" service=http userid=ZuoMuShuai name=左木帅 sources=allow_user
+time=2026-05-28T12:21:28.610+08:00 level=INFO msg="sync: member has no department" service=http userid=LuoRenYang name=罗人洋 sources=allow_user
+time=2026-05-28T12:21:28.610+08:00 level=INFO msg="sync: member has no department" service=http userid=LuoXian name=罗贤 sources=allow_user
+time=2026-05-28T12:21:28.610+08:00 level=INFO msg="wecom sync ok" service=http run_id=9 user_count=3 empty_departments=3
+time=2026-05-28T12:21:28.613+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=123 duration_ms=1114 remote=116.21.124.60:54946 user_agent=Mozilla/5.0
+time=2026-05-28T12:21:29.787+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=647 duration_ms=0 remote=116.21.124.60:54946 user_agent=Mozilla/5.0
+time=2026-05-28T12:21:47.791+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=120 duration_ms=0 remote=116.21.124.60:54946 user_agent=Mozilla/5.0
+time=2026-05-28T12:21:49.719+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=38547 duration_ms=0 remote=116.21.124.60:54946 user_agent=Mozilla/5.0
+time=2026-05-28T12:22:11.979+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=220.196.160.96:28774 user_agent=Mozilla/5.0
+time=2026-05-28T12:25:16.047+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-05-28T12:25:16.048+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-05-28T12:25:16.048+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET /api/wecom/users" wecom_stats="GET /api/wecom/stats" projects="GET|POST|PUT|DELETE /api/projects" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-05-28T12:25:25.823+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:52038
+time=2026-05-28T12:25:25.827+08:00 level=INFO msg="wecom sync started" service=http run_id=10
+time=2026-05-28T12:25:26.115+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:25:26.354+08:00 level=INFO msg="sync: user/get result" service=http userid=ZuoMuShuai dept_ids=0 main_department=0
+time=2026-05-28T12:25:26.354+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=LuoRenYang has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:25:26.627+08:00 level=INFO msg="sync: user/get result" service=http userid=LuoRenYang dept_ids=0 main_department=0
+time=2026-05-28T12:25:26.627+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=LuoXian has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:25:26.861+08:00 level=INFO msg="sync: user/get result" service=http userid=LuoXian dept_ids=0 main_department=0
+time=2026-05-28T12:25:26.953+08:00 level=INFO msg="sync: member has no department" service=http userid=LuoXian name=罗贤 sources=allow_user
+time=2026-05-28T12:25:26.953+08:00 level=INFO msg="sync: member has no department" service=http userid=ZuoMuShuai name=左木帅 sources=allow_user
+time=2026-05-28T12:25:26.953+08:00 level=INFO msg="sync: member has no department" service=http userid=LuoRenYang name=罗人洋 sources=allow_user
+time=2026-05-28T12:25:26.953+08:00 level=INFO msg="wecom sync ok" service=http run_id=10 user_count=3 empty_departments=3
+time=2026-05-28T12:25:26.956+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=124 duration_ms=1133 remote=116.21.124.60:52038 user_agent=Mozilla/5.0
+time=2026-05-28T12:25:28.616+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:52038 user_agent=Mozilla/5.0
+time=2026-05-28T12:25:40.453+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:63536 user_agent=Mozilla/5.0
+time=2026-05-28T12:25:40.453+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=648 duration_ms=1 remote=116.21.124.60:63535 user_agent=Mozilla/5.0
+time=2026-05-28T12:25:43.674+08:00 level=INFO msg="wecom sync requested" service=http remote=116.21.124.60:63535
+time=2026-05-28T12:25:43.677+08:00 level=INFO msg="wecom sync started" service=http run_id=11
+time=2026-05-28T12:25:43.886+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:25:44.083+08:00 level=INFO msg="sync: user/get result" service=http userid=ZuoMuShuai dept_ids=0 main_department=0
+time=2026-05-28T12:25:44.083+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=LuoRenYang has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:25:44.298+08:00 level=INFO msg="sync: user/get result" service=http userid=LuoRenYang dept_ids=0 main_department=0
+time=2026-05-28T12:25:44.298+08:00 level=INFO msg="sync: enrich via user/get" service=http userid=LuoXian has_name=false has_mobile=false dept_ids=0
+time=2026-05-28T12:25:44.492+08:00 level=INFO msg="sync: user/get result" service=http userid=LuoXian dept_ids=0 main_department=0
+time=2026-05-28T12:25:44.581+08:00 level=INFO msg="sync: member has no department" service=http userid=ZuoMuShuai name=左木帅 sources=allow_user
+time=2026-05-28T12:25:44.581+08:00 level=INFO msg="sync: member has no department" service=http userid=LuoRenYang name=罗人洋 sources=allow_user
+time=2026-05-28T12:25:44.581+08:00 level=INFO msg="sync: member has no department" service=http userid=LuoXian name=罗贤 sources=allow_user
+time=2026-05-28T12:25:44.581+08:00 level=INFO msg="wecom sync ok" service=http run_id=11 user_count=3 empty_departments=3
+time=2026-05-28T12:25:44.583+08:00 level=INFO msg="http request" service=http method=POST path=/api/wecom/sync query="" status=200 bytes=124 duration_ms=909 remote=116.21.124.60:63535 user_agent=Mozilla/5.0
+time=2026-05-28T12:25:45.639+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=648 duration_ms=0 remote=116.21.124.60:63535 user_agent=Mozilla/5.0
+time=2026-05-28T12:26:00.132+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=120 duration_ms=0 remote=116.21.124.60:63535 user_agent=Mozilla/5.0

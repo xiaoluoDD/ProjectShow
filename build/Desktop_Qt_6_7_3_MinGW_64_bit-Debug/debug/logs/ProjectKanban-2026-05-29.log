@@ -1,0 +1,7 @@
+2026-05-29 08:43:10 [INFO][App] 日志模块已启动，文件：D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/logs/ProjectKanban-2026-05-29.log
+2026-05-29 08:43:11 [INFO][Debug] 接口调试就绪，运行日志见「日志」子标签。
+2026-05-29 08:43:11 [INFO][LogUI] 日志页已就绪
+2026-05-29 08:43:11 [INFO][App] 主窗口已启动，后端：http://106.53.181.55:8081
+2026-05-29 08:43:14 [INFO][Member] 成员列表已加载，共 3 人
+2026-05-29 08:43:18 [INFO][App] 后端地址已保存：http://106.53.181.55:8081
+2026-05-29 08:44:23 [INFO][Member] 已选择成员：罗人洋（LuoRenYang）

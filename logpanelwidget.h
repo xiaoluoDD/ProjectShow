@@ -12,6 +12,10 @@ class QPlainTextEdit;
 class QPushButton;
 class QNetworkReply;
 
+namespace LogPanelRequests {
+enum class Kind { ListServerLogs, DownloadServerLog };
+}
+
 class LogPanelWidget : public QWidget
 {
     Q_OBJECT
@@ -29,8 +33,6 @@ private slots:
     void onNetworkReplyFinished(QNetworkReply *reply);
 
 private:
-    enum class RequestKind { ListServerLogs, DownloadServerLog };
-
     MainWindow *mainWindow() const;
     bool checkServerUrl(QString *baseOut = nullptr);
     void appendLine(const QString &line, AppLogger::Level level);
