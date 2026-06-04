@@ -201,6 +201,38 @@ QTableWidget, QTableView {
     border-radius: 3px;
 }
 
+/* 日历内嵌表格勿套用数据表边框/内边距，否则日期数字会被挤成 ... */
+QCalendarWidget QTableView {
+    border: none;
+    border-radius: 0;
+    background-color: #ffffff;
+}
+
+QCalendarWidget QTableView::item {
+    min-width: 36px;
+    min-height: 28px;
+    padding: 0px;
+    margin: 0px;
+    color: #2c3340;
+    background-color: #ffffff;
+}
+
+QCalendarWidget QTableView::item:selected {
+    background-color: #4a9ae8;
+    color: #ffffff;
+}
+
+QCalendarWidget QToolButton {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px;
+}
+
+QCalendarWidget QSpinBox {
+    min-width: 64px;
+    min-height: 24px;
+}
+
 QTableWidget::item, QTableView::item {
     padding: 4px 6px;
     border: none;
@@ -280,6 +312,26 @@ QComboBox QAbstractItemView {
     border: 1px solid #c8d0dc;
 }
 
+QCalendarWidget {
+    background-color: #ffffff;
+    min-width: 320px;
+    min-height: 300px;
+}
+
+QDateEdit {
+    background-color: #ffffff;
+    color: #2c3340;
+    border: 1px solid #b8c2d0;
+    border-radius: 3px;
+    padding: 4px 8px;
+    min-height: 22px;
+    min-width: 132px;
+}
+
+QDateEdit:focus {
+    border-color: #4a9ae8;
+}
+
 /* 对话框 */
 QDialog {
     background-color: #f5f7fa;
@@ -289,7 +341,7 @@ QDialog QLabel {
     color: #2c3340;
 }
 
-QDialog QLineEdit, QDialog QTextEdit, QDialog QComboBox {
+QDialog QLineEdit, QDialog QTextEdit, QDialog QComboBox, QDialog QDateEdit {
     background-color: #ffffff;
     color: #2c3340;
     border: 1px solid #b8c2d0;

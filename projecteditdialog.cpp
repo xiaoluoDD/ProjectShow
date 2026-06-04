@@ -1,12 +1,17 @@
 #include "projecteditdialog.h"
 
+#include "datepickerutils.h"
+
 #include <QComboBox>
 #include <QDate>
+#include <QDateEdit>
 #include <QDialogButtonBox>
 #include <QFormLayout>
+#include <QFrame>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
+#include <QScrollArea>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
@@ -21,18 +26,25 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonArray
     : QDialog(parent)
     , m_allMembers(members)
     , m_existing(existing)
-    , m_editMode(existing.contains(QStringLiteral("id")) && existing.value(QStringLiteral("id")).toInt() > 0)
+    , m_editMode(static_cast<qint64>(existing.value(QStringLiteral("id")).toDouble()) > 0)
 {
     setWindowTitle(m_editMode ? QStringLiteral("编辑项目") : QStringLiteral("新建项目"));
-    resize(520, 600);
+    resize(540, 640);
 
     auto *root = new QVBoxLayout(this);
 
-    auto *form = new QFormLayout;
-    m_yearEdit = new QLineEdit(this);
-    m_workNoEdit = new QLineEdit(this);
-    m_nameEdit = new QLineEdit(this);
-    m_managerCombo = new QComboBox(this);
+    auto *scroll = new QScrollArea(this);
+    scroll->setWidgetResizable(true);
+    scroll->setFrameShape(QFrame::NoFrame);
+    auto *scrollBody = new QWidget(scroll);
+    scroll->setWidget(scrollBody);
+    root->addWidget(scroll, 1);
+
+    auto *form = new QFormLayout(scrollBody);
+    m_yearEdit = new QLineEdit(scrollBody);
+    m_workNoEdit = new QLineEdit(scrollBody);
+    m_nameEdit = new QLineEdit(scrollBody);
+    m_managerCombo = new QComboBox(scrollBody);
     m_managerCombo->addItem(QStringLiteral("（未指定）"), QString());
     for (const QJsonValue &v : members) {
         const QJsonObject u = v.toObject();
@@ -42,7 +54,7 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonArray
         m_managerCombo->setItemData(m_managerCombo->count() - 1, name, Qt::UserRole + 1);
     }
 
-    m_memberDeptCombo = new QComboBox(this);
+    m_memberDeptCombo = new QComboBox(scrollBody);
     m_memberDeptCombo->addItem(QStringLiteral("（请先选择部门）"), kDeptPlaceholderId);
     for (const QJsonValue &v : departments) {
         const QJsonObject d = v.toObject();
@@ -51,23 +63,26 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonArray
     }
     m_memberDeptCombo->addItem(QStringLiteral("（未分配）"), static_cast<qlonglong>(0));
 
-    m_membersList = new QListWidget(this);
+    m_membersList = new QListWidget(scrollBody);
     m_membersList->setMaximumHeight(130);
     m_membersList->setEnabled(false);
 
-    m_selectedCountLabel = new QLabel(QStringLiteral("已选成员：0 人"), this);
+    m_selectedCountLabel = new QLabel(QStringLiteral("已选成员：0 人"), scrollBody);
     m_selectedCountLabel->setObjectName(QStringLiteral("pageHint"));
 
-    m_statusCombo = new QComboBox(this);
+    m_selectedMembersSummary = new QLabel(QStringLiteral("（暂无）"), scrollBody);
+    m_selectedMembersSummary->setWordWrap(true);
+    m_selectedMembersSummary->setObjectName(QStringLiteral("pageHint"));
+
+    m_statusCombo = new QComboBox(scrollBody);
     m_statusCombo->setEditable(true);
     m_statusCombo->addItems({QStringLiteral("待启动"), QStringLiteral("进行中"),
                              QStringLiteral("暂停"), QStringLiteral("已完结")});
-    m_startDateEdit = new QLineEdit(this);
-    m_startDateEdit->setPlaceholderText(QStringLiteral("YYYY-MM-DD"));
-    m_endDateEdit = new QLineEdit(this);
-    m_endDateEdit->setPlaceholderText(QStringLiteral("YYYY-MM-DD"));
-    m_tasksEdit = new QTextEdit(this);
-    m_tasksEdit->setMaximumHeight(100);
+    m_startDateEdit = DatePickerUtils::createOptionalDateEdit(scrollBody);
+    m_endDateEdit = DatePickerUtils::createOptionalDateEdit(scrollBody);
+    m_tasksEdit = new QTextEdit(scrollBody);
+    m_tasksEdit->setMinimumHeight(90);
+    m_tasksEdit->setMaximumHeight(140);
 
     form->addRow(QStringLiteral("年度"), m_yearEdit);
     form->addRow(QStringLiteral("工番号"), m_workNoEdit);
@@ -76,11 +91,11 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonArray
     form->addRow(QStringLiteral("筛选部门"), m_memberDeptCombo);
     form->addRow(QStringLiteral("项目成员"), m_membersList);
     form->addRow(QString(), m_selectedCountLabel);
+    form->addRow(QStringLiteral("已选名单"), m_selectedMembersSummary);
     form->addRow(QStringLiteral("项目状态"), m_statusCombo);
     form->addRow(QStringLiteral("启动日期"), m_startDateEdit);
     form->addRow(QStringLiteral("完结日期"), m_endDateEdit);
     form->addRow(QStringLiteral("项目任务"), m_tasksEdit);
-    root->addLayout(form);
 
     auto *hint = new QLabel(
         QStringLiteral("添加成员时请先选择部门，再从该部门勾选成员；可切换部门继续添加。提醒将发送给负责人与已选成员。"),
@@ -98,35 +113,10 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonArray
             &ProjectEditDialog::onMemberDeptChanged);
     connect(m_membersList, &QListWidget::itemChanged, this, &ProjectEditDialog::onMemberItemChanged);
 
-    if (m_editMode) {
-        m_yearEdit->setText(existing.value(QStringLiteral("year")).toString());
-        m_workNoEdit->setText(existing.value(QStringLiteral("work_no")).toString());
-        m_nameEdit->setText(existing.value(QStringLiteral("name")).toString());
-        const QString status = existing.value(QStringLiteral("status")).toString();
-        const int si = m_statusCombo->findText(status);
-        if (si >= 0)
-            m_statusCombo->setCurrentIndex(si);
-        else if (!status.isEmpty())
-            m_statusCombo->setEditText(status);
-        m_startDateEdit->setText(existing.value(QStringLiteral("start_date")).toString());
-        m_endDateEdit->setText(existing.value(QStringLiteral("end_date")).toString());
-        m_tasksEdit->setPlainText(existing.value(QStringLiteral("tasks")).toString());
-
-        const QString mgrId = existing.value(QStringLiteral("manager_userid")).toString();
-        const int mi = m_managerCombo->findData(mgrId);
-        if (mi >= 0)
-            m_managerCombo->setCurrentIndex(mi);
-
-        for (const QJsonValue &v : existing.value(QStringLiteral("members")).toArray()) {
-            const QJsonObject m = v.toObject();
-            const QString userid = m.value(QStringLiteral("userid")).toString();
-            if (!userid.isEmpty())
-                m_selectedMembers.insert(userid, m.value(QStringLiteral("name")).toString());
-        }
-        updateSelectedCountLabel();
-    } else {
+    if (m_editMode)
+        restoreEditState();
+    else
         m_yearEdit->setText(QString::number(QDate::currentDate().year()));
-    }
 }
 
 bool ProjectEditDialog::isEditMode() const
@@ -138,6 +128,78 @@ void ProjectEditDialog::accept()
 {
     syncSelectionsFromList();
     QDialog::accept();
+}
+
+void ProjectEditDialog::restoreEditState()
+{
+    m_yearEdit->setText(m_existing.value(QStringLiteral("year")).toString());
+    m_workNoEdit->setText(m_existing.value(QStringLiteral("work_no")).toString());
+    m_nameEdit->setText(m_existing.value(QStringLiteral("name")).toString());
+
+    const QString status = m_existing.value(QStringLiteral("status")).toString();
+    const int si = m_statusCombo->findText(status);
+    if (si >= 0)
+        m_statusCombo->setCurrentIndex(si);
+    else if (!status.isEmpty())
+        m_statusCombo->setEditText(status);
+
+    DatePickerUtils::setOptionalDate(m_startDateEdit, m_existing.value(QStringLiteral("start_date")).toString());
+    DatePickerUtils::setOptionalDate(m_endDateEdit, m_existing.value(QStringLiteral("end_date")).toString());
+    m_tasksEdit->setPlainText(m_existing.value(QStringLiteral("tasks")).toString());
+
+    const QString mgrId = m_existing.value(QStringLiteral("manager_userid")).toString();
+    int mi = m_managerCombo->findData(mgrId);
+    if (mi < 0 && !mgrId.isEmpty()) {
+        const QString mgrName = m_existing.value(QStringLiteral("manager_name")).toString();
+        QJsonObject mgr;
+        mgr.insert(QStringLiteral("userid"), mgrId);
+        mgr.insert(QStringLiteral("name"), mgrName);
+        m_managerCombo->addItem(memberLabel(mgr), mgrId);
+        m_managerCombo->setItemData(m_managerCombo->count() - 1, mgrName, Qt::UserRole + 1);
+        mi = m_managerCombo->findData(mgrId);
+    }
+    if (mi >= 0)
+        m_managerCombo->setCurrentIndex(mi);
+
+    for (const QJsonValue &v : m_existing.value(QStringLiteral("members")).toArray()) {
+        const QJsonObject m = v.toObject();
+        const QString userid = m.value(QStringLiteral("userid")).toString();
+        if (!userid.isEmpty())
+            m_selectedMembers.insert(userid, m.value(QStringLiteral("name")).toString());
+    }
+
+    updateSelectedCountLabel();
+    preselectMemberDepartment();
+}
+
+qlonglong ProjectEditDialog::departmentIdForUser(const QString &userid) const
+{
+    if (userid.isEmpty())
+        return kDeptPlaceholderId;
+    for (const QJsonValue &v : m_allMembers) {
+        const QJsonObject u = v.toObject();
+        if (u.value(QStringLiteral("userid")).toString() == userid)
+            return userDepartmentId(u);
+    }
+    return kDeptPlaceholderId;
+}
+
+void ProjectEditDialog::preselectMemberDepartment()
+{
+    qlonglong deptId = kDeptPlaceholderId;
+    if (!m_selectedMembers.isEmpty()) {
+        deptId = departmentIdForUser(m_selectedMembers.constBegin().key());
+    } else {
+        deptId = departmentIdForUser(m_existing.value(QStringLiteral("manager_userid")).toString());
+    }
+    if (deptId == kDeptPlaceholderId)
+        return;
+
+    const int idx = m_memberDeptCombo->findData(deptId);
+    if (idx >= 0)
+        m_memberDeptCombo->setCurrentIndex(idx);
+    else
+        refreshMemberList();
 }
 
 QString ProjectEditDialog::memberLabel(const QJsonObject &user)
@@ -164,6 +226,8 @@ void ProjectEditDialog::syncSelectionsFromList()
         return;
     for (int i = 0; i < m_membersList->count(); ++i) {
         QListWidgetItem *item = m_membersList->item(i);
+        if ((item->flags() & Qt::ItemIsUserCheckable) == 0)
+            continue;
         const QString userid = item->data(Qt::UserRole).toString();
         if (item->checkState() == Qt::Checked)
             m_selectedMembers.insert(userid, item->data(Qt::UserRole + 1).toString());
@@ -189,6 +253,13 @@ void ProjectEditDialog::updateSelectedCountLabel()
 {
     m_selectedCountLabel->setText(
         QStringLiteral("已选成员：%1 人").arg(QString::number(m_selectedMembers.size())));
+
+    QStringList names;
+    for (auto it = m_selectedMembers.constBegin(); it != m_selectedMembers.constEnd(); ++it) {
+        const QString name = it.value().trimmed();
+        names.append(name.isEmpty() ? it.key() : name);
+    }
+    m_selectedMembersSummary->setText(names.isEmpty() ? QStringLiteral("（暂无）") : names.join(QStringLiteral("、")));
 }
 
 void ProjectEditDialog::refreshMemberList()
@@ -234,7 +305,7 @@ QJsonObject ProjectEditDialog::projectJson()
 {
     QJsonObject o;
     if (m_editMode)
-        o.insert(QStringLiteral("id"), m_existing.value(QStringLiteral("id")).toInt());
+        o.insert(QStringLiteral("id"), static_cast<int>(m_existing.value(QStringLiteral("id")).toDouble()));
 
     o.insert(QStringLiteral("year"), m_yearEdit->text().trimmed());
     o.insert(QStringLiteral("work_no"), m_workNoEdit->text().trimmed());
@@ -261,8 +332,8 @@ QJsonObject ProjectEditDialog::projectJson()
         o.insert(QStringLiteral("group_chat_id"), QString());
     }
     o.insert(QStringLiteral("status"), m_statusCombo->currentText());
-    o.insert(QStringLiteral("start_date"), m_startDateEdit->text().trimmed());
-    o.insert(QStringLiteral("end_date"), m_endDateEdit->text().trimmed());
+    o.insert(QStringLiteral("start_date"), DatePickerUtils::optionalDateText(m_startDateEdit));
+    o.insert(QStringLiteral("end_date"), DatePickerUtils::optionalDateText(m_endDateEdit));
     o.insert(QStringLiteral("tasks"), m_tasksEdit->toPlainText().trimmed());
     return o;
 }

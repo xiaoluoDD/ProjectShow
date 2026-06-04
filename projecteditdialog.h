@@ -7,10 +7,12 @@
 #include <QMap>
 
 class QComboBox;
+class QDateEdit;
 class QLineEdit;
 class QListWidget;
 class QListWidgetItem;
 class QLabel;
+class QScrollArea;
 class QTextEdit;
 
 class ProjectEditDialog : public QDialog
@@ -32,9 +34,12 @@ private slots:
     void onMemberItemChanged(QListWidgetItem *item);
 
 private:
+    void restoreEditState();
     void refreshMemberList();
     void syncSelectionsFromList();
     void updateSelectedCountLabel();
+    qlonglong departmentIdForUser(const QString &userid) const;
+    void preselectMemberDepartment();
     static QString memberLabel(const QJsonObject &user);
     static qlonglong userDepartmentId(const QJsonObject &user);
 
@@ -45,9 +50,10 @@ private:
     QComboBox *m_memberDeptCombo = nullptr;
     QListWidget *m_membersList = nullptr;
     QLabel *m_selectedCountLabel = nullptr;
+    QLabel *m_selectedMembersSummary = nullptr;
     QComboBox *m_statusCombo = nullptr;
-    QLineEdit *m_startDateEdit = nullptr;
-    QLineEdit *m_endDateEdit = nullptr;
+    QDateEdit *m_startDateEdit = nullptr;
+    QDateEdit *m_endDateEdit = nullptr;
     QTextEdit *m_tasksEdit = nullptr;
 
     QJsonArray m_allMembers;

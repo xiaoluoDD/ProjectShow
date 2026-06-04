@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include "projecteditdialog.h"
 #include "projectdetaildialog.h"
+#include "projectsubtaskdialog.h"
 
 #include <QAbstractItemView>
 #include <QHeaderView>
@@ -60,7 +61,7 @@ ProjectPanelWidget::ProjectPanelWidget(QWidget *parent)
     root->addWidget(m_notifyTargetLabel);
 
     m_statusLabel = new QLabel(
-        QStringLiteral("支持项目增删改；编辑项目时可指定负责人与项目成员；双击项目行可查看详情与成员列表。"),
+        QStringLiteral("支持项目增删改；双击「项目任务」列管理子任务，双击其他列查看项目详情。"),
         this);
     m_statusLabel->setObjectName(QStringLiteral("pageHint"));
     m_statusLabel->setWordWrap(true);
@@ -345,6 +346,15 @@ void ProjectPanelWidget::loadMembersForDialog(ProjectPanelRequests::PendingActio
 
 void ProjectPanelWidget::showProjectDialog(const QJsonObject &existing)
 {
+    if (m_pendingAction == ProjectPanelRequests::PendingAction::OpenEditDialog) {
+        const qint64 id = static_cast<qint64>(existing.value(QStringLiteral("id")).toDouble());
+        if (id <= 0) {
+            QMessageBox::warning(this, QStringLiteral("提示"),
+                                 QStringLiteral("无法加载项目数据，请先点击「刷新」后重试。"));
+            return;
+        }
+    }
+
     ProjectEditDialog dlg(m_members, m_departments, existing, this);
     if (dlg.exec() != QDialog::Accepted)
         return;
@@ -374,7 +384,18 @@ void ProjectPanelWidget::onEditClicked()
         QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先选中一行项目"));
         return;
     }
-    loadMembersForDialog(ProjectPanelRequests::PendingAction::OpenEditDialog, p);
+    const int id = static_cast<int>(p.value(QStringLiteral("id")).toDouble());
+    if (id <= 0) {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("无法读取项目 ID，请先点击「刷新」"));
+        return;
+    }
+
+    m_editFallbackProject = p;
+    m_pendingEditProject = p;
+    m_pendingAction = ProjectPanelRequests::PendingAction::OpenEditDialog;
+    m_statusLabel->setText(QStringLiteral("正在加载项目信息 …"));
+    startGet(QStringLiteral("/api/projects?id=") + QString::number(id),
+             ProjectPanelRequests::Kind::LoadProjectForEdit);
 }
 
 void ProjectPanelWidget::onDeleteClicked()
@@ -395,7 +416,6 @@ void ProjectPanelWidget::onDeleteClicked()
 
 void ProjectPanelWidget::onProjectDoubleClicked(int row, int column)
 {
-    Q_UNUSED(column);
     if (row < 0 || row >= m_projectTable->rowCount())
         return;
 
@@ -404,9 +424,20 @@ void ProjectPanelWidget::onProjectDoubleClicked(int row, int column)
     if (p.isEmpty())
         return;
 
+    if (column == ColTasks) {
+        showSubTaskDialog(p);
+        return;
+    }
+
     m_pendingDetailProject = p;
-    m_statusLabel->setText(QStringLiteral("正在加载成员部门 …"));
+    m_statusLabel->setText(QStringLiteral("正在加载项目详情 …"));
     startGet(QStringLiteral("/api/wecom/users"), ProjectPanelRequests::Kind::LoadUsersForDetail);
+}
+
+void ProjectPanelWidget::showSubTaskDialog(const QJsonObject &project)
+{
+    ProjectSubTaskDialog dlg(project, this);
+    dlg.exec();
 }
 
 void ProjectPanelWidget::showProjectDetail(const QJsonObject &project)
@@ -449,6 +480,13 @@ void ProjectPanelWidget::onReplyFinished(QNetworkReply *reply)
     setBusy(false);
 
     if (reply->error() != QNetworkReply::NoError) {
+        if (kind == ProjectPanelRequests::Kind::LoadProjectForEdit
+            && m_pendingAction == ProjectPanelRequests::PendingAction::OpenEditDialog
+            && static_cast<qint64>(m_editFallbackProject.value(QStringLiteral("id")).toDouble()) > 0) {
+            m_pendingEditProject = m_editFallbackProject;
+            loadMembersForDialog(ProjectPanelRequests::PendingAction::OpenEditDialog, m_pendingEditProject);
+            return;
+        }
         m_statusLabel->setText(QStringLiteral("失败：%1").arg(reply->errorString()));
         QMessageBox::critical(this, QStringLiteral("网络错误"), reply->errorString());
         m_pendingAction = ProjectPanelRequests::PendingAction::None;
@@ -465,6 +503,29 @@ void ProjectPanelWidget::onReplyFinished(QNetworkReply *reply)
 
     const QJsonObject obj = doc.object();
     const bool ok = obj.value(QStringLiteral("ok")).toBool(false);
+
+    if (kind == ProjectPanelRequests::Kind::LoadProjectForEdit) {
+        QJsonObject project = m_editFallbackProject;
+        if (ok) {
+            const QJsonObject fromApi = obj.value(QStringLiteral("project")).toObject();
+            if (static_cast<qint64>(fromApi.value(QStringLiteral("id")).toDouble()) > 0)
+                project = fromApi;
+        } else {
+            QMessageBox::warning(
+                this, QStringLiteral("提示"),
+                QStringLiteral("未能从服务器拉取最新项目，将使用列表中的数据进行编辑。\n%1")
+                    .arg(obj.value(QStringLiteral("error")).toString()));
+        }
+        if (static_cast<qint64>(project.value(QStringLiteral("id")).toDouble()) <= 0) {
+            m_pendingAction = ProjectPanelRequests::PendingAction::None;
+            QMessageBox::warning(this, QStringLiteral("提示"),
+                                 QStringLiteral("无法加载项目数据，请先点击「刷新」后重试。"));
+            return;
+        }
+        m_pendingEditProject = project;
+        loadMembersForDialog(ProjectPanelRequests::PendingAction::OpenEditDialog, m_pendingEditProject);
+        return;
+    }
 
     if (kind == ProjectPanelRequests::Kind::LoadMembers) {
         if (ok)

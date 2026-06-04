@@ -14,6 +14,7 @@ class QNetworkReply;
 namespace ProjectPanelRequests {
 enum class Kind {
     LoadProjects,
+    LoadProjectForEdit,
     LoadMembers,
     LoadDepartments,
     CreateProject,
@@ -57,6 +58,7 @@ private:
     void loadMembersForDialog(ProjectPanelRequests::PendingAction action,
                               const QJsonObject &editExisting = QJsonObject());
     void showProjectDialog(const QJsonObject &existing);
+    void showSubTaskDialog(const QJsonObject &project);
     void showProjectDetail(const QJsonObject &project);
     static QString formatMembersSummary(const QJsonObject &project);
 
@@ -73,6 +75,7 @@ private:
     ProjectPanelRequests::PendingAction m_pendingAction = ProjectPanelRequests::PendingAction::None;
     QJsonObject m_pendingEditProject;
     QJsonObject m_pendingDetailProject;
+    QJsonObject m_editFallbackProject;
 };
 
 #endif // PROJECTPANELWIDGET_H

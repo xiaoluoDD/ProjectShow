@@ -3,6 +3,8 @@ debug/mainwindow.o
 debug/projectpanelwidget.o
 debug/projecteditdialog.o
 debug/projectdetaildialog.o
+debug/projectsubtaskdialog.o
+debug/subtaskeditdialog.o
 debug/memberpanelwidget.o
 debug/membereditdialog.o
 debug/departmentpanelwidget.o
@@ -13,10 +15,13 @@ debug/datapanelwidget.o
 debug/localdatastore.o
 debug/applogger.o
 debug/appstyle.o
+debug/datepickerutils.o
 debug/moc_mainwindow.o
 debug/moc_projectpanelwidget.o
 debug/moc_projecteditdialog.o
 debug/moc_projectdetaildialog.o
+debug/moc_projectsubtaskdialog.o
+debug/moc_subtaskeditdialog.o
 debug/moc_memberpanelwidget.o
 debug/moc_membereditdialog.o
 debug/moc_departmentpanelwidget.o

@@ -3,6 +3,8 @@ release/mainwindow.o
 release/projectpanelwidget.o
 release/projecteditdialog.o
 release/projectdetaildialog.o
+release/projectsubtaskdialog.o
+release/subtaskeditdialog.o
 release/memberpanelwidget.o
 release/membereditdialog.o
 release/departmentpanelwidget.o
@@ -13,10 +15,13 @@ release/datapanelwidget.o
 release/localdatastore.o
 release/applogger.o
 release/appstyle.o
+release/datepickerutils.o
 release/moc_mainwindow.o
 release/moc_projectpanelwidget.o
 release/moc_projecteditdialog.o
 release/moc_projectdetaildialog.o
+release/moc_projectsubtaskdialog.o
+release/moc_subtaskeditdialog.o
 release/moc_memberpanelwidget.o
 release/moc_membereditdialog.o
 release/moc_departmentpanelwidget.o

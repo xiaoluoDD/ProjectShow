@@ -13,6 +13,8 @@ SOURCES += \
     projectpanelwidget.cpp \
     projecteditdialog.cpp \
     projectdetaildialog.cpp \
+    projectsubtaskdialog.cpp \
+    subtaskeditdialog.cpp \
     memberpanelwidget.cpp \
     membereditdialog.cpp \
     departmentpanelwidget.cpp \
@@ -22,13 +24,16 @@ SOURCES += \
     datapanelwidget.cpp \
     localdatastore.cpp \
     applogger.cpp \
-    appstyle.cpp
+    appstyle.cpp \
+    datepickerutils.cpp
 
 HEADERS += \
     mainwindow.h \
     projectpanelwidget.h \
     projecteditdialog.h \
     projectdetaildialog.h \
+    projectsubtaskdialog.h \
+    subtaskeditdialog.h \
     memberpanelwidget.h \
     membereditdialog.h \
     departmentpanelwidget.h \
@@ -38,7 +43,8 @@ HEADERS += \
     datapanelwidget.h \
     localdatastore.h \
     applogger.h \
-    appstyle.h
+    appstyle.h \
+    datepickerutils.h
 
 # Qt 6.7.3，MSVC / MinGW 下保证源文件 UTF-8
 msvc: QMAKE_CXXFLAGS += /utf-8
