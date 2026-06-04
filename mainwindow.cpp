@@ -2,6 +2,7 @@
 
 #include "applogger.h"
 #include "debughubwidget.h"
+#include "departmentpanelwidget.h"
 #include "memberpanelwidget.h"
 #include "projectpanelwidget.h"
 
@@ -61,9 +62,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_tabs->setObjectName(QStringLiteral("mainTabWidget"));
     m_projectPanel = new ProjectPanelWidget(this);
     m_memberPanel = new MemberPanelWidget(this);
+    m_departmentPanel = new DepartmentPanelWidget(this);
     m_debugHub = new DebugHubWidget(this);
     m_tabs->addTab(m_projectPanel, QStringLiteral("项目面板"));
     m_tabs->addTab(m_memberPanel, QStringLiteral("项目成员"));
+    m_tabs->addTab(m_departmentPanel, QStringLiteral("部门管理"));
     m_tabs->addTab(m_debugHub, QStringLiteral("调试"));
     root->addWidget(m_tabs, 1);
 

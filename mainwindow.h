@@ -7,6 +7,7 @@ class QLineEdit;
 class QTabWidget;
 class ProjectPanelWidget;
 class MemberPanelWidget;
+class DepartmentPanelWidget;
 class DebugHubWidget;
 class QNetworkAccessManager;
 
@@ -38,6 +39,7 @@ private:
     QTabWidget *m_tabs = nullptr;
     ProjectPanelWidget *m_projectPanel = nullptr;
     MemberPanelWidget *m_memberPanel = nullptr;
+    DepartmentPanelWidget *m_departmentPanel = nullptr;
     DebugHubWidget *m_debugHub = nullptr;
     QNetworkAccessManager *m_net = nullptr;
     QString m_selectedUserId;

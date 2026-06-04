@@ -40,6 +40,9 @@ constexpr auto qt_meta_stringdata_CLASSMemberPanelWidgetENDCLASS = QtMocHelpers:
     "",
     "onRefreshClicked",
     "onSelectionChanged",
+    "onMemberDoubleClicked",
+    "row",
+    "column",
     "onReplyFinished",
     "QNetworkReply*",
     "reply"
@@ -55,7 +58,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMemberPanelWidgetENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -63,16 +66,18 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMemberPanelWidgetENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   38,    2, 0x08,    1 /* Private */,
-       3,    0,   39,    2, 0x08,    2 /* Private */,
-       4,    0,   40,    2, 0x08,    3 /* Private */,
-       5,    1,   41,    2, 0x08,    4 /* Private */,
+       1,    0,   44,    2, 0x08,    1 /* Private */,
+       3,    0,   45,    2, 0x08,    2 /* Private */,
+       4,    0,   46,    2, 0x08,    3 /* Private */,
+       5,    2,   47,    2, 0x08,    4 /* Private */,
+       8,    1,   52,    2, 0x08,    7 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 6,    7,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,    6,    7,
+    QMetaType::Void, 0x80000000 | 9,   10,
 
        0        // eod
 };
@@ -92,6 +97,10 @@ Q_CONSTINIT const QMetaObject MemberPanelWidget::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onSelectionChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onMemberDoubleClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'onReplyFinished'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<QNetworkReply *, std::false_type>
@@ -108,7 +117,8 @@ void MemberPanelWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 0: _t->onSyncClicked(); break;
         case 1: _t->onRefreshClicked(); break;
         case 2: _t->onSelectionChanged(); break;
-        case 3: _t->onReplyFinished((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
+        case 3: _t->onMemberDoubleClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 4: _t->onReplyFinished((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
         default: ;
         }
     }
@@ -133,13 +143,13 @@ int MemberPanelWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 5)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
 }

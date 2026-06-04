@@ -2,6 +2,7 @@
 
 #include "applogger.h"
 #include "mainwindow.h"
+#include "membereditdialog.h"
 
 #include <QAbstractItemView>
 #include <QHeaderView>
@@ -26,6 +27,15 @@ namespace {
 const char kRequestKind[] = "requestKind";
 const char kOwnerPanel[] = "ownerPanel";
 
+enum MemberColumn {
+    ColName = 0,
+    ColUserID,
+    ColMobile,
+    ColDepartment,
+    ColSources,
+    ColCount,
+};
+
 } // namespace
 
 MemberPanelWidget::MemberPanelWidget(QWidget *parent)
@@ -39,7 +49,7 @@ MemberPanelWidget::MemberPanelWidget(QWidget *parent)
     root->addWidget(title);
 
     m_hintLabel = new QLabel(
-        QStringLiteral("从企业微信同步可见成员。请优先看「姓名」列；同步时会自动补全缺失的姓名。"),
+        QStringLiteral("从企业微信同步可见成员；部门需手动维护。双击成员行可编辑手机号与部门并保存到后端。"),
         this);
     m_hintLabel->setObjectName(QStringLiteral("pageHint"));
     m_hintLabel->setWordWrap(true);
@@ -58,16 +68,18 @@ MemberPanelWidget::MemberPanelWidget(QWidget *parent)
 
     m_table = new QTableWidget(this);
     m_table->setObjectName(QStringLiteral("dataTable"));
-    m_table->setColumnCount(4);
+    m_table->setColumnCount(ColCount);
     m_table->setHorizontalHeaderLabels({
         QStringLiteral("姓名"),
         QStringLiteral("UserID"),
         QStringLiteral("手机"),
+        QStringLiteral("部门"),
         QStringLiteral("来源"),
     });
     m_table->horizontalHeader()->setStretchLastSection(true);
-    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(ColName, QHeaderView::ResizeToContents);
+    m_table->horizontalHeader()->setSectionResizeMode(ColUserID, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(ColDepartment, QHeaderView::Stretch);
     m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_table->setSelectionMode(QAbstractItemView::SingleSelection);
     m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -77,6 +89,7 @@ MemberPanelWidget::MemberPanelWidget(QWidget *parent)
     connect(m_syncBtn, &QPushButton::clicked, this, &MemberPanelWidget::onSyncClicked);
     connect(m_refreshBtn, &QPushButton::clicked, this, &MemberPanelWidget::onRefreshClicked);
     connect(m_table, &QTableWidget::itemSelectionChanged, this, &MemberPanelWidget::onSelectionChanged);
+    connect(m_table, &QTableWidget::cellDoubleClicked, this, &MemberPanelWidget::onMemberDoubleClicked);
     connect(mainWindow()->networkManager(), &QNetworkAccessManager::finished, this,
             &MemberPanelWidget::onReplyFinished);
 
@@ -110,7 +123,6 @@ void MemberPanelWidget::setBusy(bool busy)
 {
     m_syncBtn->setEnabled(!busy);
     m_refreshBtn->setEnabled(!busy);
-    m_table->setEnabled(!busy);
 }
 
 void MemberPanelWidget::startGet(const QString &path, MemberPanelRequests::Kind kind)
@@ -127,7 +139,7 @@ void MemberPanelWidget::startGet(const QString &path, MemberPanelRequests::Kind 
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }
 
-void MemberPanelWidget::startPost(const QString &path, MemberPanelRequests::Kind kind)
+void MemberPanelWidget::startPost(const QString &path, MemberPanelRequests::Kind kind, const QByteArray &body)
 {
     QString base;
     if (!checkServerUrl(&base))
@@ -137,7 +149,22 @@ void MemberPanelWidget::startPost(const QString &path, MemberPanelRequests::Kind
     QNetworkRequest netRequest;
     netRequest.setUrl(QUrl(base + path));
     netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
-    QNetworkReply *reply = mainWindow()->networkManager()->post(netRequest, QByteArray("{}"));
+    QNetworkReply *reply = mainWindow()->networkManager()->post(netRequest, body);
+    reply->setProperty(kRequestKind, static_cast<int>(kind));
+    reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
+}
+
+void MemberPanelWidget::startPut(const QString &path, MemberPanelRequests::Kind kind, const QByteArray &body)
+{
+    QString base;
+    if (!checkServerUrl(&base))
+        return;
+
+    setBusy(true);
+    QNetworkRequest netRequest;
+    netRequest.setUrl(QUrl(base + path));
+    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    QNetworkReply *reply = mainWindow()->networkManager()->put(netRequest, body);
     reply->setProperty(kRequestKind, static_cast<int>(kind));
     reply->setProperty(kOwnerPanel, reinterpret_cast<quintptr>(this));
 }
@@ -153,9 +180,18 @@ void MemberPanelWidget::onRefreshClicked()
     startGet(QStringLiteral("/api/wecom/users"), MemberPanelRequests::Kind::LoadUsers);
 }
 
+QString MemberPanelWidget::formatDepartmentText(const QJsonObject &user)
+{
+    const QString deptName = user.value(QStringLiteral("department_name")).toString().trimmed();
+    if (!deptName.isEmpty())
+        return deptName;
+    const QString legacy = user.value(QStringLiteral("departments")).toString().trimmed();
+    return legacy.isEmpty() ? QStringLiteral("—") : legacy;
+}
+
 void MemberPanelWidget::showMembers(const QJsonArray &users)
 {
-    m_table->setRowCount(0);
+    m_users = users;
     m_table->setRowCount(users.size());
 
     for (int i = 0; i < users.size(); ++i) {
@@ -169,17 +205,34 @@ void MemberPanelWidget::showMembers(const QJsonArray &users)
 
         auto *nameItem = new QTableWidgetItem(name);
         nameItem->setData(Qt::UserRole, userid);
-        nameItem->setData(Qt::UserRole + 1, u.value(QStringLiteral("name")).toString());
+        nameItem->setData(Qt::UserRole + 1, QJsonDocument(u).toJson(QJsonDocument::Compact));
         if (name == QStringLiteral("—"))
             nameItem->setForeground(QColor(Qt::gray));
 
-        m_table->setItem(i, 0, nameItem);
-        m_table->setItem(i, 1, new QTableWidgetItem(userid));
-        m_table->setItem(i, 2, new QTableWidgetItem(mobile.isEmpty() ? QStringLiteral("—") : mobile));
-        m_table->setItem(i, 3, new QTableWidgetItem(sources));
+        m_table->setItem(i, ColName, nameItem);
+        m_table->setItem(i, ColUserID, new QTableWidgetItem(userid));
+        m_table->setItem(i, ColMobile, new QTableWidgetItem(mobile.isEmpty() ? QStringLiteral("—") : mobile));
+        m_table->setItem(i, ColDepartment, new QTableWidgetItem(formatDepartmentText(u)));
+        m_table->setItem(i, ColSources, new QTableWidgetItem(sources));
     }
 
     m_countLabel->setText(QStringLiteral("共 %1 人").arg(users.size()));
+}
+
+QJsonObject MemberPanelWidget::selectedUser() const
+{
+    const int row = m_table->currentRow();
+    if (row < 0)
+        return {};
+    const QTableWidgetItem *item = m_table->item(row, ColName);
+    if (!item)
+        return {};
+    const QByteArray json = item->data(Qt::UserRole + 1).toByteArray();
+    QJsonParseError err;
+    const QJsonDocument doc = QJsonDocument::fromJson(json, &err);
+    if (err.error != QJsonParseError::NoError || !doc.isObject())
+        return {};
+    return doc.object();
 }
 
 void MemberPanelWidget::applyRowSelection(int row)
@@ -189,18 +242,50 @@ void MemberPanelWidget::applyRowSelection(int row)
         return;
     }
 
-    const QTableWidgetItem *nameItem = m_table->item(row, 0);
+    const QTableWidgetItem *nameItem = m_table->item(row, ColName);
     if (!nameItem)
         return;
 
     const QString userid = nameItem->data(Qt::UserRole).toString();
-    QString name = nameItem->data(Qt::UserRole + 1).toString();
+    const QJsonObject u = selectedUser();
+    const QString name = u.value(QStringLiteral("name")).toString();
     mainWindow()->setSelectedMember(userid, name);
 }
 
 void MemberPanelWidget::onSelectionChanged()
 {
     applyRowSelection(m_table->currentRow());
+}
+
+void MemberPanelWidget::loadDepartmentsForDialog(const QJsonObject &editUser)
+{
+    m_pendingAction = MemberPanelRequests::PendingAction::OpenEditDialog;
+    m_pendingEditUser = editUser;
+    startGet(QStringLiteral("/api/departments"), MemberPanelRequests::Kind::LoadDepartments);
+}
+
+void MemberPanelWidget::showMemberDialog(const QJsonObject &user)
+{
+    MemberEditDialog dlg(user, m_departments, this);
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+
+    const QJsonObject payload = dlg.savePayload();
+    startPut(QStringLiteral("/api/wecom/users"), MemberPanelRequests::Kind::UpdateUser,
+             QJsonDocument(payload).toJson(QJsonDocument::Compact));
+}
+
+void MemberPanelWidget::onMemberDoubleClicked(int row, int column)
+{
+    Q_UNUSED(column);
+    if (row < 0 || row >= m_table->rowCount())
+        return;
+
+    m_table->selectRow(row);
+    const QJsonObject u = selectedUser();
+    if (u.isEmpty())
+        return;
+    loadDepartmentsForDialog(u);
 }
 
 void MemberPanelWidget::onReplyFinished(QNetworkReply *reply)
@@ -215,6 +300,7 @@ void MemberPanelWidget::onReplyFinished(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError) {
         AppLogger::instance().error(QStringLiteral("Member"), reply->errorString());
         QMessageBox::critical(this, QStringLiteral("网络错误"), reply->errorString());
+        m_pendingAction = MemberPanelRequests::PendingAction::None;
         return;
     }
 
@@ -223,11 +309,22 @@ void MemberPanelWidget::onReplyFinished(QNetworkReply *reply)
     const QJsonDocument doc = QJsonDocument::fromJson(body, &parseErr);
     if (parseErr.error != QJsonParseError::NoError || !doc.isObject()) {
         QMessageBox::warning(this, QStringLiteral("解析失败"), QStringLiteral("响应不是合法 JSON"));
+        m_pendingAction = MemberPanelRequests::PendingAction::None;
         return;
     }
 
     const QJsonObject obj = doc.object();
     const bool ok = obj.value(QStringLiteral("ok")).toBool(false);
+
+    if (kind == MemberPanelRequests::Kind::LoadDepartments) {
+        if (ok)
+            m_departments = obj.value(QStringLiteral("departments")).toArray();
+        const MemberPanelRequests::PendingAction pending = m_pendingAction;
+        m_pendingAction = MemberPanelRequests::PendingAction::None;
+        if (pending == MemberPanelRequests::PendingAction::OpenEditDialog)
+            showMemberDialog(m_pendingEditUser);
+        return;
+    }
 
     if (kind == MemberPanelRequests::Kind::Sync) {
         if (!ok) {
@@ -258,5 +355,16 @@ void MemberPanelWidget::onReplyFinished(QNetworkReply *reply)
         if (users.isEmpty()) {
             QMessageBox::information(this, QStringLiteral("提示"), QStringLiteral("暂无成员，请先同步。"));
         }
+        return;
+    }
+
+    if (kind == MemberPanelRequests::Kind::UpdateUser) {
+        if (!ok) {
+            QMessageBox::critical(this, QStringLiteral("保存失败"), obj.value(QStringLiteral("error")).toString());
+            return;
+        }
+        QMessageBox::information(this, QStringLiteral("成功"), obj.value(QStringLiteral("msg")).toString());
+        onRefreshClicked();
+        setBusy(true);
     }
 }

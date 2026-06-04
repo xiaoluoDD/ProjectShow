@@ -2,7 +2,10 @@ debug/main.o
 debug/mainwindow.o
 debug/projectpanelwidget.o
 debug/projecteditdialog.o
+debug/projectdetaildialog.o
 debug/memberpanelwidget.o
+debug/membereditdialog.o
+debug/departmentpanelwidget.o
 debug/debugpanelwidget.o
 debug/debughubwidget.o
 debug/logpanelwidget.o
@@ -13,7 +16,10 @@ debug/appstyle.o
 debug/moc_mainwindow.o
 debug/moc_projectpanelwidget.o
 debug/moc_projecteditdialog.o
+debug/moc_projectdetaildialog.o
 debug/moc_memberpanelwidget.o
+debug/moc_membereditdialog.o
+debug/moc_departmentpanelwidget.o
 debug/moc_debugpanelwidget.o
 debug/moc_logpanelwidget.o
 debug/moc_datapanelwidget.o

@@ -42,9 +42,9 @@ constexpr auto qt_meta_stringdata_CLASSProjectPanelWidgetENDCLASS = QtMocHelpers
     "onEditClicked",
     "onDeleteClicked",
     "onSendNotifyClicked",
-    "onMemberSelectionChanged",
-    "userid",
-    "name",
+    "onProjectDoubleClicked",
+    "row",
+    "column",
     "onReplyFinished",
     "QNetworkReply*",
     "reply"
@@ -82,7 +82,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSProjectPanelWidgetENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,    8,    9,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,    8,    9,
     QMetaType::Void, 0x80000000 | 11,   12,
 
        0        // eod
@@ -107,10 +107,10 @@ Q_CONSTINIT const QMetaObject ProjectPanelWidget::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onSendNotifyClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onMemberSelectionChanged'
+        // method 'onProjectDoubleClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
-        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'onReplyFinished'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<QNetworkReply *, std::false_type>
@@ -129,7 +129,7 @@ void ProjectPanelWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         case 2: _t->onEditClicked(); break;
         case 3: _t->onDeleteClicked(); break;
         case 4: _t->onSendNotifyClicked(); break;
-        case 5: _t->onMemberSelectionChanged((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 5: _t->onProjectDoubleClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
         case 6: _t->onReplyFinished((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
         default: ;
         }

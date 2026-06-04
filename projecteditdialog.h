@@ -7,6 +7,7 @@
 
 class QComboBox;
 class QLineEdit;
+class QListWidget;
 class QTextEdit;
 
 class ProjectEditDialog : public QDialog
@@ -25,6 +26,7 @@ private:
     QLineEdit *m_workNoEdit = nullptr;
     QLineEdit *m_nameEdit = nullptr;
     QComboBox *m_managerCombo = nullptr;
+    QListWidget *m_membersList = nullptr;
     QComboBox *m_statusCombo = nullptr;
     QLineEdit *m_startDateEdit = nullptr;
     QLineEdit *m_endDateEdit = nullptr;

@@ -2,7 +2,10 @@ release/main.o
 release/mainwindow.o
 release/projectpanelwidget.o
 release/projecteditdialog.o
+release/projectdetaildialog.o
 release/memberpanelwidget.o
+release/membereditdialog.o
+release/departmentpanelwidget.o
 release/debugpanelwidget.o
 release/debughubwidget.o
 release/logpanelwidget.o
@@ -13,7 +16,10 @@ release/appstyle.o
 release/moc_mainwindow.o
 release/moc_projectpanelwidget.o
 release/moc_projecteditdialog.o
+release/moc_projectdetaildialog.o
 release/moc_memberpanelwidget.o
+release/moc_membereditdialog.o
+release/moc_departmentpanelwidget.o
 release/moc_debugpanelwidget.o
 release/moc_logpanelwidget.o
 release/moc_datapanelwidget.o

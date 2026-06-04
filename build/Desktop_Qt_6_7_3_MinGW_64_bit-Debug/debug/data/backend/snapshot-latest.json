@@ -3,22 +3,22 @@
         "projects": 2,
         "users": 3
     },
-    "exported_at": "2026-05-28 11:36:52",
+    "exported_at": "2026-06-04 12:08:11",
     "ok": true,
     "projects": [
         {
-            "end_date": "",
+            "end_date": "2026-5-30",
             "group_chat": "",
             "group_chat_id": "",
-            "id": 2,
-            "manager_name": "（待填写）",
-            "manager_userid": "",
-            "name": "示例项目 B",
-            "start_date": "2026-03-01",
+            "id": 3,
+            "manager_name": "罗贤",
+            "manager_userid": "LuoXian",
+            "name": "测试案例2",
+            "start_date": "2026-5-28",
             "status": "待启动",
-            "tasks": "立项评审",
-            "updated_at": "2026-05-28T11:08:47+08:00",
-            "work_no": "B-002",
+            "tasks": "测试",
+            "updated_at": "2026-05-28T11:48:56+08:00",
+            "work_no": "GW11520",
             "year": "2026"
         },
         {
@@ -37,7 +37,7 @@
             "year": "2026"
         }
     ],
-    "server_now": "2026-05-28 11:36:52",
+    "server_now": "2026-06-04 12:08:11",
     "stats": {
         "active_users": 3,
         "corp_info": {
@@ -46,33 +46,33 @@
             "to_user": "LuoRenYang"
         },
         "last_sync": {
-            "finished_at": "2026-05-28T10:40:24+08:00",
-            "id": 5,
-            "started_at": "2026-05-28T10:40:23+08:00",
+            "finished_at": "2026-06-04T08:43:26+08:00",
+            "id": 12,
+            "started_at": "2026-06-04T08:43:25+08:00",
             "status": "ok",
             "user_count": 3
         }
     },
     "users": [
         {
-            "departments": "[]",
+            "departments": "",
             "name": "左木帅",
             "sources": "allow_user",
-            "updated_at": "2026-05-28T10:40:24+08:00",
+            "updated_at": "2026-06-04T08:43:26+08:00",
             "userid": "ZuoMuShuai"
         },
         {
-            "departments": "[]",
+            "departments": "",
             "name": "罗人洋",
             "sources": "allow_user",
-            "updated_at": "2026-05-28T10:40:24+08:00",
+            "updated_at": "2026-06-04T08:43:26+08:00",
             "userid": "LuoRenYang"
         },
         {
-            "departments": "[]",
+            "departments": "",
             "name": "罗贤",
             "sources": "allow_user",
-            "updated_at": "2026-05-28T10:40:24+08:00",
+            "updated_at": "2026-06-04T08:43:26+08:00",
             "userid": "LuoXian"
         }
     ]

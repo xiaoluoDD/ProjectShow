@@ -36,7 +36,7 @@ private slots:
     void onEditClicked();
     void onDeleteClicked();
     void onSendNotifyClicked();
-    void onMemberSelectionChanged(const QString &userid, const QString &name);
+    void onProjectDoubleClicked(int row, int column);
     void onReplyFinished(QNetworkReply *reply);
 
 private:
@@ -55,6 +55,8 @@ private:
     void loadMembersForDialog(ProjectPanelRequests::PendingAction action,
                               const QJsonObject &editExisting = QJsonObject());
     void showProjectDialog(const QJsonObject &existing);
+    void showProjectDetail(const QJsonObject &project);
+    static QString formatMembersSummary(const QJsonObject &project);
 
     QLabel *m_statusLabel = nullptr;
     QLabel *m_notifyTargetLabel = nullptr;

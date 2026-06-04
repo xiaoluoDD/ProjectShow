@@ -12,7 +12,10 @@ SOURCES += \
     mainwindow.cpp \
     projectpanelwidget.cpp \
     projecteditdialog.cpp \
+    projectdetaildialog.cpp \
     memberpanelwidget.cpp \
+    membereditdialog.cpp \
+    departmentpanelwidget.cpp \
     debugpanelwidget.cpp \
     debughubwidget.cpp \
     logpanelwidget.cpp \
@@ -25,7 +28,10 @@ HEADERS += \
     mainwindow.h \
     projectpanelwidget.h \
     projecteditdialog.h \
+    projectdetaildialog.h \
     memberpanelwidget.h \
+    membereditdialog.h \
+    departmentpanelwidget.h \
     debugpanelwidget.h \
     debughubwidget.h \
     logpanelwidget.h \

@@ -3,11 +3,13 @@
 #include "applogger.h"
 #include "mainwindow.h"
 #include "projecteditdialog.h"
+#include "projectdetaildialog.h"
 
 #include <QAbstractItemView>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QSizePolicy>
+#include <QInputDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -16,6 +18,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPushButton>
+#include <QSet>
 #include <QSettings>
 #include <QTableWidget>
 #include <QTableWidgetItem>
@@ -36,6 +39,7 @@ enum ProjectColumn {
     ColStartDate,
     ColEndDate,
     ColTasks,
+    ColMembers,
     ColCount,
 };
 
@@ -56,7 +60,8 @@ ProjectPanelWidget::ProjectPanelWidget(QWidget *parent)
     root->addWidget(m_notifyTargetLabel);
 
     m_statusLabel = new QLabel(
-        QStringLiteral("支持项目增删改；负责人请在「项目成员」中同步后，于编辑时选择。"), this);
+        QStringLiteral("支持项目增删改；编辑项目时可指定负责人与项目成员；双击项目行可查看详情与成员列表。"),
+        this);
     m_statusLabel->setObjectName(QStringLiteral("pageHint"));
     m_statusLabel->setWordWrap(true);
     root->addWidget(m_statusLabel);
@@ -81,7 +86,7 @@ ProjectPanelWidget::ProjectPanelWidget(QWidget *parent)
     root->addWidget(m_projectTable, 1);
 
     auto *btnRow = new QHBoxLayout;
-    m_sendBtn = new QPushButton(QStringLiteral("向当前选中成员发送提醒"), this);
+    m_sendBtn = new QPushButton(QStringLiteral("向选中项目成员发送提醒"), this);
     m_sendBtn->setObjectName(QStringLiteral("btnAction"));
     btnRow->addWidget(m_sendBtn);
     btnRow->addStretch();
@@ -92,8 +97,10 @@ ProjectPanelWidget::ProjectPanelWidget(QWidget *parent)
     connect(m_editBtn, &QPushButton::clicked, this, &ProjectPanelWidget::onEditClicked);
     connect(m_delBtn, &QPushButton::clicked, this, &ProjectPanelWidget::onDeleteClicked);
     connect(m_sendBtn, &QPushButton::clicked, this, &ProjectPanelWidget::onSendNotifyClicked);
-    connect(mainWindow(), &MainWindow::memberSelectionChanged, this,
-            &ProjectPanelWidget::onMemberSelectionChanged);
+    connect(m_projectTable, &QTableWidget::itemSelectionChanged, this,
+            &ProjectPanelWidget::updateNotifyTargetLabel);
+    connect(m_projectTable, &QTableWidget::cellDoubleClicked, this,
+            &ProjectPanelWidget::onProjectDoubleClicked);
     connect(mainWindow()->networkManager(), &QNetworkAccessManager::finished, this,
             &ProjectPanelWidget::onReplyFinished);
 
@@ -113,6 +120,7 @@ void ProjectPanelWidget::setupProjectTable()
         QStringLiteral("年度"), QStringLiteral("工番号"), QStringLiteral("项目名称"),
         QStringLiteral("项目负责人"), QStringLiteral("项目状态"),
         QStringLiteral("项目启动日期"), QStringLiteral("项目完结日期"), QStringLiteral("项目任务"),
+        QStringLiteral("项目成员"),
     });
 
     m_projectTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -123,7 +131,7 @@ void ProjectPanelWidget::setupProjectTable()
     header->setMinimumSectionSize(56);
     header->setStretchLastSection(true);
     for (int col = 0; col < ColCount; ++col) {
-        if (col == ColName || col == ColTasks)
+        if (col == ColName || col == ColTasks || col == ColMembers)
             header->setSectionResizeMode(col, QHeaderView::Stretch);
         else
             header->setSectionResizeMode(col, QHeaderView::ResizeToContents);
@@ -142,8 +150,9 @@ void ProjectPanelWidget::adjustProjectTableColumns()
     header->setStretchLastSection(true);
     header->setSectionResizeMode(ColName, QHeaderView::Stretch);
     header->setSectionResizeMode(ColTasks, QHeaderView::Stretch);
+    header->setSectionResizeMode(ColMembers, QHeaderView::Stretch);
     for (int col = 0; col < ColCount; ++col) {
-        if (col != ColName && col != ColTasks)
+        if (col != ColName && col != ColTasks && col != ColMembers)
             header->resizeSection(col, header->sectionSizeHint(col));
     }
 }
@@ -171,8 +180,25 @@ void ProjectPanelWidget::fillProjects(const QJsonArray &projects)
         setCell(ColStartDate, p.value(QStringLiteral("start_date")).toString());
         setCell(ColEndDate, p.value(QStringLiteral("end_date")).toString());
         setCell(ColTasks, p.value(QStringLiteral("tasks")).toString());
+        setCell(ColMembers, formatMembersSummary(p));
     }
     adjustProjectTableColumns();
+}
+
+QString ProjectPanelWidget::formatMembersSummary(const QJsonObject &project)
+{
+    const QJsonArray members = project.value(QStringLiteral("members")).toArray();
+    if (members.isEmpty())
+        return QStringLiteral("—");
+
+    QStringList names;
+    for (const QJsonValue &v : members) {
+        const QJsonObject m = v.toObject();
+        const QString name = m.value(QStringLiteral("name")).toString();
+        const QString userid = m.value(QStringLiteral("userid")).toString();
+        names.append(name.isEmpty() ? userid : name);
+    }
+    return QStringLiteral("%1（共 %2 人）").arg(names.join(QStringLiteral("、")), QString::number(names.size()));
 }
 
 QJsonObject ProjectPanelWidget::selectedProject() const
@@ -193,15 +219,33 @@ QJsonObject ProjectPanelWidget::selectedProject() const
 
 void ProjectPanelWidget::updateNotifyTargetLabel()
 {
-    m_notifyTargetLabel->setText(
-        QStringLiteral("当前通知对象（成员）：%1").arg(mainWindow()->selectedMemberDisplay()));
-}
+    const QJsonObject p = selectedProject();
+    if (p.isEmpty()) {
+        m_notifyTargetLabel->setText(QStringLiteral("提醒对象：请先在项目表中选中一行"));
+        return;
+    }
 
-void ProjectPanelWidget::onMemberSelectionChanged(const QString &userid, const QString &name)
-{
-    Q_UNUSED(userid);
-    Q_UNUSED(name);
-    updateNotifyTargetLabel();
+    QSet<QString> recipientIds;
+    const QString mgrId = p.value(QStringLiteral("manager_userid")).toString();
+    if (!mgrId.isEmpty())
+        recipientIds.insert(mgrId);
+    for (const QJsonValue &v : p.value(QStringLiteral("members")).toArray()) {
+        const QString uid = v.toObject().value(QStringLiteral("userid")).toString();
+        if (!uid.isEmpty())
+            recipientIds.insert(uid);
+    }
+
+    const QString projectName = p.value(QStringLiteral("name")).toString();
+    if (recipientIds.isEmpty()) {
+        m_notifyTargetLabel->setText(
+            QStringLiteral("提醒对象：项目「%1」尚未配置负责人或成员，请先编辑项目")
+                .arg(projectName));
+        return;
+    }
+
+    m_notifyTargetLabel->setText(
+        QStringLiteral("提醒对象：项目「%1」负责人及成员，共 %2 人")
+            .arg(projectName, QString::number(recipientIds.size())));
 }
 
 void ProjectPanelWidget::setBusy(bool busy)
@@ -349,19 +393,46 @@ void ProjectPanelWidget::onDeleteClicked()
     startDelete(id);
 }
 
+void ProjectPanelWidget::onProjectDoubleClicked(int row, int column)
+{
+    Q_UNUSED(column);
+    if (row < 0 || row >= m_projectTable->rowCount())
+        return;
+
+    m_projectTable->selectRow(row);
+    const QJsonObject p = selectedProject();
+    if (p.isEmpty())
+        return;
+    showProjectDetail(p);
+}
+
+void ProjectPanelWidget::showProjectDetail(const QJsonObject &project)
+{
+    ProjectDetailDialog dlg(project, this);
+    dlg.exec();
+}
+
 void ProjectPanelWidget::onSendNotifyClicked()
 {
-    const QString userid = mainWindow()->selectedMemberUserId();
-    if (userid.isEmpty()) {
-        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先在「项目成员」页选中一名成员"));
+    const QJsonObject p = selectedProject();
+    if (p.isEmpty()) {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先在项目表中选中一行"));
         return;
     }
+
+    bool ok = false;
+    const QString extra = QInputDialog::getMultiLineText(
+        this, QStringLiteral("项目提醒"),
+        QStringLiteral("可选附加说明（留空则仅发送项目关键信息）："), QString(), &ok);
+    if (!ok)
+        return;
+
     QJsonObject body;
-    body.insert(QStringLiteral("userid"), userid);
-    const QString name = mainWindow()->selectedMemberName();
-    if (!name.isEmpty())
-        body.insert(QStringLiteral("name"), name);
-    startPost(QStringLiteral("/api/wecom/test"), ProjectPanelRequests::Kind::SendNotify,
+    body.insert(QStringLiteral("project_id"), p.value(QStringLiteral("id")).toInt());
+    if (!extra.trimmed().isEmpty())
+        body.insert(QStringLiteral("content"), extra.trimmed());
+
+    startPost(QStringLiteral("/api/wecom/notify-project"), ProjectPanelRequests::Kind::SendNotify,
               QJsonDocument(body).toJson(QJsonDocument::Compact));
 }
 
@@ -437,10 +508,18 @@ void ProjectPanelWidget::onReplyFinished(QNetworkReply *reply)
     }
 
     if (kind == ProjectPanelRequests::Kind::SendNotify) {
-        if (ok)
-            QMessageBox::information(this, QStringLiteral("成功"),
-                                     QStringLiteral("已发送至 %1").arg(obj.value(QStringLiteral("to_user")).toString()));
-        else
+        if (ok) {
+            const int count = obj.value(QStringLiteral("count")).toInt();
+            const QJsonArray users = obj.value(QStringLiteral("to_users")).toArray();
+            QStringList ids;
+            for (const QJsonValue &v : users)
+                ids.append(v.toString());
+            QMessageBox::information(
+                this, QStringLiteral("成功"),
+                QStringLiteral("已向 %1 人发送项目提醒：\n%2")
+                    .arg(QString::number(count), ids.join(QStringLiteral("、"))));
+        } else {
             QMessageBox::critical(this, QStringLiteral("失败"), obj.value(QStringLiteral("error")).toString());
+        }
     }
 }
