@@ -7,18 +7,24 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QSet>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonObject &existing,
-                                     QWidget *parent)
+namespace {
+
+const int kDeptPlaceholderId = -1;
+
+} // namespace
+
+ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonArray &departments,
+                                     const QJsonObject &existing, QWidget *parent)
     : QDialog(parent)
+    , m_allMembers(members)
     , m_existing(existing)
     , m_editMode(existing.contains(QStringLiteral("id")) && existing.value(QStringLiteral("id")).toInt() > 0)
 {
     setWindowTitle(m_editMode ? QStringLiteral("编辑项目") : QStringLiteral("新建项目"));
-    resize(520, 560);
+    resize(520, 600);
 
     auto *root = new QVBoxLayout(this);
 
@@ -32,24 +38,25 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonObjec
         const QJsonObject u = v.toObject();
         const QString userid = u.value(QStringLiteral("userid")).toString();
         const QString name = u.value(QStringLiteral("name")).toString();
-        const QString label = name.isEmpty() ? userid : QStringLiteral("%1 (%2)").arg(name, userid);
-        m_managerCombo->addItem(label, userid);
+        m_managerCombo->addItem(memberLabel(u), userid);
         m_managerCombo->setItemData(m_managerCombo->count() - 1, name, Qt::UserRole + 1);
     }
 
+    m_memberDeptCombo = new QComboBox(this);
+    m_memberDeptCombo->addItem(QStringLiteral("（请先选择部门）"), kDeptPlaceholderId);
+    for (const QJsonValue &v : departments) {
+        const QJsonObject d = v.toObject();
+        m_memberDeptCombo->addItem(d.value(QStringLiteral("name")).toString(),
+                                   static_cast<qlonglong>(d.value(QStringLiteral("id")).toDouble()));
+    }
+    m_memberDeptCombo->addItem(QStringLiteral("（未分配）"), static_cast<qlonglong>(0));
+
     m_membersList = new QListWidget(this);
     m_membersList->setMaximumHeight(130);
-    for (const QJsonValue &v : members) {
-        const QJsonObject u = v.toObject();
-        const QString userid = u.value(QStringLiteral("userid")).toString();
-        const QString name = u.value(QStringLiteral("name")).toString();
-        const QString label = name.isEmpty() ? userid : QStringLiteral("%1 (%2)").arg(name, userid);
-        auto *item = new QListWidgetItem(label, m_membersList);
-        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-        item->setCheckState(Qt::Unchecked);
-        item->setData(Qt::UserRole, userid);
-        item->setData(Qt::UserRole + 1, name);
-    }
+    m_membersList->setEnabled(false);
+
+    m_selectedCountLabel = new QLabel(QStringLiteral("已选成员：0 人"), this);
+    m_selectedCountLabel->setObjectName(QStringLiteral("pageHint"));
 
     m_statusCombo = new QComboBox(this);
     m_statusCombo->setEditable(true);
@@ -66,7 +73,9 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonObjec
     form->addRow(QStringLiteral("工番号"), m_workNoEdit);
     form->addRow(QStringLiteral("项目名称"), m_nameEdit);
     form->addRow(QStringLiteral("项目负责人"), m_managerCombo);
+    form->addRow(QStringLiteral("筛选部门"), m_memberDeptCombo);
     form->addRow(QStringLiteral("项目成员"), m_membersList);
+    form->addRow(QString(), m_selectedCountLabel);
     form->addRow(QStringLiteral("项目状态"), m_statusCombo);
     form->addRow(QStringLiteral("启动日期"), m_startDateEdit);
     form->addRow(QStringLiteral("完结日期"), m_endDateEdit);
@@ -74,7 +83,7 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonObjec
     root->addLayout(form);
 
     auto *hint = new QLabel(
-        QStringLiteral("提醒时将向「负责人 + 已勾选成员」发送，消息包含项目名称、工番、状态、周期、任务等。"),
+        QStringLiteral("添加成员时请先选择部门，再从该部门勾选成员；可切换部门继续添加。提醒将发送给负责人与已选成员。"),
         this);
     hint->setWordWrap(true);
     hint->setObjectName(QStringLiteral("pageHint"));
@@ -84,6 +93,10 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonObjec
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
     root->addWidget(buttons);
+
+    connect(m_memberDeptCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &ProjectEditDialog::onMemberDeptChanged);
+    connect(m_membersList, &QListWidget::itemChanged, this, &ProjectEditDialog::onMemberItemChanged);
 
     if (m_editMode) {
         m_yearEdit->setText(existing.value(QStringLiteral("year")).toString());
@@ -104,15 +117,13 @@ ProjectEditDialog::ProjectEditDialog(const QJsonArray &members, const QJsonObjec
         if (mi >= 0)
             m_managerCombo->setCurrentIndex(mi);
 
-        QSet<QString> selectedMembers;
         for (const QJsonValue &v : existing.value(QStringLiteral("members")).toArray()) {
-            selectedMembers.insert(v.toObject().value(QStringLiteral("userid")).toString());
+            const QJsonObject m = v.toObject();
+            const QString userid = m.value(QStringLiteral("userid")).toString();
+            if (!userid.isEmpty())
+                m_selectedMembers.insert(userid, m.value(QStringLiteral("name")).toString());
         }
-        for (int i = 0; i < m_membersList->count(); ++i) {
-            QListWidgetItem *item = m_membersList->item(i);
-            if (selectedMembers.contains(item->data(Qt::UserRole).toString()))
-                item->setCheckState(Qt::Checked);
-        }
+        updateSelectedCountLabel();
     } else {
         m_yearEdit->setText(QString::number(QDate::currentDate().year()));
     }
@@ -123,7 +134,103 @@ bool ProjectEditDialog::isEditMode() const
     return m_editMode;
 }
 
-QJsonObject ProjectEditDialog::projectJson() const
+void ProjectEditDialog::accept()
+{
+    syncSelectionsFromList();
+    QDialog::accept();
+}
+
+QString ProjectEditDialog::memberLabel(const QJsonObject &user)
+{
+    const QString userid = user.value(QStringLiteral("userid")).toString();
+    const QString name = user.value(QStringLiteral("name")).toString();
+    return name.isEmpty() ? userid : QStringLiteral("%1 (%2)").arg(name, userid);
+}
+
+qlonglong ProjectEditDialog::userDepartmentId(const QJsonObject &user)
+{
+    return static_cast<qlonglong>(user.value(QStringLiteral("department_id")).toDouble());
+}
+
+void ProjectEditDialog::onMemberDeptChanged(int index)
+{
+    Q_UNUSED(index);
+    refreshMemberList();
+}
+
+void ProjectEditDialog::syncSelectionsFromList()
+{
+    if (m_updatingMemberList)
+        return;
+    for (int i = 0; i < m_membersList->count(); ++i) {
+        QListWidgetItem *item = m_membersList->item(i);
+        const QString userid = item->data(Qt::UserRole).toString();
+        if (item->checkState() == Qt::Checked)
+            m_selectedMembers.insert(userid, item->data(Qt::UserRole + 1).toString());
+        else
+            m_selectedMembers.remove(userid);
+    }
+    updateSelectedCountLabel();
+}
+
+void ProjectEditDialog::onMemberItemChanged(QListWidgetItem *item)
+{
+    if (m_updatingMemberList || !item)
+        return;
+    const QString userid = item->data(Qt::UserRole).toString();
+    if (item->checkState() == Qt::Checked)
+        m_selectedMembers.insert(userid, item->data(Qt::UserRole + 1).toString());
+    else
+        m_selectedMembers.remove(userid);
+    updateSelectedCountLabel();
+}
+
+void ProjectEditDialog::updateSelectedCountLabel()
+{
+    m_selectedCountLabel->setText(
+        QStringLiteral("已选成员：%1 人").arg(QString::number(m_selectedMembers.size())));
+}
+
+void ProjectEditDialog::refreshMemberList()
+{
+    syncSelectionsFromList();
+
+    const qlonglong deptId = m_memberDeptCombo->currentData().toLongLong();
+    m_updatingMemberList = true;
+    m_membersList->clear();
+
+    if (deptId == kDeptPlaceholderId) {
+        m_membersList->setEnabled(false);
+        auto *hint = new QListWidgetItem(QStringLiteral("请先在上方选择部门"), m_membersList);
+        hint->setFlags(Qt::NoItemFlags);
+        m_updatingMemberList = false;
+        return;
+    }
+
+    m_membersList->setEnabled(true);
+    for (const QJsonValue &v : m_allMembers) {
+        const QJsonObject u = v.toObject();
+        if (userDepartmentId(u) != deptId)
+            continue;
+
+        const QString userid = u.value(QStringLiteral("userid")).toString();
+        const QString name = u.value(QStringLiteral("name")).toString();
+        auto *item = new QListWidgetItem(memberLabel(u), m_membersList);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item->setData(Qt::UserRole, userid);
+        item->setData(Qt::UserRole + 1, name);
+        item->setCheckState(m_selectedMembers.contains(userid) ? Qt::Checked : Qt::Unchecked);
+    }
+
+    if (m_membersList->count() == 0) {
+        auto *empty = new QListWidgetItem(QStringLiteral("该部门暂无成员"), m_membersList);
+        empty->setFlags(Qt::NoItemFlags);
+    }
+
+    m_updatingMemberList = false;
+}
+
+QJsonObject ProjectEditDialog::projectJson()
 {
     QJsonObject o;
     if (m_editMode)
@@ -138,13 +245,10 @@ QJsonObject ProjectEditDialog::projectJson() const
     o.insert(QStringLiteral("manager_name"), m_managerCombo->itemData(mi, Qt::UserRole + 1).toString());
 
     QJsonArray memberArr;
-    for (int i = 0; i < m_membersList->count(); ++i) {
-        const QListWidgetItem *item = m_membersList->item(i);
-        if (item->checkState() != Qt::Checked)
-            continue;
+    for (auto it = m_selectedMembers.constBegin(); it != m_selectedMembers.constEnd(); ++it) {
         QJsonObject m;
-        m.insert(QStringLiteral("userid"), item->data(Qt::UserRole).toString());
-        m.insert(QStringLiteral("name"), item->data(Qt::UserRole + 1).toString());
+        m.insert(QStringLiteral("userid"), it.key());
+        m.insert(QStringLiteral("name"), it.value());
         memberArr.append(m);
     }
     o.insert(QStringLiteral("members"), memberArr);

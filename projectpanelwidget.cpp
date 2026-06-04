@@ -345,7 +345,7 @@ void ProjectPanelWidget::loadMembersForDialog(ProjectPanelRequests::PendingActio
 
 void ProjectPanelWidget::showProjectDialog(const QJsonObject &existing)
 {
-    ProjectEditDialog dlg(m_members, existing, this);
+    ProjectEditDialog dlg(m_members, m_departments, existing, this);
     if (dlg.exec() != QDialog::Accepted)
         return;
 
@@ -403,7 +403,10 @@ void ProjectPanelWidget::onProjectDoubleClicked(int row, int column)
     const QJsonObject p = selectedProject();
     if (p.isEmpty())
         return;
-    showProjectDetail(p);
+
+    m_pendingDetailProject = p;
+    m_statusLabel->setText(QStringLiteral("正在加载成员部门 …"));
+    startGet(QStringLiteral("/api/wecom/users"), ProjectPanelRequests::Kind::LoadUsersForDetail);
 }
 
 void ProjectPanelWidget::showProjectDetail(const QJsonObject &project)
@@ -466,8 +469,39 @@ void ProjectPanelWidget::onReplyFinished(QNetworkReply *reply)
     if (kind == ProjectPanelRequests::Kind::LoadMembers) {
         if (ok)
             m_members = obj.value(QStringLiteral("users")).toArray();
+        if (!ok) {
+            m_pendingAction = ProjectPanelRequests::PendingAction::None;
+            QMessageBox::critical(this, QStringLiteral("加载失败"), obj.value(QStringLiteral("error")).toString());
+            return;
+        }
+        startGet(QStringLiteral("/api/departments"), ProjectPanelRequests::Kind::LoadDepartments);
+        setBusy(true);
+        return;
+    }
+
+    if (kind == ProjectPanelRequests::Kind::LoadUsersForDetail) {
+        if (!ok) {
+            QMessageBox::critical(this, QStringLiteral("加载失败"), obj.value(QStringLiteral("error")).toString());
+            m_pendingDetailProject = QJsonObject();
+            return;
+        }
+        const QJsonArray users = obj.value(QStringLiteral("users")).toArray();
+        const QJsonObject enriched =
+            ProjectDetailDialog::enrichMembersWithUsers(m_pendingDetailProject, users);
+        m_pendingDetailProject = QJsonObject();
+        showProjectDetail(enriched);
+        return;
+    }
+
+    if (kind == ProjectPanelRequests::Kind::LoadDepartments) {
+        if (ok)
+            m_departments = obj.value(QStringLiteral("departments")).toArray();
         const ProjectPanelRequests::PendingAction pending = m_pendingAction;
         m_pendingAction = ProjectPanelRequests::PendingAction::None;
+        if (!ok) {
+            QMessageBox::critical(this, QStringLiteral("加载失败"), obj.value(QStringLiteral("error")).toString());
+            return;
+        }
         if (pending == ProjectPanelRequests::PendingAction::OpenAddDialog)
             showProjectDialog(QJsonObject());
         else if (pending == ProjectPanelRequests::PendingAction::OpenEditDialog)

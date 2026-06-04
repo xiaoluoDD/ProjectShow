@@ -15,10 +15,12 @@ namespace ProjectPanelRequests {
 enum class Kind {
     LoadProjects,
     LoadMembers,
+    LoadDepartments,
     CreateProject,
     UpdateProject,
     DeleteProject,
     SendNotify,
+    LoadUsersForDetail,
 };
 enum class PendingAction { None, OpenAddDialog, OpenEditDialog };
 }
@@ -67,8 +69,10 @@ private:
     QPushButton *m_delBtn = nullptr;
     QPushButton *m_sendBtn = nullptr;
     QJsonArray m_members;
+    QJsonArray m_departments;
     ProjectPanelRequests::PendingAction m_pendingAction = ProjectPanelRequests::PendingAction::None;
     QJsonObject m_pendingEditProject;
+    QJsonObject m_pendingDetailProject;
 };
 
 #endif // PROJECTPANELWIDGET_H
