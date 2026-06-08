@@ -23,6 +23,7 @@ SOURCES += \
     project/projectdetaildialog.cpp \
     project/projectsubtaskdialog.cpp \
     project/subtaskeditdialog.cpp \
+    project/subtaskmemberspickerdialog.cpp \
     member/memberpanelwidget.cpp \
     member/membereditdialog.cpp \
     department/departmentpanelwidget.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     project/projectdetaildialog.h \
     project/projectsubtaskdialog.h \
     project/subtaskeditdialog.h \
+    project/subtaskmemberspickerdialog.h \
     member/memberpanelwidget.h \
     member/membereditdialog.h \
     department/departmentpanelwidget.h \

@@ -1466,3 +1466,662 @@ time=2026-06-08T11:38:11.108+08:00 level=INFO msg="http request" service=http me
 time=2026-06-08T11:40:00.051+08:00 level=INFO msg="reminder scheduler triggering daily run" service=http reminder_time=11:40
 time=2026-06-08T11:40:00.052+08:00 level=INFO msg="daily reminder finished" service=http run_date=2026-06-08 start_sent=0 end_sent=0 skipped=0 errors=0
 time=2026-06-08T11:41:09.793+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:63782 user_agent=Mozilla/5.0
+time=2026-06-08T11:41:12.295+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=326076 duration_ms=54 remote=61.140.148.146:63782 user_agent=Mozilla/5.0
+time=2026-06-08T11:49:16.544+08:00 level=INFO msg="http request" service=http method=PUT path=/api/settings query="" status=200 bytes=222 duration_ms=6 remote=61.140.148.146:60301 user_agent=Mozilla/5.0
+time=2026-06-08T11:49:27.026+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-06-08T11:49:27.028+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-06-08T11:49:27.028+08:00 level=INFO msg="reminder scheduler started" service=http
+time=2026-06-08T11:49:27.028+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-06-08T11:49:39.251+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=3" status=200 bytes=637 duration_ms=0 remote=61.140.148.146:50173 user_agent=Mozilla/5.0
+time=2026-06-08T11:49:39.253+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:50174 user_agent=Mozilla/5.0
+time=2026-06-08T11:50:09.596+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:50173 user_agent=Mozilla/5.0
+time=2026-06-08T11:50:14.005+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=5" status=200 bytes=346 duration_ms=0 remote=61.140.148.146:50173 user_agent=Mozilla/5.0
+time=2026-06-08T11:50:14.006+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:50174 user_agent=Mozilla/5.0
+time=2026-06-08T11:50:15.766+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:50173 user_agent=Mozilla/5.0
+time=2026-06-08T11:52:00.071+08:00 level=INFO msg="reminder scheduler triggering daily run" service=http reminder_time=11:52
+time=2026-06-08T11:52:00.072+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=408
+time=2026-06-08T11:52:00.466+08:00 level=INFO msg="wecom send ok" service=http msgid=cgT-8_6jBd9XftD4PxPpAkQXE6vY7gOaixQ6OeI6BGV-aY1TJsS9NSkLM8Ih7ktDziCOgRwT2glVmfEJ4wqs7ljZSeZo5Y-GlVSXugUYevLgnDWu_OejW3HrhfQcwJjE
+time=2026-06-08T11:52:00.471+08:00 level=INFO msg="reminder sent" service=http project_id=1 project=可视化系统 kind=start msgid=cgT-8_6jBd9XftD4PxPpAkQXE6vY7gOaixQ6OeI6BGV-aY1TJsS9NSkLM8Ih7ktDziCOgRwT2glVmfEJ4wqs7ljZSeZo5Y-GlVSXugUYevLgnDWu_OejW3HrhfQcwJjE days_remaining=0 event_date=2026-06-08
+time=2026-06-08T11:52:00.471+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=429
+time=2026-06-08T11:52:00.787+08:00 level=INFO msg="wecom send ok" service=http msgid=OWFjq_5akqbfZThK8M8s_xFvPQQPI3jTtpcjousH2pRRRsseIGMQ3qFwx3MJnNnpAdfKs1lYwlY8u4NU1rYF2C4P0pASnliZgXiX3q8L6M5P7P78QGdgln9SeHHcv2FB
+time=2026-06-08T11:52:00.791+08:00 level=INFO msg="reminder sent" service=http project_id=1 project=可视化系统 kind=end msgid=OWFjq_5akqbfZThK8M8s_xFvPQQPI3jTtpcjousH2pRRRsseIGMQ3qFwx3MJnNnpAdfKs1lYwlY8u4NU1rYF2C4P0pASnliZgXiX3q8L6M5P7P78QGdgln9SeHHcv2FB days_remaining=1 event_date=2026-06-09
+time=2026-06-08T11:52:00.792+08:00 level=INFO msg="wecom send text" service=http to_user=LuoRenYang agent_id=1000005 content_len=395
+time=2026-06-08T11:52:01.076+08:00 level=INFO msg="wecom send ok" service=http msgid=-k0v1xV6DAwY50e7tkh-GQaRhM2JotAPLsAacSWKg3DDfLT3ekX4v8pSaV1e8dEB5UgIW8qV6FA73Mfs_YDYO-M1nwZz6PNErkAHdqFqtXUCMAh4lEAtkxixyeQsVpAF
+time=2026-06-08T11:52:01.080+08:00 level=INFO msg="reminder sent" service=http project_id=6 project=4463 kind=start msgid=-k0v1xV6DAwY50e7tkh-GQaRhM2JotAPLsAacSWKg3DDfLT3ekX4v8pSaV1e8dEB5UgIW8qV6FA73Mfs_YDYO-M1nwZz6PNErkAHdqFqtXUCMAh4lEAtkxixyeQsVpAF days_remaining=0 event_date=2026-06-08
+time=2026-06-08T11:52:01.080+08:00 level=INFO msg="daily reminder finished" service=http run_date=2026-06-08 start_sent=2 end_sent=1 skipped=0 errors=0
+time=2026-06-08T11:52:28.683+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=1" status=200 bytes=330 duration_ms=0 remote=61.140.148.146:55108 user_agent=Mozilla/5.0
+time=2026-06-08T11:52:28.684+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=1 remote=61.140.148.146:55109 user_agent=Mozilla/5.0
+time=2026-06-08T11:52:30.266+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:55108 user_agent=Mozilla/5.0
+time=2026-06-08T11:59:04.297+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=3" status=200 bytes=637 duration_ms=0 remote=61.140.148.146:61914 user_agent=Mozilla/5.0
+time=2026-06-08T11:59:04.298+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:61915 user_agent=Mozilla/5.0
+time=2026-06-08T11:59:21.042+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:61914 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:09.373+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-06-08T12:07:09.373+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-06-08T12:07:09.373+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-06-08T12:07:09.374+08:00 level=INFO msg="reminder scheduler started" service=http
+time=2026-06-08T12:07:20.612+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=1 remote=61.140.148.146:64860 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:20.613+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:64861 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:20.614+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="with_members=1" status=200 bytes=865 duration_ms=0 remote=61.140.148.146:64859 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:20.749+08:00 level=INFO msg="http request" service=http method=GET path=/api/settings query="" status=200 bytes=198 duration_ms=0 remote=61.140.148.146:64859 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:25.655+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=343 duration_ms=0 remote=61.140.148.146:64859 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:33.844+08:00 level=INFO msg="http request" service=http method=PUT path=/api/project-subtasks query="" status=200 bytes=423 duration_ms=10 remote=61.140.148.146:64859 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:35.208+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=424 duration_ms=0 remote=61.140.148.146:64859 user_agent=Mozilla/5.0
+time=2026-06-08T12:07:48.493+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:64859 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:07.990+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:57825 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:07.992+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="with_members=1" status=200 bytes=865 duration_ms=0 remote=61.140.148.146:57826 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:07.992+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:08.117+08:00 level=INFO msg="http request" service=http method=GET path=/api/settings query="" status=200 bytes=198 duration_ms=0 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:16.346+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:57825 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:16.349+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=424 duration_ms=0 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:16.384+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="" status=200 bytes=219 duration_ms=0 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:26.199+08:00 level=INFO msg="http request" service=http method=PUT path=/api/project-subtasks query="" status=200 bytes=496 duration_ms=7 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:27.624+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=497 duration_ms=0 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:30.040+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:32.631+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:34.954+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:57825 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:34.956+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=497 duration_ms=0 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:34.991+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="" status=200 bytes=219 duration_ms=0 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:11:49.191+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=1 remote=61.140.148.146:57824 user_agent=Mozilla/5.0
+time=2026-06-08T12:14:42.080+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-06-08T12:14:42.080+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-06-08T12:14:42.080+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-06-08T12:14:42.081+08:00 level=INFO msg="reminder scheduler started" service=http
+time=2026-06-08T12:14:50.185+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=1 remote=61.140.148.146:60241 user_agent=Mozilla/5.0
+time=2026-06-08T12:14:50.190+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3642 duration_ms=6 remote=61.140.148.146:60242 user_agent=Mozilla/5.0
+time=2026-06-08T12:14:50.190+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="with_members=1" status=200 bytes=865 duration_ms=3 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:14:50.293+08:00 level=INFO msg="http request" service=http method=GET path=/api/settings query="" status=200 bytes=198 duration_ms=0 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:14:55.464+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:60241 user_agent=Mozilla/5.0
+time=2026-06-08T12:14:55.467+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=497 duration_ms=0 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:14:55.510+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="" status=200 bytes=219 duration_ms=0 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:03.942+08:00 level=INFO msg="http request" service=http method=PUT path=/api/project-subtasks query="" status=200 bytes=423 duration_ms=7 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:04.839+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=424 duration_ms=0 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:06.059+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3642 duration_ms=1 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:07.840+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3642 duration_ms=1 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:09.290+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3642 duration_ms=1 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:14.586+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:32.437+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:60241 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:32.446+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=424 duration_ms=6 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:32.478+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="" status=200 bytes=219 duration_ms=0 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:39.988+08:00 level=INFO msg="http request" service=http method=PUT path=/api/project-subtasks query="" status=200 bytes=490 duration_ms=11 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:41.038+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=491 duration_ms=0 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:15:42.567+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3709 duration_ms=1 remote=61.140.148.146:60240 user_agent=Mozilla/5.0
+time=2026-06-08T12:19:42.650+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-06-08T12:19:42.651+08:00 level=INFO msg="reminder scheduler started" service=http
+time=2026-06-08T12:19:42.651+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-06-08T12:19:42.652+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-06-08T12:19:52.281+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="with_members=1" status=200 bytes=865 duration_ms=1 remote=61.140.148.146:52631 user_agent=Mozilla/5.0
+time=2026-06-08T12:19:52.283+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=2 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:19:52.286+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3709 duration_ms=5 remote=61.140.148.146:52632 user_agent=Mozilla/5.0
+time=2026-06-08T12:19:52.394+08:00 level=INFO msg="http request" service=http method=GET path=/api/settings query="" status=200 bytes=198 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:19:55.759+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=491 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:19:55.760+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:52631 user_agent=Mozilla/5.0
+time=2026-06-08T12:19:55.800+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="" status=200 bytes=219 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:05.480+08:00 level=INFO msg="http request" service=http method=PUT path=/api/project-subtasks query="" status=200 bytes=423 duration_ms=12 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:06.727+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=424 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:07.832+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3642 duration_ms=2 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:10.935+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3642 duration_ms=4 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:12.544+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=424 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:12.545+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=1 remote=61.140.148.146:52631 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:12.575+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="" status=200 bytes=219 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:20.197+08:00 level=INFO msg="http request" service=http method=PUT path=/api/project-subtasks query="" status=200 bytes=496 duration_ms=9 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:21.129+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=497 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:22.119+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3642 duration_ms=3 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:23.452+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=497 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:23.454+08:00 level=INFO msg="http request" service=http method=GET path=/api/wecom/users query="" status=200 bytes=904 duration_ms=0 remote=61.140.148.146:52631 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:23.495+08:00 level=INFO msg="http request" service=http method=GET path=/api/departments query="" status=200 bytes=219 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:30.922+08:00 level=INFO msg="http request" service=http method=PUT path=/api/project-subtasks query="" status=200 bytes=423 duration_ms=10 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:31.794+08:00 level=INFO msg="http request" service=http method=GET path=/api/project-subtasks query="project_id=6" status=200 bytes=424 duration_ms=0 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:20:32.888+08:00 level=INFO msg="http request" service=http method=GET path=/api/projects query="" status=200 bytes=3569 duration_ms=3 remote=61.140.148.146:52630 user_agent=Mozilla/5.0
+time=2026-06-08T12:29:16.454+08:00 level=INFO msg="http request" service=http method=GET path=/api/settings query="" status=200 bytes=198 duration_ms=0 remote=61.140.148.146:59835 user_agent=Mozilla/5.0
+time=2026-06-08T12:29:23.687+08:00 level=INFO msg="http request" service=http method=PUT path=/api/settings query="" status=200 bytes=222 duration_ms=6 remote=61.140.148.146:59835 user_agent=Mozilla/5.0
+time=2026-06-08T13:40:00.045+08:00 level=INFO msg="reminder scheduler triggering daily run" service=http reminder_time=13:40
+time=2026-06-08T13:40:00.048+08:00 level=INFO msg="daily reminder finished" service=http run_date=2026-06-08 start_sent=0 end_sent=0 skipped=3 errors=0
+time=2026-06-08T14:09:03.202+08:00 level=INFO msg="http request" service=http method=PUT path=/api/settings query="" status=200 bytes=222 duration_ms=6 remote=61.140.148.146:52090 user_agent=Mozilla/5.0
+time=2026-06-08T14:09:24.156+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:52090 user_agent=Mozilla/5.0
+time=2026-06-08T14:10:28.427+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:52090 user_agent=Mozilla/5.0
+time=2026-06-08T14:10:31.069+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=350332 duration_ms=146 remote=61.140.148.146:52090 user_agent=Mozilla/5.0
+time=2026-06-08T14:11:20.206+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:52090 user_agent=Mozilla/5.0
+time=2026-06-08T14:11:21.747+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=350757 duration_ms=31 remote=61.140.148.146:52090 user_agent=Mozilla/5.0
+time=2026-06-08T14:15:58.488+08:00 level=INFO msg="http request" service=http method=PUT path=/api/settings query="" status=200 bytes=222 duration_ms=5 remote=61.140.148.146:59040 user_agent=Mozilla/5.0
+time=2026-06-08T14:17:43.610+08:00 level=INFO msg="http request" service=http method=GET path=/api/db/export query="" status=200 bytes=2469 duration_ms=0 remote=61.140.148.146:59040 user_agent=Mozilla/5.0
+time=2026-06-08T14:20:08.638+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:64432 user_agent=Mozilla/5.0
+time=2026-06-08T14:20:11.508+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=351589 duration_ms=44 remote=61.140.148.146:64432 user_agent=Mozilla/5.0
+time=2026-06-08T14:20:55.784+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:64432 user_agent=Mozilla/5.0
+time=2026-06-08T14:20:57.384+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=352013 duration_ms=1 remote=61.140.148.146:64432 user_agent=Mozilla/5.0
+time=2026-06-08T14:25:05.719+08:00 level=INFO msg="database ready" service=http path=/home/ubuntu/my-backend-services/data/wecom.db
+time=2026-06-08T14:25:05.720+08:00 level=INFO msg="starting http api" service=http addr=:8081
+time=2026-06-08T14:25:05.720+08:00 level=INFO msg="routes ready" service=http ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+time=2026-06-08T14:25:05.720+08:00 level=INFO msg="reminder scheduler started" service=http
+time=2026-06-08T14:25:16.408+08:00 level=INFO msg="http request" service=http method=PUT path=/api/settings query="" status=200 bytes=222 duration_ms=6 remote=61.140.148.146:58659 user_agent=Mozilla/5.0
+time=2026-06-08T14:25:21.230+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:58659 user_agent=Mozilla/5.0
+time=2026-06-08T14:25:22.356+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=353666 duration_ms=43 remote=61.140.148.146:58659 user_agent=Mozilla/5.0
+time=2026-06-08T14:27:00.090+08:00 level=INFO msg="reminder scheduler triggering daily run" service=http reminder_time=14:27
+time=2026-06-08T14:27:00.093+08:00 level=INFO msg="daily reminder finished" service=http run_date=2026-06-08 start_sent=0 end_sent=0 skipped=3 errors=0
+time=2026-06-08T14:27:37.522+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs query="" status=200 bytes=121 duration_ms=0 remote=61.140.148.146:51159 user_agent=Mozilla/5.0
+time=2026-06-08T14:27:38.982+08:00 level=INFO msg="http request" service=http method=GET path=/api/logs/download query="name=http.log" status=200 bytes=354367 duration_ms=54 remote=61.140.148.146:51159 user_agent=Mozilla/5.0
+2026-06-08 14:32:09 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 14:32:09 INF [http] starting http api addr=:8081
+2026-06-08 14:32:09 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 14:32:09 INF [http] reminder · scheduler started
+2026-06-08 14:32:19 INF [http] PUT /api/settings → 200 7ms 222B 61.140.148.146
+2026-06-08 14:34:00 INF [http] reminder · trigger time=14:34
+2026-06-08 14:34:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=408
+2026-06-08 14:34:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBG6QLOyf1l88W-aLqYbQdPNQOvxLBeXekGzA47esWfark2yr1OuWa_afqXFUfXUS-txx5PfcgwEaY3S5YYb5lf
+2026-06-08 14:34:00 INF [http] reminder · sent project_id=1 name=可视化系统 kind=start msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBG6QLOyf1l88W-aLqYbQdPNQOvxLBeXekGzA47esWfark2yr1OuWa_afqXFUfXUS-txx5PfcgwEaY3S5YYb5lf days_left=0 event=2026-06-08
+2026-06-08 14:34:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=429
+2026-06-08 14:34:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxKe6b03OMHKKVn1hV_fQF8SYxyXY240EVN05kydJ3CzEaqoKzWo2XE65dFRT5JY6uikj7VwJEbQtzlbKI6pxvo
+2026-06-08 14:34:00 INF [http] reminder · sent project_id=1 name=可视化系统 kind=end msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxKe6b03OMHKKVn1hV_fQF8SYxyXY240EVN05kydJ3CzEaqoKzWo2XE65dFRT5JY6uikj7VwJEbQtzlbKI6pxvo days_left=1 event=2026-06-09
+2026-06-08 14:34:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=395
+2026-06-08 14:34:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBk5Zw62_mtJEx7LqNkyv29Gn_JGWjK_ukhBsJt0eQCNZZpx7fD--OpQVJ-XB7uV1BrapFYuCgX31iwYKcn75ov
+2026-06-08 14:34:01 INF [http] reminder · sent project_id=6 name=4463 kind=start msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBk5Zw62_mtJEx7LqNkyv29Gn_JGWjK_ukhBsJt0eQCNZZpx7fD--OpQVJ-XB7uV1BrapFYuCgX31iwYKcn75ov days_left=0 event=2026-06-08
+2026-06-08 14:34:01 INF [http] reminder · finished date=2026-06-08 start=2 end=1 skipped=0 errors=0
+2026-06-08 14:34:23 INF [http] GET /api/project-subtasks?project_id=6 → 200 0ms 424B 61.140.148.146
+2026-06-08 14:34:23 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:34:23 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:34:30 INF [http] PUT /api/project-subtasks → 200 17ms 563B 61.140.148.146
+2026-06-08 14:34:31 INF [http] GET /api/project-subtasks?project_id=6 → 200 0ms 564B 61.140.148.146
+2026-06-08 14:34:33 INF [http] GET /api/projects → 200 9ms 3.6KB 61.140.148.146
+2026-06-08 14:34:43 INF [http] PUT /api/settings → 200 4ms 222B 61.140.148.146
+2026-06-08 14:36:00 INF [http] reminder · trigger time=14:36
+2026-06-08 14:36:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=408
+2026-06-08 14:36:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDxhCghyRJtJ2Qcu7pesrBqdlOL__OpkycaNqIXEARCVrONhR8Ubpizo4tMCoA9COwifYHuBMzju0WAU3l-XYL4
+2026-06-08 14:36:00 INF [http] reminder · sent project_id=1 name=可视化系统 kind=start msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDxhCghyRJtJ2Qcu7pesrBqdlOL__OpkycaNqIXEARCVrONhR8Ubpizo4tMCoA9COwifYHuBMzju0WAU3l-XYL4 days_left=0 event=2026-06-08
+2026-06-08 14:36:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=429
+2026-06-08 14:36:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kyLKmAl_olA1kGE9bH-Ay2pPYJQ2VuoPpTkUg7N85GO5vnU7UdXeLj7-q6ESanuidSEX66vm7b9rgls3kGqJmql
+2026-06-08 14:36:00 INF [http] reminder · sent project_id=1 name=可视化系统 kind=end msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kyLKmAl_olA1kGE9bH-Ay2pPYJQ2VuoPpTkUg7N85GO5vnU7UdXeLj7-q6ESanuidSEX66vm7b9rgls3kGqJmql days_left=1 event=2026-06-09
+2026-06-08 14:36:00 INF [http] wecom send text to_user=LuoRenYang|ZuoMuShuai|LuoXian agent_id=1000005 content_len=395
+2026-06-08 14:36:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kzQ_LpUtVsNj_i3E2i5KN--AtoUO7AQqifAFpwjJQhPjFqCmTrNPoOJcpvcsm0hiARgqoIOpxCOqQ2_jC9yO3e5
+2026-06-08 14:36:00 INF [http] reminder · sent project_id=6 name=4463 kind=start msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kzQ_LpUtVsNj_i3E2i5KN--AtoUO7AQqifAFpwjJQhPjFqCmTrNPoOJcpvcsm0hiARgqoIOpxCOqQ2_jC9yO3e5 days_left=0 event=2026-06-08
+2026-06-08 14:36:00 INF [http] reminder · finished date=2026-06-08 start=2 end=1 skipped=0 errors=0
+2026-06-08 14:37:25 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:37:25 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:39:40 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:39:40 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:39:40 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:40:02 INF [http] GET /api/projects → 200 8ms 3.6KB 61.140.148.146
+2026-06-08 14:40:07 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:40:07 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:40:07 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:40:38 INF [http] GET /api/projects → 200 8ms 3.6KB 61.140.148.146
+2026-06-08 14:40:44 INF [http] GET /api/project-subtasks?project_id=4 → 200 0ms 363B 61.140.148.146
+2026-06-08 14:40:44 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:40:44 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:40:55 INF [http] GET /api/projects → 200 6ms 3.6KB 61.140.148.146
+2026-06-08 14:40:56 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:40:56 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:40:56 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:41:02 INF [http] GET /api/projects → 200 7ms 3.6KB 61.140.148.146
+2026-06-08 14:41:05 INF [http] GET /api/project-subtasks?project_id=1 → 200 0ms 343B 61.140.148.146
+2026-06-08 14:41:05 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:41:05 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:41:13 INF [http] GET /api/projects → 200 9ms 3.6KB 61.140.148.146
+2026-06-08 14:41:17 INF [http] GET /api/project-subtasks?project_id=1 → 200 0ms 343B 61.140.148.146
+2026-06-08 14:41:17 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:41:17 INF [http] GET /api/departments → 200 1ms 219B 61.140.148.146
+2026-06-08 14:42:26 INF [http] GET /api/projects → 200 12ms 3.6KB 61.140.148.146
+2026-06-08 14:42:27 INF [http] GET /api/project-subtasks?project_id=5 → 200 0ms 359B 61.140.148.146
+2026-06-08 14:42:27 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:42:27 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:42:33 INF [http] GET /api/projects → 200 6ms 3.6KB 61.140.148.146
+2026-06-08 14:42:51 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:42:51 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:42:51 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:43:27 INF [http] GET /api/projects → 200 13ms 3.6KB 61.140.148.146
+2026-06-08 14:43:40 INF [http] GET /api/project-subtasks?project_id=4 → 200 0ms 363B 61.140.148.146
+2026-06-08 14:43:40 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:43:40 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:43:43 INF [http] GET /api/projects → 200 7ms 3.6KB 61.140.148.146
+2026-06-08 14:43:50 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:43:50 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:43:50 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:43:54 INF [http] GET /api/projects → 200 6ms 3.6KB 61.140.148.146
+2026-06-08 14:44:28 INF [http] GET /api/project-subtasks?project_id=6 → 200 0ms 564B 61.140.148.146
+2026-06-08 14:44:28 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:44:28 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:44:33 INF [http] GET /api/projects → 200 6ms 3.6KB 61.140.148.146
+2026-06-08 14:45:23 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:45:23 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:45:23 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:45:49 INF [http] GET /api/projects → 200 8ms 3.6KB 61.140.148.146
+2026-06-08 14:45:51 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:45:51 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:45:51 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:47:04 INF [http] GET /api/projects → 200 9ms 3.6KB 61.140.148.146
+2026-06-08 14:47:10 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:47:10 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:47:10 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:48:30 INF [http] GET /api/projects → 200 6ms 3.6KB 61.140.148.146
+2026-06-08 14:48:54 INF [http] GET /api/projects?id=5 → 200 1ms 797B 61.140.148.146
+2026-06-08 14:48:54 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:48:54 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:49:00 INF [http] GET /api/project-subtasks?project_id=5 → 200 0ms 359B 61.140.148.146
+2026-06-08 14:49:00 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:49:00 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:49:09 INF [http] GET /api/projects → 200 6ms 3.6KB 61.140.148.146
+2026-06-08 14:49:18 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:49:18 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:49:18 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:49:26 INF [http] GET /api/projects → 200 7ms 3.6KB 61.140.148.146
+2026-06-08 14:49:42 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:49:42 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:49:42 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:49:45 INF [http] GET /api/projects → 200 8ms 3.6KB 61.140.148.146
+2026-06-08 14:50:33 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:50:33 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:50:33 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:50:37 INF [http] GET /api/projects → 200 7ms 3.6KB 61.140.148.146
+2026-06-08 14:50:39 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 14:50:39 INF [http] GET /api/wecom/users → 200 0ms 904B 61.140.148.146
+2026-06-08 14:50:39 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 14:51:25 INF [http] GET /api/projects → 200 7ms 3.6KB 61.140.148.146
+2026-06-08 14:51:35 INF [http] PUT /api/settings → 200 3ms 222B 61.140.148.146
+2026-06-08 14:52:00 INF [http] reminder · trigger time=14:52
+2026-06-08 14:52:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=408
+2026-06-08 14:52:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kz3F0Z5iwDdi0ZrFFcS8eBjuumgFm8ckb2KS7kcTabSTGQMwP9aKQ0M8t2GiXAaslTlmUmB0Rx-bNn28liaahYh
+2026-06-08 14:52:00 INF [http] reminder · sent project_id=1 name=可视化系统 kind=start msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kz3F0Z5iwDdi0ZrFFcS8eBjuumgFm8ckb2KS7kcTabSTGQMwP9aKQ0M8t2GiXAaslTlmUmB0Rx-bNn28liaahYh days_left=0 event=2026-06-08
+2026-06-08 14:52:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=429
+2026-06-08 14:52:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gAOlB_gd0BpdoQfikNJkJbTO8ucA7Ocrg1jo5l5KQ0aRnuxP8xie0pBYJOYK1GbaX7WNFUp0VBe9q3FGmH_r5RH
+2026-06-08 14:52:00 INF [http] reminder · sent project_id=1 name=可视化系统 kind=end msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gAOlB_gd0BpdoQfikNJkJbTO8ucA7Ocrg1jo5l5KQ0aRnuxP8xie0pBYJOYK1GbaX7WNFUp0VBe9q3FGmH_r5RH days_left=1 event=2026-06-09
+2026-06-08 14:52:00 INF [http] wecom send text to_user=LuoRenYang|ZuoMuShuai|LuoXian agent_id=1000005 content_len=395
+2026-06-08 14:52:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDEZUGscGDB7F24ru33Gor52TgvC1LfCVNb_Igux-QCCw8-RkfWtu3z4HUebJi2Ep7IDANrFpVzuSABjnH9LtV9
+2026-06-08 14:52:01 INF [http] reminder · sent project_id=6 name=4463 kind=start msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDEZUGscGDB7F24ru33Gor52TgvC1LfCVNb_Igux-QCCw8-RkfWtu3z4HUebJi2Ep7IDANrFpVzuSABjnH9LtV9 days_left=0 event=2026-06-08
+2026-06-08 14:52:01 INF [http] reminder · finished date=2026-06-08 start=2 end=1 skipped=0 errors=0
+2026-06-08 14:55:05 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 14:55:05 INF [http] wecom sync started run_id=18
+2026-06-08 14:55:08 WRN [http] GET / → 404 0ms 19B 46.161.50.108
+2026-06-08 14:55:13 INF [http] sync: dept index built departments=22 indexed_users=80 filled=0
+2026-06-08 14:55:13 INF [http] wecom sync ok run_id=18 user_count=0 empty_departments=0
+2026-06-08 14:55:13 INF [http] POST /api/wecom/sync → 200 8099ms 124B 61.140.148.146
+2026-06-08 14:55:15 INF [http] GET /api/wecom/users → 200 0ms 285B 61.140.148.146
+2026-06-08 14:55:17 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 14:55:17 INF [http] wecom sync started run_id=19
+2026-06-08 14:55:24 INF [http] sync: dept index built departments=22 indexed_users=80 filled=0
+2026-06-08 14:55:24 INF [http] wecom sync ok run_id=19 user_count=0 empty_departments=0
+2026-06-08 14:55:24 INF [http] POST /api/wecom/sync → 200 6828ms 124B 61.140.148.146
+2026-06-08 14:55:25 INF [http] GET /api/wecom/users → 200 0ms 285B 61.140.148.146
+2026-06-08 14:55:36 INF [http] GET /api/wecom/users → 200 0ms 285B 61.140.148.146
+2026-06-08 14:56:19 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 14:56:19 INF [http] wecom sync started run_id=20
+2026-06-08 14:56:25 INF [http] sync: dept index built departments=22 indexed_users=80 filled=0
+2026-06-08 14:56:25 INF [http] wecom sync ok run_id=20 user_count=0 empty_departments=0
+2026-06-08 14:56:25 INF [http] POST /api/wecom/sync → 200 6894ms 124B 61.140.148.146
+2026-06-08 14:56:27 INF [http] GET /api/wecom/users → 200 0ms 285B 61.140.148.146
+2026-06-08 14:56:43 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 14:56:43 INF [http] wecom sync started run_id=21
+2026-06-08 14:56:43 INF [http] sync: enrich via user/get userid=LuoRenYang has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:56:43 INF [http] sync: user/get result userid=LuoRenYang dept_ids=0 main_department=0
+2026-06-08 14:56:43 INF [http] sync: enrich via user/get userid=LuoXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:56:43 INF [http] sync: user/get result userid=LuoXian dept_ids=0 main_department=0
+2026-06-08 14:56:43 INF [http] sync: member has no department userid=LuoRenYang name=罗人洋 sources=allow_user
+2026-06-08 14:56:43 INF [http] sync: member has no department userid=LuoXian name=罗贤 sources=allow_user
+2026-06-08 14:56:43 INF [http] wecom sync ok run_id=21 user_count=2 empty_departments=2
+2026-06-08 14:56:43 INF [http] POST /api/wecom/sync → 200 837ms 124B 61.140.148.146
+2026-06-08 14:56:44 INF [http] GET /api/wecom/users → 200 0ms 701B 61.140.148.146
+2026-06-08 14:57:43 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 14:57:43 INF [http] wecom sync started run_id=22
+2026-06-08 14:57:43 INF [http] sync: enrich via user/get userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:57:45 INF [http] sync: user/get result userid=ZuoMuShuai dept_ids=0 main_department=0
+2026-06-08 14:57:45 INF [http] sync: enrich via user/get userid=LuoRenYang has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:57:45 INF [http] sync: user/get result userid=LuoRenYang dept_ids=0 main_department=0
+2026-06-08 14:57:45 INF [http] sync: enrich via user/get userid=LuoXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:57:45 INF [http] sync: user/get result userid=LuoXian dept_ids=0 main_department=0
+2026-06-08 14:57:45 INF [http] sync: enrich via user/get userid=WangYingFa has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:57:45 INF [http] sync: user/get result userid=WangYingFa dept_ids=0 main_department=0
+2026-06-08 14:57:45 INF [http] sync: member has no department userid=LuoRenYang name=罗人洋 sources=allow_user
+2026-06-08 14:57:45 INF [http] sync: member has no department userid=LuoXian name=罗贤 sources=allow_user
+2026-06-08 14:57:45 INF [http] sync: member has no department userid=WangYingFa name=汪英发 sources=allow_user
+2026-06-08 14:57:45 INF [http] sync: member has no department userid=ZuoMuShuai name=左木帅 sources=allow_user
+2026-06-08 14:57:45 INF [http] wecom sync ok run_id=22 user_count=4 empty_departments=4
+2026-06-08 14:57:45 INF [http] POST /api/wecom/sync → 200 2110ms 124B 61.140.148.146
+2026-06-08 14:57:46 INF [http] GET /api/wecom/users → 200 0ms 1.0KB 61.140.148.146
+2026-06-08 14:58:41 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 14:58:41 INF [http] wecom sync started run_id=23
+2026-06-08 14:58:42 INF [http] sync: enrich via user/get userid=LuoXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:58:42 INF [http] sync: user/get result userid=LuoXian dept_ids=0 main_department=0
+2026-06-08 14:58:42 INF [http] sync: enrich via user/get userid=WangYingFa has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:58:42 INF [http] sync: user/get result userid=WangYingFa dept_ids=0 main_department=0
+2026-06-08 14:58:42 INF [http] sync: enrich via user/get userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:58:42 INF [http] sync: user/get result userid=ZuoMuShuai dept_ids=0 main_department=0
+2026-06-08 14:58:42 INF [http] sync: enrich via user/get userid=LuoRenYang has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:58:42 INF [http] sync: user/get result userid=LuoRenYang dept_ids=0 main_department=0
+2026-06-08 14:58:43 INF [http] sync: member has no department userid=LuoRenYang name=罗人洋 sources=allow_user
+2026-06-08 14:58:43 INF [http] sync: member has no department userid=LuoXian name=罗贤 sources=allow_user
+2026-06-08 14:58:43 INF [http] sync: member has no department userid=WangYingFa name=汪英发 sources=allow_user
+2026-06-08 14:58:43 INF [http] sync: member has no department userid=ZuoMuShuai name=左木帅 sources=allow_user
+2026-06-08 14:58:43 INF [http] wecom sync ok run_id=23 user_count=4 empty_departments=4
+2026-06-08 14:58:43 INF [http] POST /api/wecom/sync → 200 1241ms 124B 61.140.148.146
+2026-06-08 14:58:44 INF [http] GET /api/wecom/users → 200 0ms 1.0KB 61.140.148.146
+2026-06-08 14:59:21 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 14:59:21 INF [http] wecom sync started run_id=24
+2026-06-08 14:59:21 INF [http] sync: enrich via user/get userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:59:21 INF [http] sync: user/get result userid=ZuoMuShuai dept_ids=1 main_department=12
+2026-06-08 14:59:21 INF [http] sync: enrich via user/get userid=LuoXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:59:22 INF [http] sync: user/get result userid=LuoXian dept_ids=1 main_department=12
+2026-06-08 14:59:22 INF [http] sync: enrich via user/get userid=WangYingFa has_name=false has_mobile=false dept_ids=0
+2026-06-08 14:59:22 INF [http] sync: user/get result userid=WangYingFa dept_ids=1 main_department=0
+2026-06-08 14:59:22 INF [http] sync: dept index built departments=1 indexed_users=4 filled=0
+2026-06-08 14:59:22 INF [http] wecom sync ok run_id=24 user_count=3 empty_departments=0
+2026-06-08 14:59:22 INF [http] POST /api/wecom/sync → 200 1474ms 124B 61.140.148.146
+2026-06-08 14:59:23 INF [http] GET /api/wecom/users → 200 0ms 820B 61.140.148.146
+2026-06-08 15:00:15 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 15:00:15 INF [http] wecom sync started run_id=25
+2026-06-08 15:00:15 INF [http] sync: enrich via user/get userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:00:16 INF [http] sync: user/get result userid=ZuoMuShuai dept_ids=1 main_department=12
+2026-06-08 15:00:16 INF [http] sync: enrich via user/get userid=LuoXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:00:16 INF [http] sync: user/get result userid=LuoXian dept_ids=1 main_department=12
+2026-06-08 15:00:16 INF [http] sync: enrich via user/get userid=WangYingFa has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:00:16 INF [http] sync: user/get result userid=WangYingFa dept_ids=1 main_department=0
+2026-06-08 15:00:16 INF [http] sync: dept index built departments=1 indexed_users=4 filled=0
+2026-06-08 15:00:16 INF [http] wecom sync ok run_id=25 user_count=3 empty_departments=0
+2026-06-08 15:00:16 INF [http] POST /api/wecom/sync → 200 1356ms 124B 61.140.148.146
+2026-06-08 15:00:18 INF [http] GET /api/wecom/users → 200 0ms 820B 61.140.148.146
+2026-06-08 15:01:12 INF [http] wecom sync requested remote=61.140.148.146:65223
+2026-06-08 15:01:12 INF [http] wecom sync started run_id=26
+2026-06-08 15:01:12 INF [http] sync: enrich via user/get userid=HuangGuiJiao has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:12 INF [http] sync: user/get result userid=HuangGuiJiao dept_ids=0 main_department=0
+2026-06-08 15:01:12 INF [http] sync: enrich via user/get userid=ZhengXiHong has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:13 INF [http] sync: user/get result userid=ZhengXiHong dept_ids=0 main_department=0
+2026-06-08 15:01:13 INF [http] sync: enrich via user/get userid=GaoBoFa has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:13 INF [http] sync: user/get result userid=GaoBoFa dept_ids=0 main_department=0
+2026-06-08 15:01:13 INF [http] sync: enrich via user/get userid=WangJiaYi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:13 INF [http] sync: user/get result userid=WangJiaYi dept_ids=0 main_department=0
+2026-06-08 15:01:13 INF [http] sync: enrich via user/get userid=MoYongWen has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:13 INF [http] sync: user/get result userid=MoYongWen dept_ids=0 main_department=0
+2026-06-08 15:01:13 INF [http] sync: enrich via user/get userid=JiangPengCheng has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:14 INF [http] sync: user/get result userid=JiangPengCheng dept_ids=0 main_department=0
+2026-06-08 15:01:14 INF [http] sync: enrich via user/get userid=ZhaoXiaoWei has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:14 INF [http] sync: user/get result userid=ZhaoXiaoWei dept_ids=0 main_department=0
+2026-06-08 15:01:14 INF [http] sync: enrich via user/get userid=WuJuYi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:14 INF [http] sync: user/get result userid=WuJuYi dept_ids=0 main_department=0
+2026-06-08 15:01:14 INF [http] sync: enrich via user/get userid=LiuDongHui has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:14 INF [http] sync: user/get result userid=LiuDongHui dept_ids=0 main_department=0
+2026-06-08 15:01:14 INF [http] sync: enrich via user/get userid=LiHaoBin has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:14 INF [http] sync: user/get result userid=LiHaoBin dept_ids=0 main_department=0
+2026-06-08 15:01:14 INF [http] sync: enrich via user/get userid=SongFanRong has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:15 INF [http] sync: user/get result userid=SongFanRong dept_ids=0 main_department=0
+2026-06-08 15:01:15 INF [http] sync: enrich via user/get userid=ZhengJiaLin has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:15 INF [http] sync: user/get result userid=ZhengJiaLin dept_ids=0 main_department=0
+2026-06-08 15:01:15 INF [http] sync: enrich via user/get userid=MaDaiHao has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:15 INF [http] sync: user/get result userid=MaDaiHao dept_ids=0 main_department=0
+2026-06-08 15:01:15 INF [http] sync: enrich via user/get userid=LinZhiYing has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:15 INF [http] sync: user/get result userid=LinZhiYing dept_ids=0 main_department=0
+2026-06-08 15:01:15 INF [http] sync: enrich via user/get userid=DaiHanJie has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:16 INF [http] sync: user/get result userid=DaiHanJie dept_ids=0 main_department=0
+2026-06-08 15:01:16 INF [http] sync: enrich via user/get userid=YangLiuBo has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:16 INF [http] sync: user/get result userid=YangLiuBo dept_ids=0 main_department=0
+2026-06-08 15:01:16 INF [http] sync: enrich via user/get userid=LinZeQuan has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:16 INF [http] sync: user/get result userid=LinZeQuan dept_ids=0 main_department=0
+2026-06-08 15:01:16 INF [http] sync: enrich via user/get userid=PangFeiLong has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:16 INF [http] sync: user/get result userid=PangFeiLong dept_ids=0 main_department=0
+2026-06-08 15:01:16 INF [http] sync: enrich via user/get userid=HeBaiWen has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:17 INF [http] sync: user/get result userid=HeBaiWen dept_ids=0 main_department=0
+2026-06-08 15:01:17 INF [http] sync: enrich via user/get userid=AnDongShe has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:17 INF [http] sync: user/get result userid=AnDongShe dept_ids=0 main_department=0
+2026-06-08 15:01:17 INF [http] sync: enrich via user/get userid=JingPeng has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:17 INF [http] sync: user/get result userid=JingPeng dept_ids=0 main_department=0
+2026-06-08 15:01:17 INF [http] sync: enrich via user/get userid=XiaTian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:17 INF [http] sync: user/get result userid=XiaTian dept_ids=0 main_department=0
+2026-06-08 15:01:17 INF [http] sync: enrich via user/get userid=LuoXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:17 INF [http] sync: user/get result userid=LuoXian dept_ids=0 main_department=0
+2026-06-08 15:01:17 INF [http] sync: enrich via user/get userid=LiDan has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:18 INF [http] sync: user/get result userid=LiDan dept_ids=0 main_department=0
+2026-06-08 15:01:18 INF [http] sync: enrich via user/get userid=LiXiaoLing has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:18 INF [http] sync: user/get result userid=LiXiaoLing dept_ids=0 main_department=0
+2026-06-08 15:01:18 INF [http] sync: enrich via user/get userid=DongJunJie has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:18 INF [http] sync: user/get result userid=DongJunJie dept_ids=0 main_department=0
+2026-06-08 15:01:18 INF [http] sync: enrich via user/get userid=BuZuGuaChi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:18 INF [http] sync: user/get result userid=BuZuGuaChi dept_ids=0 main_department=0
+2026-06-08 15:01:18 INF [http] sync: enrich via user/get userid=HeJunXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:18 INF [http] sync: user/get result userid=HeJunXian dept_ids=0 main_department=0
+2026-06-08 15:01:18 INF [http] sync: enrich via user/get userid=ZhuXingMei has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:19 INF [http] sync: user/get result userid=ZhuXingMei dept_ids=0 main_department=0
+2026-06-08 15:01:19 INF [http] sync: enrich via user/get userid=ZhouHan has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:19 INF [http] sync: user/get result userid=ZhouHan dept_ids=0 main_department=0
+2026-06-08 15:01:19 INF [http] sync: enrich via user/get userid=HuangDieLian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:19 INF [http] sync: user/get result userid=HuangDieLian dept_ids=0 main_department=0
+2026-06-08 15:01:19 INF [http] sync: enrich via user/get userid=San. has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:19 INF [http] sync: user/get result userid=San. dept_ids=0 main_department=0
+2026-06-08 15:01:19 INF [http] sync: enrich via user/get userid=ZengQingDi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:20 INF [http] sync: user/get result userid=ZengQingDi dept_ids=0 main_department=0
+2026-06-08 15:01:20 INF [http] sync: enrich via user/get userid=ChunRi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:20 INF [http] sync: user/get result userid=ChunRi dept_ids=0 main_department=0
+2026-06-08 15:01:20 INF [http] sync: enrich via user/get userid=HeJianRong has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:20 INF [http] sync: user/get result userid=HeJianRong dept_ids=0 main_department=0
+2026-06-08 15:01:20 INF [http] sync: enrich via user/get userid=ZhouChangSong has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:20 INF [http] sync: user/get result userid=ZhouChangSong dept_ids=0 main_department=0
+2026-06-08 15:01:20 INF [http] sync: enrich via user/get userid=SheJiBu-HeYongAn has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:20 INF [http] sync: user/get result userid=SheJiBu-HeYongAn dept_ids=0 main_department=0
+2026-06-08 15:01:20 INF [http] sync: enrich via user/get userid=LongJian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:21 INF [http] sync: user/get result userid=LongJian dept_ids=0 main_department=0
+2026-06-08 15:01:21 INF [http] sync: enrich via user/get userid=HeWeiQi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:21 INF [http] sync: user/get result userid=HeWeiQi dept_ids=0 main_department=0
+2026-06-08 15:01:21 INF [http] sync: enrich via user/get userid=OuYangWuTao has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:21 INF [http] sync: user/get result userid=OuYangWuTao dept_ids=0 main_department=0
+2026-06-08 15:01:21 INF [http] sync: enrich via user/get userid=LiRuiQi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:21 INF [http] sync: user/get result userid=LiRuiQi dept_ids=0 main_department=0
+2026-06-08 15:01:21 INF [http] sync: enrich via user/get userid=ChenBin has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:22 INF [http] sync: user/get result userid=ChenBin dept_ids=0 main_department=0
+2026-06-08 15:01:22 INF [http] sync: enrich via user/get userid=LuoShouHu has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:22 INF [http] sync: user/get result userid=LuoShouHu dept_ids=0 main_department=0
+2026-06-08 15:01:22 INF [http] sync: enrich via user/get userid=ZhouHuangShan has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:22 INF [http] sync: user/get result userid=ZhouHuangShan dept_ids=0 main_department=0
+2026-06-08 15:01:22 INF [http] sync: enrich via user/get userid=HuDongMing has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:22 INF [http] sync: user/get result userid=HuDongMing dept_ids=0 main_department=0
+2026-06-08 15:01:22 INF [http] sync: enrich via user/get userid=LuoRenYang has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:22 INF [http] sync: user/get result userid=LuoRenYang dept_ids=0 main_department=0
+2026-06-08 15:01:22 INF [http] sync: enrich via user/get userid=WuKaiHang has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:23 INF [http] sync: user/get result userid=WuKaiHang dept_ids=0 main_department=0
+2026-06-08 15:01:23 INF [http] sync: enrich via user/get userid=ZhangHanSheng has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:23 INF [http] sync: user/get result userid=ZhangHanSheng dept_ids=0 main_department=0
+2026-06-08 15:01:23 INF [http] sync: enrich via user/get userid=YanQingPing has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:23 INF [http] sync: user/get result userid=YanQingPing dept_ids=0 main_department=0
+2026-06-08 15:01:23 INF [http] sync: enrich via user/get userid=LiXianWen has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:23 INF [http] sync: user/get result userid=LiXianWen dept_ids=0 main_department=0
+2026-06-08 15:01:23 INF [http] sync: enrich via user/get userid=WangZiMing has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:24 INF [http] sync: user/get result userid=WangZiMing dept_ids=0 main_department=0
+2026-06-08 15:01:24 INF [http] sync: enrich via user/get userid=ChenJunHua has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:24 INF [http] sync: user/get result userid=ChenJunHua dept_ids=0 main_department=0
+2026-06-08 15:01:24 INF [http] sync: enrich via user/get userid=ZhongWenQian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:24 INF [http] sync: user/get result userid=ZhongWenQian dept_ids=0 main_department=0
+2026-06-08 15:01:24 INF [http] sync: enrich via user/get userid=DongXueJian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:24 INF [http] sync: user/get result userid=DongXueJian dept_ids=0 main_department=0
+2026-06-08 15:01:24 INF [http] sync: enrich via user/get userid=LiCuiQiong has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:24 INF [http] sync: user/get result userid=LiCuiQiong dept_ids=0 main_department=0
+2026-06-08 15:01:24 INF [http] sync: enrich via user/get userid=LinZeZheng has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:25 INF [http] sync: user/get result userid=LinZeZheng dept_ids=0 main_department=0
+2026-06-08 15:01:25 INF [http] sync: enrich via user/get userid=ZuoMuShuai has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:25 INF [http] sync: user/get result userid=ZuoMuShuai dept_ids=0 main_department=0
+2026-06-08 15:01:25 INF [http] sync: enrich via user/get userid=HuangChuQi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:25 INF [http] sync: user/get result userid=HuangChuQi dept_ids=0 main_department=0
+2026-06-08 15:01:25 INF [http] sync: enrich via user/get userid=LiLiangWei has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:25 INF [http] sync: user/get result userid=LiLiangWei dept_ids=0 main_department=0
+2026-06-08 15:01:25 INF [http] sync: enrich via user/get userid=XieBing has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:26 INF [http] sync: user/get result userid=XieBing dept_ids=0 main_department=0
+2026-06-08 15:01:26 INF [http] sync: enrich via user/get userid=WangYingFa has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:26 INF [http] sync: user/get result userid=WangYingFa dept_ids=0 main_department=0
+2026-06-08 15:01:26 INF [http] sync: enrich via user/get userid=LiBaiQiang has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:26 INF [http] sync: user/get result userid=LiBaiQiang dept_ids=0 main_department=0
+2026-06-08 15:01:26 INF [http] sync: enrich via user/get userid=ZhengQiZhu has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:26 INF [http] sync: user/get result userid=ZhengQiZhu dept_ids=0 main_department=0
+2026-06-08 15:01:26 INF [http] sync: enrich via user/get userid=ZhangNanBin has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:26 INF [http] sync: user/get result userid=ZhangNanBin dept_ids=0 main_department=0
+2026-06-08 15:01:26 INF [http] sync: enrich via user/get userid=ShengMoJie has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:27 INF [http] sync: user/get result userid=ShengMoJie dept_ids=0 main_department=0
+2026-06-08 15:01:27 INF [http] sync: enrich via user/get userid=LingYuMi has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:27 INF [http] sync: user/get result userid=LingYuMi dept_ids=0 main_department=0
+2026-06-08 15:01:27 INF [http] sync: enrich via user/get userid=ChenMingMing has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:27 INF [http] sync: user/get result userid=ChenMingMing dept_ids=0 main_department=0
+2026-06-08 15:01:27 INF [http] sync: enrich via user/get userid=XuDaoXian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:27 INF [http] sync: user/get result userid=XuDaoXian dept_ids=0 main_department=0
+2026-06-08 15:01:27 INF [http] sync: enrich via user/get userid=PanMingChao has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:27 INF [http] sync: user/get result userid=PanMingChao dept_ids=0 main_department=0
+2026-06-08 15:01:27 INF [http] sync: enrich via user/get userid=LiangWenHai has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:28 INF [http] sync: user/get result userid=LiangWenHai dept_ids=0 main_department=0
+2026-06-08 15:01:28 INF [http] sync: enrich via user/get userid=WangGang has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:28 INF [http] sync: user/get result userid=WangGang dept_ids=0 main_department=0
+2026-06-08 15:01:28 INF [http] sync: enrich via user/get userid=YaYanGuo has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:28 INF [http] sync: user/get result userid=YaYanGuo dept_ids=0 main_department=0
+2026-06-08 15:01:28 INF [http] sync: enrich via user/get userid=SunFan has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:28 INF [http] sync: user/get result userid=SunFan dept_ids=0 main_department=0
+2026-06-08 15:01:28 INF [http] sync: enrich via user/get userid=HeWanJun has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:29 INF [http] sync: user/get result userid=HeWanJun dept_ids=0 main_department=0
+2026-06-08 15:01:29 INF [http] sync: enrich via user/get userid=XieHongYou has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:29 INF [http] sync: user/get result userid=XieHongYou dept_ids=0 main_department=0
+2026-06-08 15:01:29 INF [http] sync: enrich via user/get userid=JinWenJian has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:29 INF [http] sync: user/get result userid=JinWenJian dept_ids=0 main_department=0
+2026-06-08 15:01:29 INF [http] sync: enrich via user/get userid=ZhuYanSen has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:29 INF [http] sync: user/get result userid=ZhuYanSen dept_ids=0 main_department=0
+2026-06-08 15:01:29 INF [http] sync: enrich via user/get userid=ZhaoWenZhuo has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:29 INF [http] sync: user/get result userid=ZhaoWenZhuo dept_ids=0 main_department=0
+2026-06-08 15:01:29 INF [http] sync: enrich via user/get userid=HuangSiYan has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:30 INF [http] sync: user/get result userid=HuangSiYan dept_ids=0 main_department=0
+2026-06-08 15:01:30 INF [http] sync: enrich via user/get userid=MengChunJin has_name=false has_mobile=false dept_ids=0
+2026-06-08 15:01:30 INF [http] sync: user/get result userid=MengChunJin dept_ids=0 main_department=0
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=MengChunJin name=蒙春锦 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhaoWenZhuo name=赵文卓 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HuangSiYan name=黄思雁 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhaoXiaoWei name=赵小卫 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=WuJuYi name=吴居易 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HuangGuiJiao name=黄桂娇 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhengXiHong name=郑锡宏 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=GaoBoFa name=高博发 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=WangJiaYi name=王家益 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=MoYongWen name=莫勇文 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=JiangPengCheng name=姜鹏程 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=DaiHanJie name=戴汉杰 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=YangLiuBo name=杨柳波 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiuDongHui name=刘东辉 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiHaoBin name=黎浩彬 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=SongFanRong name=宋凡荣 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhengJiaLin name=郑嘉林 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=MaDaiHao name=马代豪 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LinZhiYing name=林智颖 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LinZeQuan name=林泽权 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=AnDongShe name=安东社 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=PangFeiLong name=庞飞龙 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HeBaiWen name=何柏文 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiDan name=李丹 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=JingPeng name=井鹏 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=XiaTian name=夏天 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LuoXian name=罗贤 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhouHan name=周涵 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiXiaoLing name=黎晓灵 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=DongJunJie name=董军杰 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=BuZuGuaChi name=陈锦鹏 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HeJunXian name=何浚贤 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhuXingMei name=朱杏梅 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=SheJiBu-HeYongAn name=何永安 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HuangDieLian name=黄蝶连 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=San. name=何卓楹 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZengQingDi name=曾庆狄 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ChunRi name=春日 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HeJianRong name=何健荣 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhouChangSong name=周昌松 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HeWeiQi name=何伟棋 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LongJian name=龙建 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HuDongMing name=胡东明 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=OuYangWuTao name=欧阳武涛 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiRuiQi name=李瑞琪 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ChenBin name=陈彬 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LuoShouHu name=罗守虎 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhouHuangShan name=周黄山 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=WangZiMing name=王梓铭 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LuoRenYang name=罗人洋 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=WuKaiHang name=吴开航 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhangHanSheng name=张翰胜 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=YanQingPing name=严庆平 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiXianWen name=李显文 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ChenJunHua name=陈俊华 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZuoMuShuai name=左木帅 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhongWenQian name=钟文谦 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=DongXueJian name=董雪剑 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiCuiQiong name=李翠琼 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LinZeZheng name=林泽正 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiBaiQiang name=黎柏强 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HuangChuQi name=黄楚琪 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiLiangWei name=李良伟 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=XieBing name=谢冰 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=WangYingFa name=汪英发 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ChenMingMing name=陈明明 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhengQiZhu name=郑其珠 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhangNanBin name=张南彬 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ShengMoJie name=盛模杰 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LingYuMi name=凌玉迷 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=WangGang name=王岗 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=XuDaoXian name=许道宪 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=PanMingChao name=潘明超 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=LiangWenHai name=梁文海 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=ZhuYanSen name=朱燕森 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=YaYanGuo name=牙彦国 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=SunFan name=孙帆 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=HeWanJun name=何婉均 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=XieHongYou name=谢宏有 sources=allow_user
+2026-06-08 15:01:30 INF [http] sync: member has no department userid=JinWenJian name=金文坚 sources=allow_user
+2026-06-08 15:01:30 INF [http] wecom sync ok run_id=26 user_count=80 empty_departments=80
+2026-06-08 15:01:30 INF [http] POST /api/wecom/sync → 200 18149ms 125B 61.140.148.146
+2026-06-08 15:01:31 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:04:28 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:04:33 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 15:04:33 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:04:33 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:04:35 INF [http] GET /api/projects → 200 8ms 3.6KB 61.140.148.146
+2026-06-08 15:11:43 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:14:56 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 15:14:56 INF [http] starting http api addr=:8081
+2026-06-08 15:14:56 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 15:14:56 INF [http] reminder · scheduler started
+2026-06-08 15:16:25 INF [http] GET /api/wecom/users → 200 2ms 10.2KB 61.140.148.146
+2026-06-08 15:16:25 INF [http] GET /api/departments?with_members=1 → 200 1ms 865B 61.140.148.146
+2026-06-08 15:16:25 INF [http] GET /api/projects → 200 12ms 3.6KB 61.140.148.146
+2026-06-08 15:16:25 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 15:17:16 INF [http] GET /api/projects?id=3 → 200 1ms 741B 61.140.148.146
+2026-06-08 15:17:16 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:17:16 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:17:26 INF [http] PUT /api/projects → 200 8ms 755B 61.140.148.146
+2026-06-08 15:17:28 INF [http] GET /api/projects → 200 10ms 3.6KB 61.140.148.146
+2026-06-08 15:17:40 INF [http] GET /api/projects?id=6 → 200 4ms 765B 61.140.148.146
+2026-06-08 15:17:40 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:17:40 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:17:45 ERR [http] PUT /api/projects → 500 3ms 126B 61.140.148.146
+2026-06-08 15:17:56 INF [http] GET /api/projects?id=6 → 200 5ms 775B 61.140.148.146
+2026-06-08 15:17:56 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:17:56 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:18:00 ERR [http] PUT /api/projects → 500 6ms 126B 61.140.148.146
+2026-06-08 15:18:31 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:18:38 INF [http] DELETE /api/projects?id=6 → 200 4ms 43B 61.140.148.146
+2026-06-08 15:18:39 INF [http] GET /api/projects → 200 2ms 2.9KB 61.140.148.146
+2026-06-08 15:18:40 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:18:40 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:19:33 INF [http] POST /api/projects → 200 7ms 626B 61.140.148.146
+2026-06-08 15:19:35 INF [http] GET /api/projects → 200 2ms 3.5KB 61.140.148.146
+2026-06-08 15:21:12 INF [http] GET /api/projects?id=7 → 200 1ms 602B 61.140.148.146
+2026-06-08 15:21:12 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:21:12 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:21:16 INF [http] PUT /api/projects → 200 9ms 626B 61.140.148.146
+2026-06-08 15:21:17 INF [http] GET /api/projects → 200 2ms 3.5KB 61.140.148.146
+2026-06-08 15:25:50 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 15:25:50 INF [http] starting http api addr=:8081
+2026-06-08 15:25:50 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 15:25:50 INF [http] reminder · scheduler started
+2026-06-08 15:26:07 INF [http] GET /api/projects → 200 3ms 3.5KB 61.140.148.146
+2026-06-08 15:26:07 INF [http] GET /api/departments?with_members=1 → 200 0ms 865B 61.140.148.146
+2026-06-08 15:26:07 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:26:07 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 15:26:15 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 15:26:22 INF [http] PUT /api/settings → 200 5ms 222B 61.140.148.146
+2026-06-08 15:29:49 INF [http] PUT /api/settings → 200 4ms 222B 61.140.148.146
+2026-06-08 15:32:10 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 15:32:10 INF [http] starting http api addr=:8081
+2026-06-08 15:32:10 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 15:32:10 INF [http] reminder · scheduler started reminder_time=14:31 tz=CST start_days=1
+2026-06-08 15:32:21 INF [http] reminder · settings updated reminder_time=14:34 start_days=1 server_now=15:32 tz=CST
+2026-06-08 15:32:21 INF [http] PUT /api/settings → 200 7ms 222B 61.140.148.146
+2026-06-08 15:33:00 INF [http] reminder · tick now=15:33 reminder_time=14:34 action=wait
+2026-06-08 15:34:00 INF [http] reminder · tick now=15:34 reminder_time=14:34 action=wait
+2026-06-08 15:35:00 INF [http] reminder · tick now=15:35 reminder_time=14:34 action=wait
+2026-06-08 15:35:45 INF [http] reminder · settings updated reminder_time=15:37 start_days=1 server_now=15:35 tz=CST
+2026-06-08 15:35:45 INF [http] PUT /api/settings → 200 10ms 222B 61.140.148.146
+2026-06-08 15:36:00 INF [http] reminder · tick now=15:36 reminder_time=15:37 action=wait
+2026-06-08 15:37:00 INF [http] reminder · tick now=15:37 reminder_time=15:37 action=trigger
+2026-06-08 15:37:00 INF [http] reminder · trigger time=15:37
+2026-06-08 15:37:00 INF [http] reminder · finished date=2026-06-08 start=0 skipped=0 errors=0
