@@ -19,6 +19,7 @@ release/applogger.o
 release/appstyle.o
 release/datepickerutils.o
 release/projectstatusutils.o
+release/tableheaderfilter.o
 release/moc_mainwindow.o
 release/moc_projectpanelwidget.o
 release/moc_projecteditdialog.o
@@ -34,3 +35,4 @@ release/moc_logpanelwidget.o
 release/moc_settingspanelwidget.o
 release/moc_datapanelwidget.o
 release/moc_applogger.o
+release/moc_tableheaderfilter.o

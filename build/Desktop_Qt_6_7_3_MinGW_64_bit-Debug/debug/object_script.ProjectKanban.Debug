@@ -19,6 +19,7 @@ debug/applogger.o
 debug/appstyle.o
 debug/datepickerutils.o
 debug/projectstatusutils.o
+debug/tableheaderfilter.o
 debug/moc_mainwindow.o
 debug/moc_projectpanelwidget.o
 debug/moc_projecteditdialog.o
@@ -34,3 +35,4 @@ debug/moc_logpanelwidget.o
 debug/moc_settingspanelwidget.o
 debug/moc_datapanelwidget.o
 debug/moc_applogger.o
+debug/moc_tableheaderfilter.o

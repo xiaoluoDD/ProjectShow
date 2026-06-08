@@ -36,7 +36,8 @@ SOURCES += \
     core/applogger.cpp \
     core/appstyle.cpp \
     core/datepickerutils.cpp \
-    core/projectstatusutils.cpp
+    core/projectstatusutils.cpp \
+    core/tableheaderfilter.cpp
 
 HEADERS += \
     app/mainwindow.h \
@@ -58,7 +59,8 @@ HEADERS += \
     core/applogger.h \
     core/appstyle.h \
     core/datepickerutils.h \
-    core/projectstatusutils.h
+    core/projectstatusutils.h \
+    core/tableheaderfilter.h
 
 # Qt 6.7.3，MSVC / MinGW 下保证源文件 UTF-8
 msvc: QMAKE_CXXFLAGS += /utf-8
