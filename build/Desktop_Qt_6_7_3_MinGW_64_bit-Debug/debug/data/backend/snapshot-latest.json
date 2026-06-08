@@ -1,23 +1,23 @@
 {
     "count": {
-        "projects": 4,
+        "projects": 5,
         "users": 3
     },
-    "exported_at": "2026-06-08 10:03:44",
+    "exported_at": "2026-06-08 11:37:40",
     "ok": true,
     "projects": [
         {
-            "end_date": "2026-5-30",
+            "end_date": "2026-06-07",
             "group_chat": "",
             "group_chat_id": "",
             "id": 3,
             "manager_name": "罗贤",
             "manager_userid": "LuoXian",
             "name": "测试案例2",
-            "start_date": "2026-5-28",
+            "start_date": "2026-06-02",
             "status": "待启动",
             "tasks": "测试",
-            "updated_at": "2026-05-28T11:48:56+08:00",
+            "updated_at": "2026-06-08T10:27:40+08:00",
             "work_no": "GW11520",
             "year": "2026"
         },
@@ -65,9 +65,24 @@
             "updated_at": "2026-06-04T16:07:54+08:00",
             "work_no": "GW666",
             "year": "2026"
+        },
+        {
+            "end_date": "",
+            "group_chat": "",
+            "group_chat_id": "",
+            "id": 6,
+            "manager_name": "罗人洋",
+            "manager_userid": "LuoRenYang",
+            "name": "4463",
+            "start_date": "",
+            "status": "待启动",
+            "tasks": "",
+            "updated_at": "2026-06-08T11:35:49+08:00",
+            "work_no": "GW888",
+            "year": "2026"
         }
     ],
-    "server_now": "2026-06-08 10:03:44",
+    "server_now": "2026-06-08 11:37:40",
     "stats": {
         "active_users": 3,
         "corp_info": {
