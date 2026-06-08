@@ -11,6 +11,7 @@ release/departmentpanelwidget.o
 release/debugpanelwidget.o
 release/debughubwidget.o
 release/logpanelwidget.o
+release/settingspanelwidget.o
 release/datapanelwidget.o
 release/localdatastore.o
 release/applogger.o
@@ -27,5 +28,6 @@ release/moc_membereditdialog.o
 release/moc_departmentpanelwidget.o
 release/moc_debugpanelwidget.o
 release/moc_logpanelwidget.o
+release/moc_settingspanelwidget.o
 release/moc_datapanelwidget.o
 release/moc_applogger.o

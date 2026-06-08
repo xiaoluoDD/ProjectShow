@@ -1,9 +1,9 @@
 {
     "count": {
-        "projects": 2,
+        "projects": 4,
         "users": 3
     },
-    "exported_at": "2026-06-04 12:08:11",
+    "exported_at": "2026-06-08 10:03:44",
     "ok": true,
     "projects": [
         {
@@ -22,6 +22,21 @@
             "year": "2026"
         },
         {
+            "end_date": "2026-12-12",
+            "group_chat": "",
+            "group_chat_id": "",
+            "id": 4,
+            "manager_name": "罗人洋",
+            "manager_userid": "LuoRenYang",
+            "name": "测试发送全部项目成员",
+            "start_date": "2026-6-4",
+            "status": "待启动",
+            "tasks": "测试，调试，验证",
+            "updated_at": "2026-06-04T15:10:50+08:00",
+            "work_no": "GW33445",
+            "year": "2026"
+        },
+        {
             "end_date": "2026-12-31",
             "group_chat": "（待绑定群聊）",
             "group_chat_id": "",
@@ -35,9 +50,24 @@
             "updated_at": "2026-05-28T11:26:18+08:00",
             "work_no": "GW52215",
             "year": "2026"
+        },
+        {
+            "end_date": "2026-6-8",
+            "group_chat": "",
+            "group_chat_id": "",
+            "id": 5,
+            "manager_name": "左木帅",
+            "manager_userid": "ZuoMuShuai",
+            "name": "12345",
+            "start_date": "2026-6-4",
+            "status": "待启动",
+            "tasks": "测试",
+            "updated_at": "2026-06-04T16:07:54+08:00",
+            "work_no": "GW666",
+            "year": "2026"
         }
     ],
-    "server_now": "2026-06-04 12:08:11",
+    "server_now": "2026-06-08 10:03:44",
     "stats": {
         "active_users": 3,
         "corp_info": {
@@ -46,33 +76,42 @@
             "to_user": "LuoRenYang"
         },
         "last_sync": {
-            "finished_at": "2026-06-04T08:43:26+08:00",
-            "id": 12,
-            "started_at": "2026-06-04T08:43:25+08:00",
+            "finished_at": "2026-06-08T10:02:05+08:00",
+            "id": 17,
+            "started_at": "2026-06-08T10:02:03+08:00",
             "status": "ok",
             "user_count": 3
         }
     },
     "users": [
         {
-            "departments": "",
+            "department_id": 2,
+            "department_name": "电气部",
+            "departments": "电气部",
+            "mobile": "1254548768",
             "name": "左木帅",
             "sources": "allow_user",
-            "updated_at": "2026-06-04T08:43:26+08:00",
+            "updated_at": "2026-06-08T10:02:05+08:00",
             "userid": "ZuoMuShuai"
         },
         {
-            "departments": "",
+            "department_id": 1,
+            "department_name": "数字化事业部",
+            "departments": "数字化事业部",
+            "mobile": "156189453",
             "name": "罗人洋",
             "sources": "allow_user",
-            "updated_at": "2026-06-04T08:43:26+08:00",
+            "updated_at": "2026-06-08T10:02:05+08:00",
             "userid": "LuoRenYang"
         },
         {
-            "departments": "",
+            "department_id": 2,
+            "department_name": "电气部",
+            "departments": "电气部",
+            "mobile": "416548964513",
             "name": "罗贤",
             "sources": "allow_user",
-            "updated_at": "2026-06-04T08:43:26+08:00",
+            "updated_at": "2026-06-08T10:02:05+08:00",
             "userid": "LuoXian"
         }
     ]

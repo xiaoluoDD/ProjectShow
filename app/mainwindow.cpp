@@ -6,13 +6,14 @@
 #include "memberpanelwidget.h"
 #include "projectpanelwidget.h"
 
-#include <QFrame>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QNetworkAccessManager>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QSettings>
 #include <QTabWidget>
+#include <QTimer>
+#include <QUrl>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -34,29 +35,17 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(QStringLiteral("项目看板"));
     resize(960, 640);
 
-    auto *central = new QWidget(this);
-    auto *root = new QVBoxLayout(central);
-    root->setContentsMargins(8, 8, 8, 8);
-
-    auto *serverBar = new QFrame(this);
-    serverBar->setObjectName(QStringLiteral("serverBar"));
-    auto *serverRow = new QHBoxLayout(serverBar);
-    serverRow->setContentsMargins(8, 6, 8, 6);
-    auto *serverLabel = new QLabel(QStringLiteral("后端地址"), serverBar);
-    serverLabel->setObjectName(QStringLiteral("serverBarLabel"));
-    serverRow->addWidget(serverLabel);
-    m_serverEdit = new QLineEdit(serverBar);
-    m_serverEdit->setObjectName(QStringLiteral("serverUrlEdit"));
-    m_serverEdit->setPlaceholderText(QStringLiteral("例如 http://106.53.181.55:8081"));
     QSettings settings;
     QString saved = settings.value(QStringLiteral("serverBaseUrl"),
                                    QStringLiteral("http://106.53.181.55:8081"))
                         .toString();
     if (saved.endsWith(QStringLiteral(":8080")))
         saved.replace(QStringLiteral(":8080"), QStringLiteral(":8081"));
-    m_serverEdit->setText(saved);
-    serverRow->addWidget(m_serverEdit, 1);
-    root->addWidget(serverBar);
+    m_serverBaseUrl = trimTrailingSlash(saved.trimmed());
+
+    auto *central = new QWidget(this);
+    auto *root = new QVBoxLayout(central);
+    root->setContentsMargins(8, 8, 8, 8);
 
     m_tabs = new QTabWidget(this);
     m_tabs->setObjectName(QStringLiteral("mainTabWidget"));
@@ -72,17 +61,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(central);
 
-    connect(m_serverEdit, &QLineEdit::editingFinished, this, &MainWindow::saveServerUrl);
-
     AppLogger::instance().info(QStringLiteral("App"),
                                QStringLiteral("主窗口已启动，后端：%1").arg(serverBaseUrl()));
+
+    QTimer::singleShot(0, this, &MainWindow::loadServerUrlFromBackend);
 }
 
 MainWindow::~MainWindow() = default;
 
 QString MainWindow::serverBaseUrl() const
 {
-    return trimTrailingSlash(m_serverEdit->text().trimmed());
+    return m_serverBaseUrl;
 }
 
 QNetworkAccessManager *MainWindow::networkManager() const
@@ -127,10 +116,42 @@ void MainWindow::setSelectedMember(const QString &userid, const QString &name)
     }
 }
 
-void MainWindow::saveServerUrl() const
+void MainWindow::setServerBaseUrl(const QString &url)
 {
-    const QString baseUrl = serverBaseUrl();
+    const QString normalized = trimTrailingSlash(url.trimmed());
+    if (normalized.isEmpty() || m_serverBaseUrl == normalized)
+        return;
+
+    m_serverBaseUrl = normalized;
     QSettings settings;
-    settings.setValue(QStringLiteral("serverBaseUrl"), baseUrl);
-    AppLogger::instance().info(QStringLiteral("App"), QStringLiteral("后端地址已保存：%1").arg(baseUrl));
+    settings.setValue(QStringLiteral("serverBaseUrl"), normalized);
+    emit serverBaseUrlChanged(normalized);
+    AppLogger::instance().info(QStringLiteral("App"), QStringLiteral("后端地址已更新：%1").arg(normalized));
+}
+
+void MainWindow::loadServerUrlFromBackend()
+{
+    if (m_serverBaseUrl.isEmpty())
+        return;
+
+    QNetworkRequest netRequest(QUrl(m_serverBaseUrl + QStringLiteral("/api/settings")));
+    QNetworkReply *reply = m_net->get(netRequest);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        reply->deleteLater();
+        if (reply->error() != QNetworkReply::NoError)
+            return;
+
+        const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+        if (!doc.isObject())
+            return;
+
+        const QJsonObject obj = doc.object();
+        if (!obj.value(QStringLiteral("ok")).toBool(false))
+            return;
+
+        const QString url =
+            obj.value(QStringLiteral("settings")).toObject().value(QStringLiteral("server_base_url")).toString();
+        if (!url.isEmpty())
+            setServerBaseUrl(url);
+    });
 }

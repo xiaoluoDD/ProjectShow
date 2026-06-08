@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 
-class QLineEdit;
 class QTabWidget;
 class ProjectPanelWidget;
 class MemberPanelWidget;
@@ -28,20 +27,21 @@ public:
 
 public slots:
     void setSelectedMember(const QString &userid, const QString &name);
+    void setServerBaseUrl(const QString &url);
+    void loadServerUrlFromBackend();
 
 signals:
     void memberSelectionChanged(const QString &userid, const QString &name);
+    void serverBaseUrlChanged(const QString &url);
 
 private:
-    void saveServerUrl() const;
-
-    QLineEdit *m_serverEdit = nullptr;
     QTabWidget *m_tabs = nullptr;
     ProjectPanelWidget *m_projectPanel = nullptr;
     MemberPanelWidget *m_memberPanel = nullptr;
     DepartmentPanelWidget *m_departmentPanel = nullptr;
     DebugHubWidget *m_debugHub = nullptr;
     QNetworkAccessManager *m_net = nullptr;
+    QString m_serverBaseUrl;
     QString m_selectedUserId;
     QString m_selectedMemberName;
 };

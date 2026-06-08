@@ -7,44 +7,54 @@ win32-g++: QMAKE_CXXFLAGS += -std=gnu++17
 TEMPLATE = app
 TARGET   = ProjectKanban
 
+INCLUDEPATH += \
+    $$PWD/app \
+    $$PWD/project \
+    $$PWD/member \
+    $$PWD/department \
+    $$PWD/debug \
+    $$PWD/core
+
 SOURCES += \
     main.cpp \
-    mainwindow.cpp \
-    projectpanelwidget.cpp \
-    projecteditdialog.cpp \
-    projectdetaildialog.cpp \
-    projectsubtaskdialog.cpp \
-    subtaskeditdialog.cpp \
-    memberpanelwidget.cpp \
-    membereditdialog.cpp \
-    departmentpanelwidget.cpp \
-    debugpanelwidget.cpp \
-    debughubwidget.cpp \
-    logpanelwidget.cpp \
-    datapanelwidget.cpp \
-    localdatastore.cpp \
-    applogger.cpp \
-    appstyle.cpp \
-    datepickerutils.cpp
+    app/mainwindow.cpp \
+    project/projectpanelwidget.cpp \
+    project/projecteditdialog.cpp \
+    project/projectdetaildialog.cpp \
+    project/projectsubtaskdialog.cpp \
+    project/subtaskeditdialog.cpp \
+    member/memberpanelwidget.cpp \
+    member/membereditdialog.cpp \
+    department/departmentpanelwidget.cpp \
+    debug/debugpanelwidget.cpp \
+    debug/debughubwidget.cpp \
+    debug/logpanelwidget.cpp \
+    debug/settingspanelwidget.cpp \
+    debug/datapanelwidget.cpp \
+    core/localdatastore.cpp \
+    core/applogger.cpp \
+    core/appstyle.cpp \
+    core/datepickerutils.cpp
 
 HEADERS += \
-    mainwindow.h \
-    projectpanelwidget.h \
-    projecteditdialog.h \
-    projectdetaildialog.h \
-    projectsubtaskdialog.h \
-    subtaskeditdialog.h \
-    memberpanelwidget.h \
-    membereditdialog.h \
-    departmentpanelwidget.h \
-    debugpanelwidget.h \
-    debughubwidget.h \
-    logpanelwidget.h \
-    datapanelwidget.h \
-    localdatastore.h \
-    applogger.h \
-    appstyle.h \
-    datepickerutils.h
+    app/mainwindow.h \
+    project/projectpanelwidget.h \
+    project/projecteditdialog.h \
+    project/projectdetaildialog.h \
+    project/projectsubtaskdialog.h \
+    project/subtaskeditdialog.h \
+    member/memberpanelwidget.h \
+    member/membereditdialog.h \
+    department/departmentpanelwidget.h \
+    debug/debugpanelwidget.h \
+    debug/debughubwidget.h \
+    debug/logpanelwidget.h \
+    debug/settingspanelwidget.h \
+    debug/datapanelwidget.h \
+    core/localdatastore.h \
+    core/applogger.h \
+    core/appstyle.h \
+    core/datepickerutils.h
 
 # Qt 6.7.3，MSVC / MinGW 下保证源文件 UTF-8
 msvc: QMAKE_CXXFLAGS += /utf-8

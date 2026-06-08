@@ -11,6 +11,7 @@ debug/departmentpanelwidget.o
 debug/debugpanelwidget.o
 debug/debughubwidget.o
 debug/logpanelwidget.o
+debug/settingspanelwidget.o
 debug/datapanelwidget.o
 debug/localdatastore.o
 debug/applogger.o
@@ -27,5 +28,6 @@ debug/moc_membereditdialog.o
 debug/moc_departmentpanelwidget.o
 debug/moc_debugpanelwidget.o
 debug/moc_logpanelwidget.o
+debug/moc_settingspanelwidget.o
 debug/moc_datapanelwidget.o
 debug/moc_applogger.o
