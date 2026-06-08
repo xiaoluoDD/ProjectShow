@@ -2125,3 +2125,443 @@ time=2026-06-08T14:27:38.982+08:00 level=INFO msg="http request" service=http me
 2026-06-08 15:37:00 INF [http] reminder · tick now=15:37 reminder_time=15:37 action=trigger
 2026-06-08 15:37:00 INF [http] reminder · trigger time=15:37
 2026-06-08 15:37:00 INF [http] reminder · finished date=2026-06-08 start=0 skipped=0 errors=0
+2026-06-08 15:38:00 INF [http] reminder · tick now=15:38 reminder_time=15:37 action=wait
+2026-06-08 15:39:00 INF [http] reminder · tick now=15:39 reminder_time=15:37 action=wait
+2026-06-08 15:39:12 WRN [http] GET / → 404 0ms 19B 107.189.1.20
+2026-06-08 15:39:12 WRN [http] CONNECT  → 404 0ms 19B 107.189.1.20
+2026-06-08 15:40:00 INF [http] reminder · tick now=15:40 reminder_time=15:37 action=wait
+2026-06-08 15:41:00 INF [http] reminder · tick now=15:41 reminder_time=15:37 action=wait
+2026-06-08 15:41:18 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 15:41:18 INF [http] starting http api addr=:8081
+2026-06-08 15:41:18 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 15:41:18 INF [http] reminder · scheduler started reminder_time=15:37 tz=CST start_days=1
+2026-06-08 15:41:39 INF [http] reminder · settings updated reminder_time=15:43 start_days=1 server_now=15:41 tz=CST
+2026-06-08 15:41:39 INF [http] PUT /api/settings → 200 6ms 222B 61.140.148.146
+2026-06-08 15:42:00 INF [http] reminder · tick now=15:42 reminder_time=15:43 action=wait
+2026-06-08 15:43:00 INF [http] reminder · tick now=15:43 reminder_time=15:43 action=trigger
+2026-06-08 15:43:00 INF [http] reminder · trigger time=15:43
+2026-06-08 15:43:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=381
+2026-06-08 15:43:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kynfrRv8bdYsCszmRJCoLHumJJcMmDbb8IeWwanoX2Kvj9tw5QbzZL-WMvKRwoq9ZEzQHy6rWChTn-XP96SxlQh
+2026-06-08 15:43:00 INF [http] reminder · sent project_id=7 name=测试 kind=start msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kynfrRv8bdYsCszmRJCoLHumJJcMmDbb8IeWwanoX2Kvj9tw5QbzZL-WMvKRwoq9ZEzQHy6rWChTn-XP96SxlQh days_left=1 event=2026-06-09
+2026-06-08 15:43:00 INF [http] reminder · finished date=2026-06-08 projects=5 start=1 skipped=0 errors=0
+2026-06-08 15:43:29 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 15:43:29 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:43:29 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:44:00 INF [http] reminder · tick now=15:44 reminder_time=15:43 action=wait
+2026-06-08 15:44:56 INF [http] PUT /api/project-subtasks → 200 5ms 349B 61.140.148.146
+2026-06-08 15:44:58 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 15:45:00 INF [http] reminder · tick now=15:45 reminder_time=15:43 action=wait
+2026-06-08 15:45:10 INF [http] PUT /api/project-subtasks → 200 4ms 349B 61.140.148.146
+2026-06-08 15:45:11 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 15:45:59 INF [http] GET /api/projects → 200 3ms 3.5KB 61.140.148.146
+2026-06-08 15:46:00 INF [http] reminder · tick now=15:46 reminder_time=15:43 action=wait
+2026-06-08 15:47:00 INF [http] reminder · tick now=15:47 reminder_time=15:43 action=wait
+2026-06-08 15:48:00 INF [http] reminder · tick now=15:48 reminder_time=15:43 action=wait
+2026-06-08 15:49:00 INF [http] reminder · tick now=15:49 reminder_time=15:43 action=wait
+2026-06-08 15:49:11 INF [http] GET /api/departments?with_members=1 → 200 0ms 865B 61.140.148.146
+2026-06-08 15:49:11 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:49:11 INF [http] GET /api/projects → 200 4ms 3.5KB 61.140.148.146
+2026-06-08 15:49:11 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 15:49:18 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 15:49:18 INF [http] GET /api/wecom/users → 200 0ms 10.2KB 61.140.148.146
+2026-06-08 15:49:18 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:50:00 INF [http] reminder · tick now=15:50 reminder_time=15:43 action=wait
+2026-06-08 15:51:00 INF [http] reminder · tick now=15:51 reminder_time=15:43 action=wait
+2026-06-08 15:51:46 INF [http] GET /api/projects → 200 2ms 3.5KB 61.140.148.146
+2026-06-08 15:51:48 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:51:54 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:52:00 INF [http] reminder · tick now=15:52 reminder_time=15:43 action=wait
+2026-06-08 15:53:00 INF [http] reminder · tick now=15:53 reminder_time=15:43 action=wait
+2026-06-08 15:54:00 INF [http] reminder · tick now=15:54 reminder_time=15:43 action=wait
+2026-06-08 15:55:00 INF [http] reminder · tick now=15:55 reminder_time=15:43 action=wait
+2026-06-08 15:56:00 INF [http] reminder · tick now=15:56 reminder_time=15:43 action=wait
+2026-06-08 15:56:31 INF [http] GET /api/departments?with_members=1 → 200 1ms 865B 61.140.148.146
+2026-06-08 15:56:31 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:56:31 INF [http] GET /api/projects → 200 5ms 3.5KB 61.140.148.146
+2026-06-08 15:56:31 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 15:56:42 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:56:42 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 51B 61.140.148.146
+2026-06-08 15:56:42 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:56:44 INF [http] GET /api/projects → 200 2ms 3.5KB 61.140.148.146
+2026-06-08 15:56:45 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 663B 61.140.148.146
+2026-06-08 15:56:45 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:56:45 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:56:57 INF [http] PUT /api/project-subtasks → 200 5ms 343B 61.140.148.146
+2026-06-08 15:56:58 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 657B 61.140.148.146
+2026-06-08 15:57:00 INF [http] reminder · tick now=15:57 reminder_time=15:43 action=wait
+2026-06-08 15:57:12 INF [http] PUT /api/project-subtasks → 200 12ms 497B 61.140.148.146
+2026-06-08 15:57:13 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 811B 61.140.148.146
+2026-06-08 15:57:19 INF [http] GET /api/projects → 200 7ms 3.5KB 61.140.148.146
+2026-06-08 15:57:21 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:57:21 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 811B 61.140.148.146
+2026-06-08 15:57:21 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:57:23 INF [http] GET /api/projects → 200 6ms 3.5KB 61.140.148.146
+2026-06-08 15:57:42 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:57:42 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 811B 61.140.148.146
+2026-06-08 15:57:42 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:57:53 INF [http] PUT /api/project-subtasks → 200 11ms 437B 61.140.148.146
+2026-06-08 15:57:53 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 886B 61.140.148.146
+2026-06-08 15:58:00 INF [http] reminder · tick now=15:58 reminder_time=15:43 action=wait
+2026-06-08 15:58:15 INF [http] GET /api/projects → 200 6ms 3.5KB 61.140.148.146
+2026-06-08 15:58:19 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 15:58:19 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 51B 61.140.148.146
+2026-06-08 15:58:19 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 15:58:56 INF [http] POST /api/project-subtasks → 200 8ms 494B 61.140.148.146
+2026-06-08 15:58:58 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 495B 61.140.148.146
+2026-06-08 15:59:00 INF [http] reminder · tick now=15:59 reminder_time=15:43 action=wait
+2026-06-08 15:59:17 INF [http] GET /api/projects → 200 13ms 3.6KB 61.140.148.146
+2026-06-08 15:59:21 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:00:00 INF [http] reminder · tick now=16:00 reminder_time=15:43 action=wait
+2026-06-08 16:01:00 INF [http] reminder · tick now=16:01 reminder_time=15:43 action=wait
+2026-06-08 16:01:07 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:01:07 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 495B 61.140.148.146
+2026-06-08 16:01:07 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:01:10 INF [http] GET /api/projects → 200 10ms 3.6KB 61.140.148.146
+2026-06-08 16:02:00 INF [http] reminder · tick now=16:02 reminder_time=15:43 action=wait
+2026-06-08 16:02:03 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:02:03 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 495B 61.140.148.146
+2026-06-08 16:02:03 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:02:04 INF [http] GET /api/projects → 200 16ms 3.6KB 61.140.148.146
+2026-06-08 16:02:20 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:02:20 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 495B 61.140.148.146
+2026-06-08 16:02:20 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:02:26 INF [http] GET /api/projects → 200 10ms 3.6KB 61.140.148.146
+2026-06-08 16:03:00 INF [http] reminder · tick now=16:03 reminder_time=15:43 action=wait
+2026-06-08 16:04:00 INF [http] reminder · tick now=16:04 reminder_time=15:43 action=wait
+2026-06-08 16:05:00 INF [http] reminder · tick now=16:05 reminder_time=15:43 action=wait
+2026-06-08 16:06:00 INF [http] reminder · tick now=16:06 reminder_time=15:43 action=wait
+2026-06-08 16:07:00 INF [http] reminder · tick now=16:07 reminder_time=15:43 action=wait
+2026-06-08 16:08:00 INF [http] reminder · tick now=16:08 reminder_time=15:43 action=wait
+2026-06-08 16:09:00 INF [http] reminder · tick now=16:09 reminder_time=15:43 action=wait
+2026-06-08 16:10:00 INF [http] reminder · tick now=16:10 reminder_time=15:43 action=wait
+2026-06-08 16:11:00 INF [http] reminder · tick now=16:11 reminder_time=15:43 action=wait
+2026-06-08 16:12:00 INF [http] reminder · tick now=16:12 reminder_time=15:43 action=wait
+2026-06-08 16:12:20 WRN [http] GET / → 404 0ms 19B 91.231.89.86
+2026-06-08 16:13:00 INF [http] reminder · tick now=16:13 reminder_time=15:43 action=wait
+2026-06-08 16:14:00 INF [http] reminder · tick now=16:14 reminder_time=15:43 action=wait
+2026-06-08 16:14:12 WRN [http] GET /favicon.ico → 404 0ms 19B 91.196.152.245
+2026-06-08 16:15:00 INF [http] reminder · tick now=16:15 reminder_time=15:43 action=wait
+2026-06-08 16:16:00 INF [http] reminder · tick now=16:16 reminder_time=15:43 action=wait
+2026-06-08 16:17:00 INF [http] reminder · tick now=16:17 reminder_time=15:43 action=wait
+2026-06-08 16:18:00 INF [http] reminder · tick now=16:18 reminder_time=15:43 action=wait
+2026-06-08 16:19:00 INF [http] reminder · tick now=16:19 reminder_time=15:43 action=wait
+2026-06-08 16:20:00 INF [http] reminder · tick now=16:20 reminder_time=15:43 action=wait
+2026-06-08 16:20:57 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 16:20:57 INF [http] starting http api addr=:8081
+2026-06-08 16:20:57 INF [http] reminder · scheduler started reminder_time=15:43 tz=CST start_days=1 end_days=0
+2026-06-08 16:20:57 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 16:21:00 INF [http] reminder · tick now=16:21 reminder_time=15:43 action=wait
+2026-06-08 16:21:13 INF [http] GET /api/departments?with_members=1 → 200 4ms 865B 61.140.148.146
+2026-06-08 16:21:13 INF [http] GET /api/wecom/users → 200 4ms 10.2KB 61.140.148.146
+2026-06-08 16:21:13 INF [http] GET /api/projects → 200 13ms 3.6KB 61.140.148.146
+2026-06-08 16:21:13 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 16:21:19 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 886B 61.140.148.146
+2026-06-08 16:21:19 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:21:19 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:21:27 INF [http] GET /api/projects → 200 11ms 3.6KB 61.140.148.146
+2026-06-08 16:21:29 INF [http] GET /api/project-subtasks?project_id=4 → 200 0ms 363B 61.140.148.146
+2026-06-08 16:21:29 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:21:29 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:21:34 INF [http] GET /api/projects → 200 13ms 3.6KB 61.140.148.146
+2026-06-08 16:21:37 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 495B 61.140.148.146
+2026-06-08 16:21:37 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:21:37 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:21:50 INF [http] GET /api/projects → 200 12ms 3.6KB 61.140.148.146
+2026-06-08 16:21:57 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 16:22:00 INF [http] reminder · tick now=16:22 reminder_time=15:43 action=wait
+2026-06-08 16:22:45 INF [http] reminder · settings updated reminder_time=16:24 start_days=1 end_days=3 server_now=16:22 tz=CST
+2026-06-08 16:22:45 INF [http] PUT /api/settings → 200 3ms 222B 61.140.148.146
+2026-06-08 16:22:56 INF [http] GET /api/project-subtasks?project_id=5 → 200 0ms 359B 61.140.148.146
+2026-06-08 16:22:56 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:22:56 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:23:00 INF [http] reminder · tick now=16:23 reminder_time=16:24 action=wait
+2026-06-08 16:23:02 INF [http] GET /api/projects → 200 12ms 3.6KB 61.140.148.146
+2026-06-08 16:24:00 INF [http] reminder · tick now=16:24 reminder_time=16:24 action=trigger
+2026-06-08 16:24:00 INF [http] reminder · trigger time=16:24
+2026-06-08 16:24:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=327
+2026-06-08 16:24:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gB4mt1VuOYkVF57kd16fT4TC_E5qtWKIrSMjTLbmmUuMzA_vKy9eEQOi8odg_4_pwpDycx7U6B6L-Ak0eAVsXnU
+2026-06-08 16:24:00 INF [http] reminder · project start digest mgr=LuoRenYang items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gB4mt1VuOYkVF57kd16fT4TC_E5qtWKIrSMjTLbmmUuMzA_vKy9eEQOi8odg_4_pwpDycx7U6B6L-Ak0eAVsXnU
+2026-06-08 16:24:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=425
+2026-06-08 16:24:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDiuIiN_N9TtrSG1_eLTyn6J5jWVdSDUxGHppLFc_UjCyOi5mIQeccsKRnIi3VoTArKAGaCvzc8y60atc0Hkzar
+2026-06-08 16:24:00 INF [http] reminder · subtask digest mgr project_id=1 items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDiuIiN_N9TtrSG1_eLTyn6J5jWVdSDUxGHppLFc_UjCyOi5mIQeccsKRnIi3VoTArKAGaCvzc8y60atc0Hkzar
+2026-06-08 16:24:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=410
+2026-06-08 16:24:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxtVavjn1cATpyDwIlhBLBkqY9cVotpp6SN0e2dqRN-uL4lZuDbKN6DnTPHpcjCpHwO5wv6Jka8B_eC8hFCZcyk
+2026-06-08 16:24:01 INF [http] reminder · subtask digest mgr project_id=7 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxtVavjn1cATpyDwIlhBLBkqY9cVotpp6SN0e2dqRN-uL4lZuDbKN6DnTPHpcjCpHwO5wv6Jka8B_eC8hFCZcyk
+2026-06-08 16:24:01 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=349
+2026-06-08 16:24:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gAfa7BIUDG8Ogb6c8vGqJpLfuXAwq76d-M6X0lcBdLu-oTXHjNfjRgn61X7jxOJn5iVvt-SDtLzZkXh5Zq8x9J_
+2026-06-08 16:24:01 INF [http] reminder · subtask digest member userid=ZuoMuShuai name=左木帅 items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gAfa7BIUDG8Ogb6c8vGqJpLfuXAwq76d-M6X0lcBdLu-oTXHjNfjRgn61X7jxOJn5iVvt-SDtLzZkXh5Zq8x9J_
+2026-06-08 16:24:01 INF [http] reminder · finished date=2026-06-08 projects=5 start=1 end=0 subtask_mgr=2 subtask_member=1 skipped=0 errors=0
+2026-06-08 16:25:00 INF [http] reminder · tick now=16:25 reminder_time=16:24 action=wait
+2026-06-08 16:26:00 INF [http] reminder · tick now=16:26 reminder_time=16:24 action=wait
+2026-06-08 16:26:28 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 16:26:28 INF [http] starting http api addr=:8081
+2026-06-08 16:26:28 INF [http] reminder · scheduler started reminder_time=16:24 tz=CST start_days=1 end_days=3
+2026-06-08 16:26:28 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 16:26:41 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 886B 61.140.148.146
+2026-06-08 16:26:41 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:26:41 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:27:00 INF [http] reminder · tick now=16:27 reminder_time=16:24 action=wait
+2026-06-08 16:27:28 INF [http] POST /api/project-subtasks → 200 10ms 557B 61.140.148.146
+2026-06-08 16:27:29 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 1.4KB 61.140.148.146
+2026-06-08 16:27:44 INF [http] GET /api/projects → 200 20ms 3.6KB 61.140.148.146
+2026-06-08 16:27:57 INF [http] reminder · settings updated reminder_time=16:29 start_days=1 end_days=3 server_now=16:27 tz=CST
+2026-06-08 16:27:57 INF [http] PUT /api/settings → 200 4ms 222B 61.140.148.146
+2026-06-08 16:28:00 INF [http] reminder · tick now=16:28 reminder_time=16:29 action=wait
+2026-06-08 16:29:00 INF [http] reminder · tick now=16:29 reminder_time=16:29 action=trigger
+2026-06-08 16:29:00 INF [http] reminder · trigger time=16:29
+2026-06-08 16:29:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=327
+2026-06-08 16:29:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kz45HJfBE6EL716itWwC1WrtXdBiNFFMj0vFevdmoaFMBst9wPE1IiyzdcpYr7ibSffKrv6DNQTwabBXUDIgJaR
+2026-06-08 16:29:00 INF [http] reminder · project start digest mgr=LuoRenYang items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kz45HJfBE6EL716itWwC1WrtXdBiNFFMj0vFevdmoaFMBst9wPE1IiyzdcpYr7ibSffKrv6DNQTwabBXUDIgJaR
+2026-06-08 16:29:00 INF [http] wecom send text to_user=LuoXian agent_id=1000005 content_len=415
+2026-06-08 16:29:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kx8aB-rxl7Cw8tEcouB4UzB_5nGwrDjxcsFi96GN168zySWDwuKsO7ci0-i2_qy1gc7I1QgVNyt-38j0gVpHxX1
+2026-06-08 16:29:00 INF [http] reminder · subtask digest mgr project_id=3 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kx8aB-rxl7Cw8tEcouB4UzB_5nGwrDjxcsFi96GN168zySWDwuKsO7ci0-i2_qy1gc7I1QgVNyt-38j0gVpHxX1
+2026-06-08 16:29:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=410
+2026-06-08 16:29:00 INF [http] wecom send ok msgid=OWFjq_5akqbfZThK8M8s_yCzKjtV7W3aDWWX_spybGC7LgchssFlowaa0RWmW5GLkh8cfrKZ7IRuoOPLlmMvLvFKIv5kwND_pciU4HU8cOc7JTS0QfXbHQcKs7qI_SBD
+2026-06-08 16:29:00 INF [http] reminder · subtask digest mgr project_id=7 items=1 msgid=OWFjq_5akqbfZThK8M8s_yCzKjtV7W3aDWWX_spybGC7LgchssFlowaa0RWmW5GLkh8cfrKZ7IRuoOPLlmMvLvFKIv5kwND_pciU4HU8cOc7JTS0QfXbHQcKs7qI_SBD
+2026-06-08 16:29:00 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=508
+2026-06-08 16:29:01 INF [http] wecom send ok msgid=OWFjq_5akqbfZThK8M8s_yCzKjtV7W3aDWWX_spybGD6qlEt9jsGExO2t4RtDErNsR78VmLqreFOr_JIs2qPF1opvQiuplAPKkvJsga8BB_9GgW_Oy3iNfWAUWU2cpmO
+2026-06-08 16:29:01 INF [http] reminder · subtask digest member userid=ZuoMuShuai name=左木帅 items=2 msgid=OWFjq_5akqbfZThK8M8s_yCzKjtV7W3aDWWX_spybGD6qlEt9jsGExO2t4RtDErNsR78VmLqreFOr_JIs2qPF1opvQiuplAPKkvJsga8BB_9GgW_Oy3iNfWAUWU2cpmO
+2026-06-08 16:29:01 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=348
+2026-06-08 16:29:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kyrDaS8sNK6mhiR6tMylrTMjKAqkCJEeVKbrLy77YkH18hSZfc-QULlFHLtsxJSmjD7e_fL5e3Ept_fvDuURVQq
+2026-06-08 16:29:01 INF [http] reminder · subtask digest member userid=LuoRenYang name=罗人洋 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kyrDaS8sNK6mhiR6tMylrTMjKAqkCJEeVKbrLy77YkH18hSZfc-QULlFHLtsxJSmjD7e_fL5e3Ept_fvDuURVQq
+2026-06-08 16:29:01 INF [http] reminder · finished date=2026-06-08 projects=5 start=1 end=0 subtask_mgr=2 subtask_member=2 skipped=0 errors=0
+2026-06-08 16:30:00 INF [http] reminder · tick now=16:30 reminder_time=16:29 action=wait
+2026-06-08 16:30:15 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 495B 61.140.148.146
+2026-06-08 16:30:15 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:30:15 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:30:16 INF [http] GET /api/projects → 200 17ms 3.6KB 61.140.148.146
+2026-06-08 16:30:19 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:30:19 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 1.4KB 61.140.148.146
+2026-06-08 16:30:19 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:30:25 INF [http] GET /api/projects → 200 9ms 3.6KB 61.140.148.146
+2026-06-08 16:31:00 INF [http] reminder · tick now=16:31 reminder_time=16:29 action=wait
+2026-06-08 16:32:00 INF [http] reminder · tick now=16:32 reminder_time=16:29 action=wait
+2026-06-08 16:32:20 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:32:20 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 495B 61.140.148.146
+2026-06-08 16:32:20 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:33:00 INF [http] reminder · tick now=16:33 reminder_time=16:29 action=wait
+2026-06-08 16:33:02 INF [http] POST /api/project-subtasks → 200 9ms 562B 61.140.148.146
+2026-06-08 16:33:03 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 1008B 61.140.148.146
+2026-06-08 16:33:07 INF [http] GET /api/projects → 200 18ms 3.7KB 61.140.148.146
+2026-06-08 16:33:17 INF [http] reminder · settings updated reminder_time=16:35 start_days=1 end_days=3 server_now=16:33 tz=CST
+2026-06-08 16:33:17 INF [http] PUT /api/settings → 200 3ms 222B 61.140.148.146
+2026-06-08 16:34:00 INF [http] reminder · tick now=16:34 reminder_time=16:35 action=wait
+2026-06-08 16:35:00 INF [http] reminder · tick now=16:35 reminder_time=16:35 action=trigger
+2026-06-08 16:35:00 INF [http] reminder · trigger time=16:35
+2026-06-08 16:35:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=327
+2026-06-08 16:35:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gAE4VlgzPlUhngFEkjw567jZ9qqI19HNLuwmL59wdKHpjLRewuUaVraVZc_3GPO4RJ3kF_OxbCECUERwFVewo0_
+2026-06-08 16:35:00 INF [http] reminder · project start digest mgr=LuoRenYang items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gAE4VlgzPlUhngFEkjw567jZ9qqI19HNLuwmL59wdKHpjLRewuUaVraVZc_3GPO4RJ3kF_OxbCECUERwFVewo0_
+2026-06-08 16:35:00 INF [http] wecom send text to_user=LuoXian agent_id=1000005 content_len=415
+2026-06-08 16:35:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kzD1U5R9zhYlbhgGDu0JBYLMcfGFojtwvh0R5vt-H8_U5_ziSkjzhU9aTf40rQ4bzkFHEV-0l9u_tFkNfGYdHWZ
+2026-06-08 16:35:00 INF [http] reminder · subtask digest mgr project_id=3 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kzD1U5R9zhYlbhgGDu0JBYLMcfGFojtwvh0R5vt-H8_U5_ziSkjzhU9aTf40rQ4bzkFHEV-0l9u_tFkNfGYdHWZ
+2026-06-08 16:35:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=562
+2026-06-08 16:35:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kwK240YZbdKkooG6pJ9W1DYISVTIomqCj5vGC6RmBtBqfpaNYqgkRLXGWuyuJc1QaAwCFFRZC2mTeN6jxmWPdTi
+2026-06-08 16:35:00 INF [http] reminder · subtask digest mgr project_id=7 items=2 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kwK240YZbdKkooG6pJ9W1DYISVTIomqCj5vGC6RmBtBqfpaNYqgkRLXGWuyuJc1QaAwCFFRZC2mTeN6jxmWPdTi
+2026-06-08 16:35:00 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=660
+2026-06-08 16:35:01 INF [http] wecom send ok msgid=OWFjq_5akqbfZThK8M8s_yCzKjtV7W3aDWWX_spybGAZnMV1hZfcTtf7suRrwsknU93Ql8zzdUGwhfXTTLV2-FC70_qYwRcc7H48fCqvGIIOcYImfHZkd7Toww4aA1nb
+2026-06-08 16:35:01 INF [http] reminder · subtask digest member userid=ZuoMuShuai name=左木帅 items=3 msgid=OWFjq_5akqbfZThK8M8s_yCzKjtV7W3aDWWX_spybGAZnMV1hZfcTtf7suRrwsknU93Ql8zzdUGwhfXTTLV2-FC70_qYwRcc7H48fCqvGIIOcYImfHZkd7Toww4aA1nb
+2026-06-08 16:35:01 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=348
+2026-06-08 16:35:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBbh_cudh0s21afizQdHXbNegWVL3AzuIXLMTHPck1Zrku2aWBpNAj2PeE7BzbgYMJAdmMgzi4xBvTX85eGUBol
+2026-06-08 16:35:01 INF [http] reminder · subtask digest member userid=LuoRenYang name=罗人洋 items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBbh_cudh0s21afizQdHXbNegWVL3AzuIXLMTHPck1Zrku2aWBpNAj2PeE7BzbgYMJAdmMgzi4xBvTX85eGUBol
+2026-06-08 16:35:01 INF [http] wecom send text to_user=LuoXian agent_id=1000005 content_len=341
+2026-06-08 16:35:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDp1j8SJUB_JFMceweXpwAOZp9-8dTf_qWw2MQA0M0ReHubf2pyBz6GRJaEcV65GhTsvw0u8IDT4sKRWFHumt0V
+2026-06-08 16:35:01 INF [http] reminder · subtask digest member userid=LuoXian name=罗贤 items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDp1j8SJUB_JFMceweXpwAOZp9-8dTf_qWw2MQA0M0ReHubf2pyBz6GRJaEcV65GhTsvw0u8IDT4sKRWFHumt0V
+2026-06-08 16:35:01 INF [http] reminder · finished date=2026-06-08 projects=5 start=1 end=0 subtask_mgr=2 subtask_member=3 skipped=0 errors=0
+2026-06-08 16:35:31 INF [http] GET /api/project-subtasks?project_id=3 → 200 1ms 1.4KB 61.140.148.146
+2026-06-08 16:35:31 INF [http] GET /api/wecom/users → 200 2ms 10.2KB 61.140.148.146
+2026-06-08 16:35:31 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:35:33 INF [http] GET /api/projects → 200 9ms 3.7KB 61.140.148.146
+2026-06-08 16:35:34 INF [http] GET /api/project-subtasks?project_id=7 → 200 1ms 1008B 61.140.148.146
+2026-06-08 16:35:34 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:35:34 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:35:35 INF [http] GET /api/projects → 200 11ms 3.7KB 61.140.148.146
+2026-06-08 16:36:00 INF [http] reminder · tick now=16:36 reminder_time=16:35 action=wait
+2026-06-08 16:37:00 INF [http] reminder · tick now=16:37 reminder_time=16:35 action=wait
+2026-06-08 16:38:00 INF [http] reminder · tick now=16:38 reminder_time=16:35 action=wait
+2026-06-08 16:38:12 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 16:38:12 INF [http] starting http api addr=:8081
+2026-06-08 16:38:12 INF [http] reminder · scheduler started reminder_time=16:35 tz=CST start_days=1 end_days=3
+2026-06-08 16:38:12 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 16:38:28 INF [http] reminder · settings updated reminder_time=16:40 start_days=1 end_days=3 server_now=16:38 tz=CST
+2026-06-08 16:38:28 INF [http] PUT /api/settings → 200 4ms 222B 61.140.148.146
+2026-06-08 16:39:00 INF [http] reminder · tick now=16:39 reminder_time=16:40 action=wait
+2026-06-08 16:40:00 INF [http] reminder · tick now=16:40 reminder_time=16:40 action=trigger
+2026-06-08 16:40:00 INF [http] reminder · trigger time=16:40
+2026-06-08 16:40:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=327
+2026-06-08 16:40:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDo7In_b3i0t96VSr_8762EAYjcwv8zVR8jadQXPDogDfj9kDRiAKyjViKE1c4mA6NGQ2qhU8tFVZFVJOdamta8
+2026-06-08 16:40:00 INF [http] reminder · project start digest mgr=LuoRenYang items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDo7In_b3i0t96VSr_8762EAYjcwv8zVR8jadQXPDogDfj9kDRiAKyjViKE1c4mA6NGQ2qhU8tFVZFVJOdamta8
+2026-06-08 16:40:00 INF [http] wecom send text to_user=LuoXian agent_id=1000005 content_len=446
+2026-06-08 16:40:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kw-8MagP1Ok1mGhMA5gAHksTbZ7X9jZ_W5sO7bDZtseTiKIsnqDdVuhRu3QUCzD5LRojiYuljOeKV57SJIPHhhF
+2026-06-08 16:40:00 INF [http] reminder · subtask digest mgr project_id=3 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kw-8MagP1Ok1mGhMA5gAHksTbZ7X9jZ_W5sO7bDZtseTiKIsnqDdVuhRu3QUCzD5LRojiYuljOeKV57SJIPHhhF
+2026-06-08 16:40:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=624
+2026-06-08 16:40:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kybj6hZyS_dtdnERUO5YBhCwqStfkCSGHAOAy42j-nzz3pzRvGwTWTHOujDkWYjLgFwwoHGvxiw1gJ4RBy-mnR5
+2026-06-08 16:40:01 INF [http] reminder · subtask digest mgr project_id=7 items=2 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kybj6hZyS_dtdnERUO5YBhCwqStfkCSGHAOAy42j-nzz3pzRvGwTWTHOujDkWYjLgFwwoHGvxiw1gJ4RBy-mnR5
+2026-06-08 16:40:01 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=753
+2026-06-08 16:40:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kw_mInLuMpPPf2B2MexdEePqXfEQiDyCNv83FsJFfGQ_ORgzMOYScNwEeZODJJNpyXKMcgwSm_7MsGyncWm4cfs
+2026-06-08 16:40:01 INF [http] reminder · subtask digest member userid=ZuoMuShuai name=左木帅 items=3 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kw_mInLuMpPPf2B2MexdEePqXfEQiDyCNv83FsJFfGQ_ORgzMOYScNwEeZODJJNpyXKMcgwSm_7MsGyncWm4cfs
+2026-06-08 16:40:01 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=379
+2026-06-08 16:40:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kwCu_uUmsYrKMDAc5Q8BmRzs4XXD79iJHjSTHqVAPtUlorPAyS1fbmbj8ERFPckJqgLt2WBV4BsX3TSLluwK5Jw
+2026-06-08 16:40:01 INF [http] reminder · subtask digest member userid=LuoRenYang name=罗人洋 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kwCu_uUmsYrKMDAc5Q8BmRzs4XXD79iJHjSTHqVAPtUlorPAyS1fbmbj8ERFPckJqgLt2WBV4BsX3TSLluwK5Jw
+2026-06-08 16:40:01 INF [http] wecom send text to_user=LuoXian agent_id=1000005 content_len=372
+2026-06-08 16:40:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kw-DCw5JT0t8BiBwjUVLV9AnCZ0G4tX_y6lhNFDuYgvFsODsZNV4wOrw3UdBi-V9kaB79eiQJx803yaPmKmW1J_
+2026-06-08 16:40:01 INF [http] reminder · subtask digest member userid=LuoXian name=罗贤 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kw-DCw5JT0t8BiBwjUVLV9AnCZ0G4tX_y6lhNFDuYgvFsODsZNV4wOrw3UdBi-V9kaB79eiQJx803yaPmKmW1J_
+2026-06-08 16:40:01 INF [http] reminder · finished date=2026-06-08 projects=5 start=1 end=0 subtask_mgr=2 subtask_member=3 skipped=0 errors=0
+2026-06-08 16:41:00 INF [http] reminder · tick now=16:41 reminder_time=16:40 action=wait
+2026-06-08 16:41:04 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 1008B 61.140.148.146
+2026-06-08 16:41:04 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:41:05 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:41:07 INF [http] GET /api/projects → 200 14ms 3.7KB 61.140.148.146
+2026-06-08 16:41:17 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 1008B 61.140.148.146
+2026-06-08 16:41:17 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:41:17 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:42:00 INF [http] reminder · tick now=16:42 reminder_time=16:40 action=wait
+2026-06-08 16:42:06 INF [http] PUT /api/project-subtasks → 200 30ms 572B 61.140.148.146
+2026-06-08 16:42:06 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 1018B 61.140.148.146
+2026-06-08 16:42:08 WRN [http] CONNECT  → 404 0ms 19B 45.135.193.193
+2026-06-08 16:42:14 INF [http] GET /api/projects → 200 12ms 3.7KB 61.140.148.146
+2026-06-08 16:42:25 INF [http] reminder · settings updated reminder_time=16:44 start_days=1 end_days=3 server_now=16:42 tz=CST
+2026-06-08 16:42:25 INF [http] PUT /api/settings → 200 3ms 222B 61.140.148.146
+2026-06-08 16:43:00 INF [http] reminder · tick now=16:43 reminder_time=16:44 action=wait
+2026-06-08 16:44:00 INF [http] reminder · tick now=16:44 reminder_time=16:44 action=trigger
+2026-06-08 16:44:00 INF [http] reminder · trigger time=16:44
+2026-06-08 16:44:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=327
+2026-06-08 16:44:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kwIgeBtbbG2_Jaz3Day25cjU5QiB-khWSTuXWRijvoc8RezcLFkYQ_oNAfkPifUJAzINJaqUb8_wTkpbEGjdRUR
+2026-06-08 16:44:00 INF [http] reminder · project start digest mgr=LuoRenYang items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kwIgeBtbbG2_Jaz3Day25cjU5QiB-khWSTuXWRijvoc8RezcLFkYQ_oNAfkPifUJAzINJaqUb8_wTkpbEGjdRUR
+2026-06-08 16:44:00 INF [http] wecom send text to_user=LuoXian agent_id=1000005 content_len=446
+2026-06-08 16:44:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxySWP4GIPYLb3RmVBMlo45r4VTD-SiQmxTFfSFIyn9RgcOVGhO14nySEO0ZZeKEbM_xn0PnXikRcbuyC-8tLI0
+2026-06-08 16:44:00 INF [http] reminder · subtask digest mgr project_id=3 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxySWP4GIPYLb3RmVBMlo45r4VTD-SiQmxTFfSFIyn9RgcOVGhO14nySEO0ZZeKEbM_xn0PnXikRcbuyC-8tLI0
+2026-06-08 16:44:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=441
+2026-06-08 16:44:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kx54QTo5MRc_nYvFil0Dp1F0KVsc-vGp0tCibicpD8nvVJGC_imhhPMxS9JgZDVSZHc-mLBe71v7s2K6svfn5l4
+2026-06-08 16:44:00 INF [http] reminder · subtask digest mgr project_id=7 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kx54QTo5MRc_nYvFil0Dp1F0KVsc-vGp0tCibicpD8nvVJGC_imhhPMxS9JgZDVSZHc-mLBe71v7s2K6svfn5l4
+2026-06-08 16:44:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=379
+2026-06-08 16:44:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxiR_SGuR2zc08ELE8HjuQAVpfaOv8CEStBmNmjEIOIDsy1OKHlqYT6egukGWaaZUhhok1GaTJvfPRhggNmSNMT
+2026-06-08 16:44:01 INF [http] reminder · subtask digest member userid=LuoRenYang name=罗人洋 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxiR_SGuR2zc08ELE8HjuQAVpfaOv8CEStBmNmjEIOIDsy1OKHlqYT6egukGWaaZUhhok1GaTJvfPRhggNmSNMT
+2026-06-08 16:44:01 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=570
+2026-06-08 16:44:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kyCpGeL1G2uBzKKOSLuU3Dfk9NkkJ45_5ecvKtnF7X38sKQbZf1aXu5cp0_VS0DOxLQY-VgsduBrzVBFZ1tm_-l
+2026-06-08 16:44:01 INF [http] reminder · subtask digest member userid=ZuoMuShuai name=左木帅 items=2 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kyCpGeL1G2uBzKKOSLuU3Dfk9NkkJ45_5ecvKtnF7X38sKQbZf1aXu5cp0_VS0DOxLQY-VgsduBrzVBFZ1tm_-l
+2026-06-08 16:44:01 INF [http] reminder · finished date=2026-06-08 projects=5 start=1 end=0 subtask_mgr=2 subtask_member=2 skipped=0 errors=0
+2026-06-08 16:44:31 INF [http] GET /api/project-subtasks?project_id=7 → 200 0ms 1018B 61.140.148.146
+2026-06-08 16:44:31 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:44:31 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:45:00 INF [http] reminder · tick now=16:45 reminder_time=16:44 action=wait
+2026-06-08 16:46:00 INF [http] reminder · tick now=16:46 reminder_time=16:44 action=wait
+2026-06-08 16:47:00 INF [http] reminder · tick now=16:47 reminder_time=16:44 action=wait
+2026-06-08 16:48:00 INF [http] reminder · tick now=16:48 reminder_time=16:44 action=wait
+2026-06-08 16:49:00 INF [http] reminder · tick now=16:49 reminder_time=16:44 action=wait
+2026-06-08 16:49:55 INF [http] GET /api/projects → 200 15ms 3.7KB 61.140.148.146
+2026-06-08 16:50:00 INF [http] reminder · tick now=16:50 reminder_time=16:44 action=wait
+2026-06-08 16:50:32 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 16:50:32 INF [http] starting http api addr=:8081
+2026-06-08 16:50:32 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 16:50:32 INF [http] reminder · scheduler started reminder_time=16:44 tz=CST start_days=1 end_days=3
+2026-06-08 16:50:42 INF [http] reminder · settings updated reminder_time=16:52 start_days=1 end_days=3 server_now=16:50 tz=CST
+2026-06-08 16:50:42 INF [http] PUT /api/settings → 200 4ms 222B 61.140.148.146
+2026-06-08 16:50:55 ERR [http] PUT /api/projects → 500 10ms 126B 61.140.148.146
+2026-06-08 16:51:00 INF [http] reminder · tick now=16:51 reminder_time=16:52 action=wait
+2026-06-08 16:51:02 ERR [http] PUT /api/projects → 500 3ms 126B 61.140.148.146
+2026-06-08 16:51:24 ERR [http] PUT /api/projects → 500 4ms 126B 61.140.148.146
+2026-06-08 16:52:00 INF [http] reminder · tick now=16:52 reminder_time=16:52 action=trigger
+2026-06-08 16:52:00 INF [http] reminder · trigger time=16:52
+2026-06-08 16:52:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=327
+2026-06-08 16:52:00 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBHZ7WMqYRNqzP1KvkTuIXmQuwCznDjS86AcxaNtHLRTGG_OnJJYXjAOZHML6uwCw5qsznImmDB8px8iHM-uJfp
+2026-06-08 16:52:00 INF [http] reminder · project start digest mgr=LuoRenYang items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gBHZ7WMqYRNqzP1KvkTuIXmQuwCznDjS86AcxaNtHLRTGG_OnJJYXjAOZHML6uwCw5qsznImmDB8px8iHM-uJfp
+2026-06-08 16:52:00 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=441
+2026-06-08 16:52:00 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxUKk9xVJ5VQbR9XPiaiJtbZ0g4MCfASDkCPeYW86pocyU939ScTwjeCoNOwIl9nNLQpHizkdYIQ5n774fAIJZC
+2026-06-08 16:52:00 INF [http] reminder · subtask digest mgr project_id=7 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kxUKk9xVJ5VQbR9XPiaiJtbZ0g4MCfASDkCPeYW86pocyU939ScTwjeCoNOwIl9nNLQpHizkdYIQ5n774fAIJZC
+2026-06-08 16:52:00 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=380
+2026-06-08 16:52:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDIY7A3641CN6uclt3l6d3Z1jxTxef7i7HT-wZEWPkAZ7sSQ1br4l_qJ-kAqc-0r_iNxhycs4XUeC1BL9ucxwDS
+2026-06-08 16:52:01 INF [http] reminder · subtask digest member userid=ZuoMuShuai name=左木帅 items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDIY7A3641CN6uclt3l6d3Z1jxTxef7i7HT-wZEWPkAZ7sSQ1br4l_qJ-kAqc-0r_iNxhycs4XUeC1BL9ucxwDS
+2026-06-08 16:52:01 INF [http] wecom send text to_user=LuoRenYang agent_id=1000005 content_len=442
+2026-06-08 16:52:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDh_CviKWuphyQgUh_Bqa5Wewi9rcvS9IIIu6ZcexosTRjeZMx3R9TcF51c9zSGsXl4M7kQON0qHHOKATYhLqzE
+2026-06-08 16:52:01 INF [http] reminder · subtask end digest mgr project_id=7 items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gDh_CviKWuphyQgUh_Bqa5Wewi9rcvS9IIIu6ZcexosTRjeZMx3R9TcF51c9zSGsXl4M7kQON0qHHOKATYhLqzE
+2026-06-08 16:52:01 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=381
+2026-06-08 16:52:01 INF [http] wecom send ok msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kzW-ddCmZA0HkrTfPkN4wrvCLrcyhqShlUNexd3CRiyy3Zu8pYHTBjab7lRlyMC3vO_Qcl6YywAStWtdHvxDzJ7
+2026-06-08 16:52:01 INF [http] reminder · subtask end digest member userid=ZuoMuShuai name=左木帅 items=1 msgid=-k0v1xV6DAwY50e7tkh-GWskdLKRnwuc9J9QjMvY1kzW-ddCmZA0HkrTfPkN4wrvCLrcyhqShlUNexd3CRiyy3Zu8pYHTBjab7lRlyMC3vO_Qcl6YywAStWtdHvxDzJ7
+2026-06-08 16:52:01 INF [http] wecom send text to_user=LuoXian agent_id=1000005 content_len=381
+2026-06-08 16:52:01 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gByEaz50c23fCvkDft6JjlfWZ7_S9EqaunbWXcnCqQxBJJH5GgL2TcK7rWVQavjDv7c9L5uqfYiXloAGJ2hg2A_
+2026-06-08 16:52:01 INF [http] reminder · subtask end digest member userid=LuoXian name=罗贤 items=1 msgid=cgT-8_6jBd9XftD4PxPpAg2pN1ufvvyxXCGwfy2Z0gByEaz50c23fCvkDft6JjlfWZ7_S9EqaunbWXcnCqQxBJJH5GgL2TcK7rWVQavjDv7c9L5uqfYiXloAGJ2hg2A_
+2026-06-08 16:52:01 INF [http] reminder · finished date=2026-06-08 projects=5 start=1 end=0 subtask_start_mgr=1 subtask_start_member=1 subtask_end_mgr=1 subtask_end_member=2 skipped=0 errors=0
+2026-06-08 16:53:00 INF [http] reminder · tick now=16:53 reminder_time=16:52 action=wait
+2026-06-08 16:54:00 INF [http] reminder · tick now=16:54 reminder_time=16:52 action=wait
+2026-06-08 16:54:38 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 16:54:38 INF [http] starting http api addr=:8081
+2026-06-08 16:54:38 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 16:54:38 INF [http] reminder · scheduler started reminder_time=16:52 tz=CST start_days=1 end_days=3
+2026-06-08 16:55:00 INF [http] reminder · tick now=16:55 reminder_time=16:52 action=wait
+2026-06-08 16:55:09 INF [http] GET /api/wecom/users → 200 4ms 10.2KB 61.140.148.146
+2026-06-08 16:55:09 INF [http] GET /api/departments?with_members=1 → 200 4ms 865B 61.140.148.146
+2026-06-08 16:55:09 INF [http] GET /api/projects → 200 14ms 3.7KB 61.140.148.146
+2026-06-08 16:55:09 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 16:56:00 INF [http] reminder · tick now=16:56 reminder_time=16:52 action=wait
+2026-06-08 16:56:51 INF [http] GET /api/project-subtasks?project_id=3 → 200 1ms 1.4KB 61.140.148.146
+2026-06-08 16:56:51 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 16:56:51 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 16:57:00 INF [http] reminder · tick now=16:57 reminder_time=16:52 action=wait
+2026-06-08 16:58:00 INF [http] reminder · tick now=16:58 reminder_time=16:52 action=wait
+2026-06-08 16:59:00 INF [http] reminder · tick now=16:59 reminder_time=16:52 action=wait
+2026-06-08 17:00:00 INF [http] reminder · tick now=17:00 reminder_time=16:52 action=wait
+2026-06-08 17:00:00 INF [http] GET /api/projects → 200 11ms 3.7KB 61.140.148.146
+2026-06-08 17:00:48 INF [http] GET /api/departments?with_members=1 → 200 1ms 865B 61.140.148.146
+2026-06-08 17:00:48 INF [http] GET /api/wecom/users → 200 4ms 10.2KB 61.140.148.146
+2026-06-08 17:00:48 INF [http] GET /api/projects → 200 12ms 3.7KB 61.140.148.146
+2026-06-08 17:00:48 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 17:01:00 INF [http] reminder · tick now=17:01 reminder_time=16:52 action=wait
+2026-06-08 17:01:05 INF [http] GET /api/project-subtasks?project_id=3 → 200 0ms 1.4KB 61.140.148.146
+2026-06-08 17:01:05 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 17:01:05 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 17:01:09 INF [http] GET /api/projects → 200 10ms 3.7KB 61.140.148.146
+2026-06-08 17:02:00 INF [http] reminder · tick now=17:02 reminder_time=16:52 action=wait
+2026-06-08 17:03:00 INF [http] reminder · tick now=17:03 reminder_time=16:52 action=wait
+2026-06-08 17:04:00 INF [http] reminder · tick now=17:04 reminder_time=16:52 action=wait
+2026-06-08 17:05:00 INF [http] reminder · tick now=17:05 reminder_time=16:52 action=wait
+2026-06-08 17:06:00 INF [http] reminder · tick now=17:06 reminder_time=16:52 action=wait
+2026-06-08 17:07:00 INF [http] reminder · tick now=17:07 reminder_time=16:52 action=wait
+2026-06-08 17:07:59 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 17:07:59 INF [http] starting http api addr=:8081
+2026-06-08 17:07:59 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 17:07:59 INF [http] reminder · scheduler started reminder_time=16:52 tz=CST start_days=1 end_days=3
+2026-06-08 17:08:00 INF [http] reminder · tick now=17:08 reminder_time=16:52 action=wait
+2026-06-08 17:08:07 INF [http] GET /api/wecom/users → 200 3ms 10.2KB 61.140.148.146
+2026-06-08 17:08:07 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 17:08:42 INF [http] POST /api/projects → 200 7ms 635B 61.140.148.146
+2026-06-08 17:08:44 INF [http] GET /api/projects → 200 11ms 4.3KB 61.140.148.146
+2026-06-08 17:08:54 INF [http] GET /api/settings → 200 0ms 198B 61.140.148.146
+2026-06-08 17:09:00 INF [http] reminder · tick now=17:09 reminder_time=16:52 action=wait
+2026-06-08 17:10:00 INF [http] reminder · tick now=17:10 reminder_time=16:52 action=wait
+2026-06-08 17:10:53 INF [http] GET /api/project-subtasks?project_id=8 → 200 0ms 51B 61.140.148.146
+2026-06-08 17:10:53 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 17:10:53 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 17:11:00 INF [http] reminder · tick now=17:11 reminder_time=16:52 action=wait
+2026-06-08 17:11:07 INF [http] POST /api/project-subtasks → 200 15ms 420B 61.140.148.146
+2026-06-08 17:11:08 INF [http] GET /api/project-subtasks?project_id=8 → 200 0ms 421B 61.140.148.146
+2026-06-08 17:11:11 INF [http] GET /api/projects → 200 16ms 4.3KB 61.140.148.146
+2026-06-08 17:12:00 INF [http] reminder · tick now=17:12 reminder_time=16:52 action=wait
+2026-06-08 17:13:00 INF [http] reminder · tick now=17:13 reminder_time=16:52 action=wait
+2026-06-08 17:14:00 INF [http] reminder · tick now=17:14 reminder_time=16:52 action=wait
+2026-06-08 17:14:22 INF [http] database ready path=/home/ubuntu/my-backend-services/data/wecom.db
+2026-06-08 17:14:22 INF [http] reminder · scheduler started reminder_time=16:52 tz=CST start_days=1 end_days=3
+2026-06-08 17:14:22 INF [http] starting http api addr=:8081
+2026-06-08 17:14:22 INF [http] routes ready ping="GET /ping" wecom_test="GET|POST /api/wecom/test" wecom_sync="GET|POST /api/wecom/sync" wecom_users="GET|PUT /api/wecom/users" departments="GET|POST|PUT|DELETE /api/departments" wecom_stats="GET /api/wecom/stats" settings="GET|PUT /api/settings" projects="GET|POST|PUT|DELETE /api/projects" project_subtasks="GET|POST|PUT|DELETE /api/project-subtasks" db_export="GET /api/db/export" db_download="GET /api/db/download" wecom_send_group="POST /api/wecom/send-group" wecom_notify_project="POST /api/wecom/notify-project" reminder_run="GET|POST /api/reminder/run" logs="GET /api/logs" logs_download="GET /api/logs/download?name="
+2026-06-08 17:14:37 INF [http] DELETE /api/projects?id=8 → 200 4ms 43B 61.140.148.146
+2026-06-08 17:14:37 INF [http] GET /api/projects → 200 13ms 3.7KB 61.140.148.146
+2026-06-08 17:14:39 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 17:14:39 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 17:15:00 INF [http] reminder · tick now=17:15 reminder_time=16:52 action=wait
+2026-06-08 17:15:00 INF [http] member join notify skip recipient project_id=9 userid=LuoRenYang reason=manager_or_empty
+2026-06-08 17:15:00 INF [http] member join notify queued project_id=9 added=1 sent=0 skipped=1
+2026-06-08 17:15:00 INF [http] POST /api/projects → 200 7ms 635B 61.140.148.146
+2026-06-08 17:15:01 INF [http] GET /api/projects → 200 10ms 4.3KB 61.140.148.146
+2026-06-08 17:15:39 INF [http] GET /api/project-subtasks?project_id=9 → 200 0ms 51B 61.140.148.146
+2026-06-08 17:15:39 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 17:15:39 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 17:15:41 INF [http] GET /api/projects → 200 11ms 4.3KB 61.140.148.146
+2026-06-08 17:16:00 INF [http] reminder · tick now=17:16 reminder_time=16:52 action=wait
+2026-06-08 17:16:10 INF [http] GET /api/project-subtasks?project_id=9 → 200 0ms 51B 61.140.148.146
+2026-06-08 17:16:10 INF [http] GET /api/wecom/users → 200 1ms 10.2KB 61.140.148.146
+2026-06-08 17:16:10 INF [http] GET /api/departments → 200 0ms 219B 61.140.148.146
+2026-06-08 17:16:26 INF [http] POST /api/project-subtasks → 200 10ms 411B 61.140.148.146
+2026-06-08 17:16:26 INF [http] wecom send text to_user=ZuoMuShuai agent_id=1000005 content_len=534
+2026-06-08 17:16:27 INF [http] wecom send ok msgid=cgT-8_6jBd9XftD4PxPpArOvXtLR0tsXVm76oQLDPc-SsZkAtZ2F-sE1qQ425mEwBxKSMIWrgzFmM0zzjQExP16C3NMAeRo_UVzu-M8eqe9S6hzxtU0anXspu4ZOXdxb
+2026-06-08 17:16:27 INF [http] member join notify sent project_id=9 userid=ZuoMuShuai msgid=cgT-8_6jBd9XftD4PxPpArOvXtLR0tsXVm76oQLDPc-SsZkAtZ2F-sE1qQ425mEwBxKSMIWrgzFmM0zzjQExP16C3NMAeRo_UVzu-M8eqe9S6hzxtU0anXspu4ZOXdxb
+2026-06-08 17:16:27 INF [http] GET /api/project-subtasks?project_id=9 → 200 0ms 412B 61.140.148.146
+2026-06-08 17:16:31 INF [http] GET /api/projects → 200 17ms 4.4KB 61.140.148.146
