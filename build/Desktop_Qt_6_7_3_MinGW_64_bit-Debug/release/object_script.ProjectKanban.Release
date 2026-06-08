@@ -17,6 +17,7 @@ release/localdatastore.o
 release/applogger.o
 release/appstyle.o
 release/datepickerutils.o
+release/projectstatusutils.o
 release/moc_mainwindow.o
 release/moc_projectpanelwidget.o
 release/moc_projecteditdialog.o

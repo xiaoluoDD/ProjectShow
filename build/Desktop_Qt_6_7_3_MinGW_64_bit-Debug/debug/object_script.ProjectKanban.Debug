@@ -17,6 +17,7 @@ debug/localdatastore.o
 debug/applogger.o
 debug/appstyle.o
 debug/datepickerutils.o
+debug/projectstatusutils.o
 debug/moc_mainwindow.o
 debug/moc_projectpanelwidget.o
 debug/moc_projecteditdialog.o
