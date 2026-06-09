@@ -1,16 +1,21 @@
 #include "mainwindow.h"
 
 #include "applogger.h"
+#include "debugaccess.h"
 #include "debughubwidget.h"
 #include "departmentpanelwidget.h"
 #include "memberpanelwidget.h"
 #include "projectpanelwidget.h"
 
+#include <QInputDialog>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLineEdit>
+#include <QMouseEvent>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSettings>
+#include <QTabBar>
 #include <QTabWidget>
 #include <QTimer>
 #include <QUrl>
@@ -27,6 +32,38 @@ QString trimTrailingSlash(QString baseUrl)
 }
 
 } // namespace
+
+class MainTabBar : public QTabBar
+{
+public:
+    explicit MainTabBar(MainWindow *window, QWidget *parent = nullptr)
+        : QTabBar(parent)
+        , m_window(window)
+    {
+    }
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        const int idx = tabAt(event->pos());
+        if (idx >= 0 && m_window && !m_window->allowTabBarSwitch(idx))
+            return;
+        QTabBar::mousePressEvent(event);
+    }
+
+private:
+    MainWindow *m_window = nullptr;
+};
+
+class MainTabWidget : public QTabWidget
+{
+public:
+    explicit MainTabWidget(MainWindow *window, QWidget *parent = nullptr)
+        : QTabWidget(parent)
+    {
+        setTabBar(new MainTabBar(window, this));
+    }
+};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -47,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto *root = new QVBoxLayout(central);
     root->setContentsMargins(8, 8, 8, 8);
 
-    m_tabs = new QTabWidget(this);
+    m_tabs = new MainTabWidget(this, this);
     m_tabs->setObjectName(QStringLiteral("mainTabWidget"));
     m_projectPanel = new ProjectPanelWidget(this);
     m_memberPanel = new MemberPanelWidget(this);
@@ -58,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_tabs->addTab(m_departmentPanel, QStringLiteral("部门管理"));
     m_tabs->addTab(m_debugHub, QStringLiteral("调试"));
     root->addWidget(m_tabs, 1);
+
+    connect(m_tabs, &QTabWidget::currentChanged, this, &MainWindow::onMainTabChanged);
 
     setCentralWidget(central);
 
@@ -149,9 +188,91 @@ void MainWindow::loadServerUrlFromBackend()
         if (!obj.value(QStringLiteral("ok")).toBool(false))
             return;
 
-        const QString url =
-            obj.value(QStringLiteral("settings")).toObject().value(QStringLiteral("server_base_url")).toString();
+        const QJsonObject settings = obj.value(QStringLiteral("settings")).toObject();
+        const QString url = settings.value(QStringLiteral("server_base_url")).toString();
         if (!url.isEmpty())
             setServerBaseUrl(url);
+
+        DebugAccess::instance().applyFromSettings(
+            settings.value(QStringLiteral("debug_password_enabled")).toBool(false),
+            settings.value(QStringLiteral("debug_password")).toString());
     });
+}
+
+int MainWindow::projectTabIndex() const
+{
+    if (!m_projectPanel || !m_tabs)
+        return 0;
+    const int idx = m_tabs->indexOf(m_projectPanel);
+    return idx >= 0 ? idx : 0;
+}
+
+bool MainWindow::allowTabBarSwitch(int index)
+{
+    if (m_guardingTabSwitch || !m_tabs || !m_debugHub)
+        return true;
+
+    const int debugIndex = m_tabs->indexOf(m_debugHub);
+    if (index != debugIndex)
+        return true;
+
+    return tryEnterDebugTab();
+}
+
+bool MainWindow::tryEnterDebugTab()
+{
+    if (!DebugAccess::instance().isEnabled())
+        return true;
+    if (m_debugTabAuthorized)
+        return true;
+    if (!promptDebugAccess())
+        return false;
+
+    m_debugTabAuthorized = true;
+    return true;
+}
+
+bool MainWindow::promptDebugAccess()
+{
+    bool ok = false;
+    const QString password = QInputDialog::getText(
+        this,
+        QStringLiteral("调试入口"),
+        QStringLiteral("请输入调试密码："),
+        QLineEdit::Password,
+        QString(),
+        &ok);
+    if (!ok)
+        return false;
+    return DebugAccess::instance().verify(password);
+}
+
+void MainWindow::onMainTabChanged(int index)
+{
+    if (m_guardingTabSwitch || !m_tabs || !m_debugHub)
+        return;
+
+    const int debugIndex = m_tabs->indexOf(m_debugHub);
+    if (index != debugIndex) {
+        m_debugTabAuthorized = false;
+        m_lastNonDebugTabIndex = index;
+        return;
+    }
+
+    if (!DebugAccess::instance().isEnabled())
+        return;
+
+    if (m_debugTabAuthorized)
+        return;
+
+    m_guardingTabSwitch = true;
+    const int fallback = m_lastNonDebugTabIndex >= 0 ? m_lastNonDebugTabIndex : projectTabIndex();
+    m_tabs->setCurrentIndex(fallback);
+    m_guardingTabSwitch = false;
+
+    if (tryEnterDebugTab()) {
+        m_guardingTabSwitch = true;
+        m_tabs->setCurrentIndex(debugIndex);
+        m_guardingTabSwitch = false;
+    }
 }

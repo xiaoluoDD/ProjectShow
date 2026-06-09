@@ -20,6 +20,7 @@ release/appstyle.o
 release/datepickerutils.o
 release/projectstatusutils.o
 release/tableheaderfilter.o
+release/debugaccess.o
 release/moc_mainwindow.o
 release/moc_projectpanelwidget.o
 release/moc_projecteditdialog.o

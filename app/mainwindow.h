@@ -34,7 +34,16 @@ signals:
     void memberSelectionChanged(const QString &userid, const QString &name);
     void serverBaseUrlChanged(const QString &url);
 
+private slots:
+    void onMainTabChanged(int index);
+
 private:
+    friend class MainTabBar;
+    bool allowTabBarSwitch(int index);
+    bool tryEnterDebugTab();
+    bool promptDebugAccess();
+    int projectTabIndex() const;
+
     QTabWidget *m_tabs = nullptr;
     ProjectPanelWidget *m_projectPanel = nullptr;
     MemberPanelWidget *m_memberPanel = nullptr;
@@ -44,6 +53,9 @@ private:
     QString m_serverBaseUrl;
     QString m_selectedUserId;
     QString m_selectedMemberName;
+    int m_lastNonDebugTabIndex = 0;
+    bool m_debugTabAuthorized = false;
+    bool m_guardingTabSwitch = false;
 };
 
 #endif // MAINWINDOW_H
