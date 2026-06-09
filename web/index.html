@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>项目看板</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>项目看板</h1>
+    <button type="button" class="btn" id="btnFilter">筛选</button>
+    <button type="button" class="btn btn-primary" id="btnRefresh">刷新</button>
+  </header>
+
+  <main class="app-main">
+    <p class="pull-hint">只读查看 · 下拉页面可刷新</p>
+
+    <section class="filter-panel" id="filterPanel">
+      <label for="filterYear">年度</label>
+      <select id="filterYear"><option value="">全部</option></select>
+
+      <label for="filterWorkNo">工番号</label>
+      <select id="filterWorkNo"><option value="">全部</option></select>
+
+      <label for="filterManager">项目负责人</label>
+      <select id="filterManager"><option value="">全部</option></select>
+
+      <label for="filterStatus">项目状态</label>
+      <select id="filterStatus">
+        <option value="">全部</option>
+        <option value="待启动">待启动</option>
+        <option value="进行中">进行中</option>
+        <option value="逾期">逾期</option>
+        <option value="已完结">已完结</option>
+      </select>
+
+      <div class="filter-actions">
+        <button type="button" class="btn" id="btnClearFilter">清空</button>
+        <button type="button" class="btn btn-primary" id="btnApplyFilter">应用</button>
+      </div>
+    </section>
+
+    <p class="hint-bar" id="summaryBar">加载中…</p>
+    <div id="listRoot"></div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/status.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/list.js"></script>
+</body>
+</html>

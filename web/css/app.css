@@ -1,0 +1,304 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC',
+    'Microsoft YaHei', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #2c3340;
+  background: #f0f2f5;
+}
+
+a {
+  color: #1565c0;
+  text-decoration: none;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: #fff;
+  border-bottom: 1px solid #e2e6ea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.app-header h1 {
+  flex: 1;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.app-header .back-link {
+  font-size: 14px;
+  color: #1565c0;
+  white-space: nowrap;
+}
+
+.btn {
+  border: 1px solid #cfd8dc;
+  background: #fff;
+  color: #2c3340;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn:active {
+  background: #eceff1;
+}
+
+.btn-primary {
+  background: #1976d2;
+  border-color: #1976d2;
+  color: #fff;
+}
+
+.btn-primary:active {
+  background: #1565c0;
+}
+
+.app-main {
+  padding: 12px 14px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.filter-panel {
+  display: none;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e6ea;
+}
+
+.filter-panel.open {
+  display: block;
+}
+
+.filter-panel label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #607080;
+}
+
+.filter-panel select,
+.filter-panel input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.hint-bar {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #607080;
+}
+
+.project-card {
+  display: block;
+  margin-bottom: 10px;
+  padding: 14px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e6ea;
+  color: inherit;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.project-card:active {
+  background: #f8f9fa;
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.card-meta {
+  font-size: 13px;
+  color: #607080;
+}
+
+.card-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.card-row {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.card-row .label {
+  color: #607080;
+}
+
+.card-foot {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #eef1f4;
+  font-size: 13px;
+  color: #1565c0;
+  text-align: right;
+}
+
+.detail-card,
+.subtask-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e6ea;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.detail-row {
+  display: flex;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f2f5;
+  gap: 10px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  flex: 0 0 96px;
+  font-size: 13px;
+  color: #607080;
+}
+
+.detail-value {
+  flex: 1;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.member-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.subtask-card .card-title {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.action-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.action-bar .btn {
+  flex: 1;
+  text-align: center;
+}
+
+.muted {
+  color: #90a0b0;
+}
+
+.state-box {
+  text-align: center;
+  padding: 48px 16px;
+  color: #607080;
+}
+
+.state-box.error {
+  color: #c62828;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 12px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #1976d2;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-in-progress {
+  background: #fff3cd;
+  color: #2c3340;
+}
+
+.status-completed {
+  background: #cfefff;
+  color: #2c3340;
+}
+
+.status-overdue {
+  background: #ffcdd2;
+  color: #b71c1c;
+}
+
+.status-not-started,
+.status-default {
+  background: #eceff1;
+  color: #546e7a;
+}
+
+.pull-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #90a0b0;
+  padding: 4px 0 8px;
+}
