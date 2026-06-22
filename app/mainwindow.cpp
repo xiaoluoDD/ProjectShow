@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QSettings settings;
     QString saved = settings.value(QStringLiteral("serverBaseUrl"),
-                                   QStringLiteral("http://106.53.181.55:8081"))
+                                   QStringLiteral("http://8.134.255.174:8081"))
                         .toString();
     if (saved.endsWith(QStringLiteral(":8080")))
         saved.replace(QStringLiteral(":8080"), QStringLiteral(":8081"));
