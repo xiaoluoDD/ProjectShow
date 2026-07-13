@@ -1,4 +1,6 @@
 (function () {
+  applyAppVersionBadge();
+
   const listRoot = document.getElementById('listRoot');
   const summaryBar = document.getElementById('summaryBar');
   const filterPanel = document.getElementById('filterPanel');

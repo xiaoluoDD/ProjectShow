@@ -67,3 +67,9 @@ function showLoading(el, text) {
 function showError(el, text) {
   el.innerHTML = `<div class="state-box error"><p>${escapeHtml(text || '加载失败')}</p></div>`;
 }
+
+function applyAppVersionBadge(elementId) {
+  const el = document.getElementById(elementId || 'appVersion');
+  const ver = (window.APP_CONFIG && window.APP_CONFIG.appVersion) || '';
+  if (el && ver) el.textContent = ver;
+}

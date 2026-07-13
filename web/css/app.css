@@ -43,6 +43,12 @@ a {
   font-weight: 600;
 }
 
+.app-version {
+  font-size: 12px;
+  font-weight: 500;
+  color: #78909c;
+}
+
 .app-header .back-link {
   font-size: 14px;
   color: #1565c0;

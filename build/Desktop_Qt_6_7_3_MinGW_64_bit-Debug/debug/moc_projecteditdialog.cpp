@@ -36,9 +36,10 @@ namespace {
 struct qt_meta_stringdata_CLASSProjectEditDialogENDCLASS_t {};
 constexpr auto qt_meta_stringdata_CLASSProjectEditDialogENDCLASS = QtMocHelpers::stringData(
     "ProjectEditDialog",
-    "onMemberDeptChanged",
+    "onManagerDeptChanged",
     "",
     "index",
+    "onMemberDeptChanged",
     "onMemberItemChanged",
     "QListWidgetItem*",
     "item"
@@ -54,7 +55,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSProjectEditDialogENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -62,12 +63,14 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSProjectEditDialogENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   26,    2, 0x08,    1 /* Private */,
-       4,    1,   29,    2, 0x08,    3 /* Private */,
+       1,    1,   32,    2, 0x08,    1 /* Private */,
+       4,    1,   35,    2, 0x08,    3 /* Private */,
+       5,    1,   38,    2, 0x08,    5 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    3,
-    QMetaType::Void, 0x80000000 | 5,    6,
+    QMetaType::Void, QMetaType::Int,    3,
+    QMetaType::Void, 0x80000000 | 6,    7,
 
        0        // eod
 };
@@ -81,6 +84,9 @@ Q_CONSTINIT const QMetaObject ProjectEditDialog::staticMetaObject = { {
     qt_incomplete_metaTypeArray<qt_meta_stringdata_CLASSProjectEditDialogENDCLASS_t,
         // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<ProjectEditDialog, std::true_type>,
+        // method 'onManagerDeptChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'onMemberDeptChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
@@ -97,8 +103,9 @@ void ProjectEditDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         auto *_t = static_cast<ProjectEditDialog *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->onMemberDeptChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 1: _t->onMemberItemChanged((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 0: _t->onManagerDeptChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 1: _t->onMemberDeptChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 2: _t->onMemberItemChanged((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
         default: ;
         }
     }
@@ -123,13 +130,13 @@ int ProjectEditDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 3)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
 }

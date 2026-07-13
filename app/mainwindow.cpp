@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include "applogger.h"
+#include "appversion.h"
 #include "debugaccess.h"
 #include "debughubwidget.h"
 #include "departmentpanelwidget.h"
@@ -69,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_net(new QNetworkAccessManager(this))
 {
-    setWindowTitle(QStringLiteral("项目看板"));
+    setWindowTitle(AppVersion::windowTitle());
     resize(960, 640);
 
     QSettings settings;
@@ -101,7 +102,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(central);
 
     AppLogger::instance().info(QStringLiteral("App"),
-                               QStringLiteral("主窗口已启动，后端：%1").arg(serverBaseUrl()));
+                               QStringLiteral("主窗口已启动，%1，后端：%2")
+                                   .arg(AppVersion::display(), serverBaseUrl()));
 
     QTimer::singleShot(0, this, &MainWindow::loadServerUrlFromBackend);
 }

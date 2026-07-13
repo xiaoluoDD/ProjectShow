@@ -6,6 +6,7 @@ CONFIG   += c++17 warn_on depend_includepath
 win32-g++: QMAKE_CXXFLAGS += -std=gnu++17
 TEMPLATE = app
 TARGET   = ProjectKanban
+VERSION  = 1.1.1
 
 INCLUDEPATH += \
     $$PWD/app \
@@ -62,7 +63,8 @@ HEADERS += \
     core/datepickerutils.h \
     core/projectstatusutils.h \
     core/tableheaderfilter.h \
-    core/debugaccess.h
+    core/debugaccess.h \
+    core/appversion.h
 
 # Qt 6.7.3，MSVC / MinGW 下保证源文件 UTF-8
 msvc: QMAKE_CXXFLAGS += /utf-8
