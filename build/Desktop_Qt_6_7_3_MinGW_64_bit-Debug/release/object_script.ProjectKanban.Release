@@ -1,5 +1,8 @@
 release/main.o
 release/mainwindow.o
+release/dashboardpanelwidget.o
+release/dashboardpiechartwidget.o
+release/dashboardstats.o
 release/projectpanelwidget.o
 release/projecteditdialog.o
 release/projectdetaildialog.o
@@ -12,16 +15,20 @@ release/departmentpanelwidget.o
 release/debugpanelwidget.o
 release/debughubwidget.o
 release/logpanelwidget.o
+release/changelogdialog.o
 release/settingspanelwidget.o
 release/datapanelwidget.o
 release/localdatastore.o
 release/applogger.o
 release/appstyle.o
+release/appchangelog.o
 release/datepickerutils.o
 release/projectstatusutils.o
 release/tableheaderfilter.o
 release/debugaccess.o
 release/moc_mainwindow.o
+release/moc_dashboardpanelwidget.o
+release/moc_dashboardpiechartwidget.o
 release/moc_projectpanelwidget.o
 release/moc_projecteditdialog.o
 release/moc_projectdetaildialog.o
@@ -33,6 +40,7 @@ release/moc_membereditdialog.o
 release/moc_departmentpanelwidget.o
 release/moc_debugpanelwidget.o
 release/moc_logpanelwidget.o
+release/moc_changelogdialog.o
 release/moc_settingspanelwidget.o
 release/moc_datapanelwidget.o
 release/moc_applogger.o

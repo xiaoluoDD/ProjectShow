@@ -10,6 +10,7 @@ VERSION  = 1.1.1
 
 INCLUDEPATH += \
     $$PWD/app \
+    $$PWD/dashboard \
     $$PWD/project \
     $$PWD/member \
     $$PWD/department \
@@ -19,6 +20,9 @@ INCLUDEPATH += \
 SOURCES += \
     main.cpp \
     app/mainwindow.cpp \
+    dashboard/dashboardpanelwidget.cpp \
+    dashboard/dashboardpiechartwidget.cpp \
+    dashboard/dashboardstats.cpp \
     project/projectpanelwidget.cpp \
     project/projecteditdialog.cpp \
     project/projectdetaildialog.cpp \
@@ -31,11 +35,13 @@ SOURCES += \
     debug/debugpanelwidget.cpp \
     debug/debughubwidget.cpp \
     debug/logpanelwidget.cpp \
+    debug/changelogdialog.cpp \
     debug/settingspanelwidget.cpp \
     debug/datapanelwidget.cpp \
     core/localdatastore.cpp \
     core/applogger.cpp \
     core/appstyle.cpp \
+    core/appchangelog.cpp \
     core/datepickerutils.cpp \
     core/projectstatusutils.cpp \
     core/tableheaderfilter.cpp \
@@ -43,6 +49,9 @@ SOURCES += \
 
 HEADERS += \
     app/mainwindow.h \
+    dashboard/dashboardpanelwidget.h \
+    dashboard/dashboardpiechartwidget.h \
+    dashboard/dashboardstats.h \
     project/projectpanelwidget.h \
     project/projecteditdialog.h \
     project/projectdetaildialog.h \
@@ -55,11 +64,13 @@ HEADERS += \
     debug/debugpanelwidget.h \
     debug/debughubwidget.h \
     debug/logpanelwidget.h \
+    debug/changelogdialog.h \
     debug/settingspanelwidget.h \
     debug/datapanelwidget.h \
     core/localdatastore.h \
     core/applogger.h \
     core/appstyle.h \
+    core/appchangelog.h \
     core/datepickerutils.h \
     core/projectstatusutils.h \
     core/tableheaderfilter.h \

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class QTabWidget;
+class DashboardPanelWidget;
 class ProjectPanelWidget;
 class MemberPanelWidget;
 class DepartmentPanelWidget;
@@ -43,8 +44,10 @@ private:
     bool tryEnterDebugTab();
     bool promptDebugAccess();
     int projectTabIndex() const;
+    int dashboardTabIndex() const;
 
     QTabWidget *m_tabs = nullptr;
+    DashboardPanelWidget *m_dashboardPanel = nullptr;
     ProjectPanelWidget *m_projectPanel = nullptr;
     MemberPanelWidget *m_memberPanel = nullptr;
     DepartmentPanelWidget *m_departmentPanel = nullptr;

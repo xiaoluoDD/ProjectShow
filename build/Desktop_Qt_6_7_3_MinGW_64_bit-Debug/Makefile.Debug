@@ -16,7 +16,7 @@ CXX           = g++
 DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DMINGW_HAS_SECURE_API=1 -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -fno-keep-inline-dllexport -g -Wall -Wextra -Wextra $(DEFINES)
 CXXFLAGS      = -fno-keep-inline-dllexport -std=gnu++17 -g -std=gnu++1z -Wall -Wextra -Wextra -fexceptions -mthreads $(DEFINES)
-INCPATH       = -I../../../ProjectShow -I. -I../../app -I../../project -I../../member -I../../department -I../../debug -I../../core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -Idebug -I/include -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ 
+INCPATH       = -I../../../ProjectShow -I. -I../../app -I../../dashboard -I../../project -I../../member -I../../department -I../../debug -I../../core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -Idebug -I/include -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-subsystem,windows -mthreads
 LIBS        =        D:\qt6\6.7.3\mingw_64\lib\libQt6Widgets.a D:\qt6\6.7.3\mingw_64\lib\libQt6Gui.a D:\qt6\6.7.3\mingw_64\lib\libQt6Network.a D:\qt6\6.7.3\mingw_64\lib\libQt6Core.a debug\ProjectKanban_resource_res.o -lmingw32 D:\qt6\6.7.3\mingw_64\lib\libQt6EntryPoint.a -lshell32  
@@ -52,6 +52,9 @@ OBJECTS_DIR   = debug
 
 SOURCES       = ..\..\main.cpp \
 		..\..\app\mainwindow.cpp \
+		..\..\dashboard\dashboardpanelwidget.cpp \
+		..\..\dashboard\dashboardpiechartwidget.cpp \
+		..\..\dashboard\dashboardstats.cpp \
 		..\..\project\projectpanelwidget.cpp \
 		..\..\project\projecteditdialog.cpp \
 		..\..\project\projectdetaildialog.cpp \
@@ -64,15 +67,19 @@ SOURCES       = ..\..\main.cpp \
 		..\..\debug\debugpanelwidget.cpp \
 		..\..\debug\debughubwidget.cpp \
 		..\..\debug\logpanelwidget.cpp \
+		..\..\debug\changelogdialog.cpp \
 		..\..\debug\settingspanelwidget.cpp \
 		..\..\debug\datapanelwidget.cpp \
 		..\..\core\localdatastore.cpp \
 		..\..\core\applogger.cpp \
 		..\..\core\appstyle.cpp \
+		..\..\core\appchangelog.cpp \
 		..\..\core\datepickerutils.cpp \
 		..\..\core\projectstatusutils.cpp \
 		..\..\core\tableheaderfilter.cpp \
 		..\..\core\debugaccess.cpp debug\moc_mainwindow.cpp \
+		debug\moc_dashboardpanelwidget.cpp \
+		debug\moc_dashboardpiechartwidget.cpp \
 		debug\moc_projectpanelwidget.cpp \
 		debug\moc_projecteditdialog.cpp \
 		debug\moc_projectdetaildialog.cpp \
@@ -84,12 +91,16 @@ SOURCES       = ..\..\main.cpp \
 		debug\moc_departmentpanelwidget.cpp \
 		debug\moc_debugpanelwidget.cpp \
 		debug\moc_logpanelwidget.cpp \
+		debug\moc_changelogdialog.cpp \
 		debug\moc_settingspanelwidget.cpp \
 		debug\moc_datapanelwidget.cpp \
 		debug\moc_applogger.cpp \
 		debug\moc_tableheaderfilter.cpp
 OBJECTS       = debug/main.o \
 		debug/mainwindow.o \
+		debug/dashboardpanelwidget.o \
+		debug/dashboardpiechartwidget.o \
+		debug/dashboardstats.o \
 		debug/projectpanelwidget.o \
 		debug/projecteditdialog.o \
 		debug/projectdetaildialog.o \
@@ -102,16 +113,20 @@ OBJECTS       = debug/main.o \
 		debug/debugpanelwidget.o \
 		debug/debughubwidget.o \
 		debug/logpanelwidget.o \
+		debug/changelogdialog.o \
 		debug/settingspanelwidget.o \
 		debug/datapanelwidget.o \
 		debug/localdatastore.o \
 		debug/applogger.o \
 		debug/appstyle.o \
+		debug/appchangelog.o \
 		debug/datepickerutils.o \
 		debug/projectstatusutils.o \
 		debug/tableheaderfilter.o \
 		debug/debugaccess.o \
 		debug/moc_mainwindow.o \
+		debug/moc_dashboardpanelwidget.o \
+		debug/moc_dashboardpiechartwidget.o \
 		debug/moc_projectpanelwidget.o \
 		debug/moc_projecteditdialog.o \
 		debug/moc_projectdetaildialog.o \
@@ -123,12 +138,16 @@ OBJECTS       = debug/main.o \
 		debug/moc_departmentpanelwidget.o \
 		debug/moc_debugpanelwidget.o \
 		debug/moc_logpanelwidget.o \
+		debug/moc_changelogdialog.o \
 		debug/moc_settingspanelwidget.o \
 		debug/moc_datapanelwidget.o \
 		debug/moc_applogger.o \
 		debug/moc_tableheaderfilter.o
 
 DIST          =  ..\..\app\mainwindow.h \
+		..\..\dashboard\dashboardpanelwidget.h \
+		..\..\dashboard\dashboardpiechartwidget.h \
+		..\..\dashboard\dashboardstats.h \
 		..\..\project\projectpanelwidget.h \
 		..\..\project\projecteditdialog.h \
 		..\..\project\projectdetaildialog.h \
@@ -141,17 +160,22 @@ DIST          =  ..\..\app\mainwindow.h \
 		..\..\debug\debugpanelwidget.h \
 		..\..\debug\debughubwidget.h \
 		..\..\debug\logpanelwidget.h \
+		..\..\debug\changelogdialog.h \
 		..\..\debug\settingspanelwidget.h \
 		..\..\debug\datapanelwidget.h \
 		..\..\core\localdatastore.h \
 		..\..\core\applogger.h \
 		..\..\core\appstyle.h \
+		..\..\core\appchangelog.h \
 		..\..\core\datepickerutils.h \
 		..\..\core\projectstatusutils.h \
 		..\..\core\tableheaderfilter.h \
 		..\..\core\debugaccess.h \
 		..\..\core\appversion.h ..\..\main.cpp \
 		..\..\app\mainwindow.cpp \
+		..\..\dashboard\dashboardpanelwidget.cpp \
+		..\..\dashboard\dashboardpiechartwidget.cpp \
+		..\..\dashboard\dashboardstats.cpp \
 		..\..\project\projectpanelwidget.cpp \
 		..\..\project\projecteditdialog.cpp \
 		..\..\project\projectdetaildialog.cpp \
@@ -164,11 +188,13 @@ DIST          =  ..\..\app\mainwindow.h \
 		..\..\debug\debugpanelwidget.cpp \
 		..\..\debug\debughubwidget.cpp \
 		..\..\debug\logpanelwidget.cpp \
+		..\..\debug\changelogdialog.cpp \
 		..\..\debug\settingspanelwidget.cpp \
 		..\..\debug\datapanelwidget.cpp \
 		..\..\core\localdatastore.cpp \
 		..\..\core\applogger.cpp \
 		..\..\core\appstyle.cpp \
+		..\..\core\appchangelog.cpp \
 		..\..\core\datepickerutils.cpp \
 		..\..\core\projectstatusutils.cpp \
 		..\..\core\tableheaderfilter.cpp \
@@ -195,10 +221,10 @@ qmake: FORCE
 qmake_all: FORCE
 
 dist:
-	$(ZIP) ProjectKanban.zip $(SOURCES) $(DIST) ..\..\..\..\ProjectShow.pro D:\qt6\6.7.3\mingw_64\mkspecs\features\spec_pre.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\device_config.prf D:\qt6\6.7.3\mingw_64\mkspecs\common\sanitize.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\gcc-base.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\g++-base.conf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\windows_vulkan_sdk.prf D:\qt6\6.7.3\mingw_64\mkspecs\common\windows-vulkan.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\g++-win32.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\windows-desktop.conf D:\qt6\6.7.3\mingw_64\mkspecs\qconfig.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_ext_freetype.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_ext_libjpeg.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_ext_libpng.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_concurrent.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_concurrent_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_core.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_core_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_dbus.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_dbus_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_designer.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_designer_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_designercomponents_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_entrypoint_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_example_icons_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_fb_support_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_freetype_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_gui.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_gui_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_harfbuzz_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_help.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_help_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_jpeg_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsanimation.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsanimation_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsfolderlistmodel.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsfolderlistmodel_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsqmlmodels.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsqmlmodels_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssettings.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssettings_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssharedimage.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssharedimage_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labswavefrontmesh.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labswavefrontmesh_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_linguist.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_network.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_network_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_opengl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_opengl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_openglwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_openglwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_packetprotocol_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdf.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdf_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfquick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfquick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_png_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioning.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioning_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioningquick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioningquick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_printsupport.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_printsupport_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qdoccatch_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qdoccatchconversions_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qdoccatchgenerators_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qml.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qml_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlbuiltins.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlbuiltins_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcompiler.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcompiler_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcore.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcore_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmldebug_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmldom_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlintegration.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlintegration_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmllocalstorage.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmllocalstorage_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlls_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlmodels.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlmodels_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlnetwork.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlnetwork_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltest.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltest_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltoolingsettings_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltyperegistrar_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlworkerscript.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlxmllistmodel.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlxmllistmodel_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basic.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basic_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basicstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basicstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusion.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusion_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusionstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusionstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imagine.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imagine_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imaginestyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imaginestyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2impl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2impl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2material.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2material_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2materialstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2materialstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universal.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universal_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universalstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universalstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2windowsstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2windowsstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrolstestutilsprivate_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2utils.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2utils_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickeffects_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicklayouts.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicklayouts_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickparticles_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickshapes_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicktemplates2.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicktestutilsprivate_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialbus.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialbus_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialport.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialport_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_sql.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_sql_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svg.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svg_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svgwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svgwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_testlib.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_testlib_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_tools_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_uiplugin.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_uitools.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_uitools_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannel.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannel_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannelquick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannelquick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_widgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_widgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_xml.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_xml_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_zlib_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\features\qt_functions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qt_config.prf D:\qt6\6.7.3\mingw_64\mkspecs\win32-g++\qmake.conf D:\qt6\6.7.3\mingw_64\mkspecs\features\spec_post.prf .qmake.stash D:\qt6\6.7.3\mingw_64\mkspecs\features\exclusive_builds.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\toolchain.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\default_pre.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\default_pre.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\resolve_config.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\exclusive_builds_post.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\default_post.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\build_pass.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\warn_on.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qml_debug.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\precompile_header.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\permissions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qt.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\resources_functions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\resources.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\moc.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\opengl.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\uic.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qmake_use.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\file_copies.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\windows.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\testcase_targets.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\exceptions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\yacc.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\lex.prf ..\..\ProjectShow.pro D:\qt6\6.7.3\mingw_64\lib\Qt6Widgets.prl D:\qt6\6.7.3\mingw_64\lib\Qt6Gui.prl D:\qt6\6.7.3\mingw_64\lib\Qt6Network.prl D:\qt6\6.7.3\mingw_64\lib\Qt6Core.prl D:\qt6\6.7.3\mingw_64\lib\Qt6EntryPoint.prl    D:\qt6\6.7.3\mingw_64\mkspecs\features\data\dummy.cpp ..\..\app\mainwindow.h ..\..\project\projectpanelwidget.h ..\..\project\projecteditdialog.h ..\..\project\projectdetaildialog.h ..\..\project\projectsubtaskdialog.h ..\..\project\subtaskeditdialog.h ..\..\project\subtaskmemberspickerdialog.h ..\..\member\memberpanelwidget.h ..\..\member\membereditdialog.h ..\..\department\departmentpanelwidget.h ..\..\debug\debugpanelwidget.h ..\..\debug\debughubwidget.h ..\..\debug\logpanelwidget.h ..\..\debug\settingspanelwidget.h ..\..\debug\datapanelwidget.h ..\..\core\localdatastore.h ..\..\core\applogger.h ..\..\core\appstyle.h ..\..\core\datepickerutils.h ..\..\core\projectstatusutils.h ..\..\core\tableheaderfilter.h ..\..\core\debugaccess.h ..\..\core\appversion.h  ..\..\main.cpp ..\..\app\mainwindow.cpp ..\..\project\projectpanelwidget.cpp ..\..\project\projecteditdialog.cpp ..\..\project\projectdetaildialog.cpp ..\..\project\projectsubtaskdialog.cpp ..\..\project\subtaskeditdialog.cpp ..\..\project\subtaskmemberspickerdialog.cpp ..\..\member\memberpanelwidget.cpp ..\..\member\membereditdialog.cpp ..\..\department\departmentpanelwidget.cpp ..\..\debug\debugpanelwidget.cpp ..\..\debug\debughubwidget.cpp ..\..\debug\logpanelwidget.cpp ..\..\debug\settingspanelwidget.cpp ..\..\debug\datapanelwidget.cpp ..\..\core\localdatastore.cpp ..\..\core\applogger.cpp ..\..\core\appstyle.cpp ..\..\core\datepickerutils.cpp ..\..\core\projectstatusutils.cpp ..\..\core\tableheaderfilter.cpp ..\..\core\debugaccess.cpp     
+	$(ZIP) ProjectKanban.zip $(SOURCES) $(DIST) ..\..\..\..\ProjectShow.pro D:\qt6\6.7.3\mingw_64\mkspecs\features\spec_pre.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\device_config.prf D:\qt6\6.7.3\mingw_64\mkspecs\common\sanitize.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\gcc-base.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\g++-base.conf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\windows_vulkan_sdk.prf D:\qt6\6.7.3\mingw_64\mkspecs\common\windows-vulkan.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\g++-win32.conf D:\qt6\6.7.3\mingw_64\mkspecs\common\windows-desktop.conf D:\qt6\6.7.3\mingw_64\mkspecs\qconfig.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_ext_freetype.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_ext_libjpeg.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_ext_libpng.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_concurrent.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_concurrent_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_core.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_core_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_dbus.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_dbus_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_designer.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_designer_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_designercomponents_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_entrypoint_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_example_icons_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_fb_support_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_freetype_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_gui.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_gui_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_harfbuzz_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_help.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_help_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_jpeg_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsanimation.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsanimation_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsfolderlistmodel.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsfolderlistmodel_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsqmlmodels.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labsqmlmodels_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssettings.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssettings_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssharedimage.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labssharedimage_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labswavefrontmesh.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_labswavefrontmesh_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_linguist.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_network.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_network_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_opengl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_opengl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_openglwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_openglwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_packetprotocol_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdf.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdf_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfquick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfquick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_pdfwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_png_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioning.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioning_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioningquick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_positioningquick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_printsupport.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_printsupport_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qdoccatch_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qdoccatchconversions_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qdoccatchgenerators_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qml.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qml_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlbuiltins.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlbuiltins_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcompiler.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcompiler_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcore.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlcore_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmldebug_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmldom_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlintegration.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlintegration_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmllocalstorage.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmllocalstorage_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlls_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlmodels.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlmodels_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlnetwork.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlnetwork_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltest.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltest_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltoolingsettings_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmltyperegistrar_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlworkerscript.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlxmllistmodel.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_qmlxmllistmodel_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basic.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basic_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basicstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2basicstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusion.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusion_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusionstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2fusionstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imagine.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imagine_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imaginestyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2imaginestyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2impl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2impl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2material.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2material_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2materialstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2materialstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universal.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universal_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universalstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2universalstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2windowsstyleimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2windowsstyleimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickcontrolstestutilsprivate_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2utils.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2utils_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickeffects_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicklayouts.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicklayouts_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickparticles_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickshapes_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicktemplates2.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quicktestutilsprivate_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_quickwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialbus.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialbus_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialport.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_serialport_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_sql.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_sql_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svg.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svg_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svgwidgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_svgwidgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_testlib.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_testlib_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_tools_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_uiplugin.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_uitools.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_uitools_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannel.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannel_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannelquick.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_webchannelquick_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_widgets.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_widgets_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_xml.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_xml_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\modules\qt_lib_zlib_private.pri D:\qt6\6.7.3\mingw_64\mkspecs\features\qt_functions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qt_config.prf D:\qt6\6.7.3\mingw_64\mkspecs\win32-g++\qmake.conf D:\qt6\6.7.3\mingw_64\mkspecs\features\spec_post.prf .qmake.stash D:\qt6\6.7.3\mingw_64\mkspecs\features\exclusive_builds.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\toolchain.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\default_pre.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\default_pre.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\resolve_config.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\exclusive_builds_post.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\default_post.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\build_pass.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\warn_on.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qml_debug.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\precompile_header.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\permissions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qt.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\resources_functions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\resources.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\moc.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\opengl.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\uic.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\qmake_use.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\file_copies.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\win32\windows.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\testcase_targets.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\exceptions.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\yacc.prf D:\qt6\6.7.3\mingw_64\mkspecs\features\lex.prf ..\..\ProjectShow.pro D:\qt6\6.7.3\mingw_64\lib\Qt6Widgets.prl D:\qt6\6.7.3\mingw_64\lib\Qt6Gui.prl D:\qt6\6.7.3\mingw_64\lib\Qt6Network.prl D:\qt6\6.7.3\mingw_64\lib\Qt6Core.prl D:\qt6\6.7.3\mingw_64\lib\Qt6EntryPoint.prl    D:\qt6\6.7.3\mingw_64\mkspecs\features\data\dummy.cpp ..\..\app\mainwindow.h ..\..\dashboard\dashboardpanelwidget.h ..\..\dashboard\dashboardpiechartwidget.h ..\..\dashboard\dashboardstats.h ..\..\project\projectpanelwidget.h ..\..\project\projecteditdialog.h ..\..\project\projectdetaildialog.h ..\..\project\projectsubtaskdialog.h ..\..\project\subtaskeditdialog.h ..\..\project\subtaskmemberspickerdialog.h ..\..\member\memberpanelwidget.h ..\..\member\membereditdialog.h ..\..\department\departmentpanelwidget.h ..\..\debug\debugpanelwidget.h ..\..\debug\debughubwidget.h ..\..\debug\logpanelwidget.h ..\..\debug\changelogdialog.h ..\..\debug\settingspanelwidget.h ..\..\debug\datapanelwidget.h ..\..\core\localdatastore.h ..\..\core\applogger.h ..\..\core\appstyle.h ..\..\core\appchangelog.h ..\..\core\datepickerutils.h ..\..\core\projectstatusutils.h ..\..\core\tableheaderfilter.h ..\..\core\debugaccess.h ..\..\core\appversion.h  ..\..\main.cpp ..\..\app\mainwindow.cpp ..\..\dashboard\dashboardpanelwidget.cpp ..\..\dashboard\dashboardpiechartwidget.cpp ..\..\dashboard\dashboardstats.cpp ..\..\project\projectpanelwidget.cpp ..\..\project\projecteditdialog.cpp ..\..\project\projectdetaildialog.cpp ..\..\project\projectsubtaskdialog.cpp ..\..\project\subtaskeditdialog.cpp ..\..\project\subtaskmemberspickerdialog.cpp ..\..\member\memberpanelwidget.cpp ..\..\member\membereditdialog.cpp ..\..\department\departmentpanelwidget.cpp ..\..\debug\debugpanelwidget.cpp ..\..\debug\debughubwidget.cpp ..\..\debug\logpanelwidget.cpp ..\..\debug\changelogdialog.cpp ..\..\debug\settingspanelwidget.cpp ..\..\debug\datapanelwidget.cpp ..\..\core\localdatastore.cpp ..\..\core\applogger.cpp ..\..\core\appstyle.cpp ..\..\core\appchangelog.cpp ..\..\core\datepickerutils.cpp ..\..\core\projectstatusutils.cpp ..\..\core\tableheaderfilter.cpp ..\..\core\debugaccess.cpp     
 
 clean: compiler_clean 
-	-$(DEL_FILE) debug\main.o debug\mainwindow.o debug\projectpanelwidget.o debug\projecteditdialog.o debug\projectdetaildialog.o debug\projectsubtaskdialog.o debug\subtaskeditdialog.o debug\subtaskmemberspickerdialog.o debug\memberpanelwidget.o debug\membereditdialog.o debug\departmentpanelwidget.o debug\debugpanelwidget.o debug\debughubwidget.o debug\logpanelwidget.o debug\settingspanelwidget.o debug\datapanelwidget.o debug\localdatastore.o debug\applogger.o debug\appstyle.o debug\datepickerutils.o debug\projectstatusutils.o debug\tableheaderfilter.o debug\debugaccess.o debug\moc_mainwindow.o debug\moc_projectpanelwidget.o debug\moc_projecteditdialog.o debug\moc_projectdetaildialog.o debug\moc_projectsubtaskdialog.o debug\moc_subtaskeditdialog.o debug\moc_subtaskmemberspickerdialog.o debug\moc_memberpanelwidget.o debug\moc_membereditdialog.o debug\moc_departmentpanelwidget.o debug\moc_debugpanelwidget.o debug\moc_logpanelwidget.o debug\moc_settingspanelwidget.o debug\moc_datapanelwidget.o debug\moc_applogger.o debug\moc_tableheaderfilter.o
+	-$(DEL_FILE) debug\main.o debug\mainwindow.o debug\dashboardpanelwidget.o debug\dashboardpiechartwidget.o debug\dashboardstats.o debug\projectpanelwidget.o debug\projecteditdialog.o debug\projectdetaildialog.o debug\projectsubtaskdialog.o debug\subtaskeditdialog.o debug\subtaskmemberspickerdialog.o debug\memberpanelwidget.o debug\membereditdialog.o debug\departmentpanelwidget.o debug\debugpanelwidget.o debug\debughubwidget.o debug\logpanelwidget.o debug\changelogdialog.o debug\settingspanelwidget.o debug\datapanelwidget.o debug\localdatastore.o debug\applogger.o debug\appstyle.o debug\appchangelog.o debug\datepickerutils.o debug\projectstatusutils.o debug\tableheaderfilter.o debug\debugaccess.o debug\moc_mainwindow.o debug\moc_dashboardpanelwidget.o debug\moc_dashboardpiechartwidget.o debug\moc_projectpanelwidget.o debug\moc_projecteditdialog.o debug\moc_projectdetaildialog.o debug\moc_projectsubtaskdialog.o debug\moc_subtaskeditdialog.o debug\moc_subtaskmemberspickerdialog.o debug\moc_memberpanelwidget.o debug\moc_membereditdialog.o debug\moc_departmentpanelwidget.o debug\moc_debugpanelwidget.o debug\moc_logpanelwidget.o debug\moc_changelogdialog.o debug\moc_settingspanelwidget.o debug\moc_datapanelwidget.o debug\moc_applogger.o debug\moc_tableheaderfilter.o
 	-$(DEL_FILE) debug\ProjectKanban_resource_res.o
 
 distclean: clean 
@@ -224,9 +250,9 @@ compiler_moc_predefs_clean:
 debug/moc_predefs.h: D:/qt6/6.7.3/mingw_64/mkspecs/features/data/dummy.cpp
 	g++ -fno-keep-inline-dllexport -std=gnu++17 -g -std=gnu++1z -Wall -Wextra -Wextra -dM -E -o debug\moc_predefs.h D:\qt6\6.7.3\mingw_64\mkspecs\features\data\dummy.cpp
 
-compiler_moc_header_make_all: debug/moc_mainwindow.cpp debug/moc_projectpanelwidget.cpp debug/moc_projecteditdialog.cpp debug/moc_projectdetaildialog.cpp debug/moc_projectsubtaskdialog.cpp debug/moc_subtaskeditdialog.cpp debug/moc_subtaskmemberspickerdialog.cpp debug/moc_memberpanelwidget.cpp debug/moc_membereditdialog.cpp debug/moc_departmentpanelwidget.cpp debug/moc_debugpanelwidget.cpp debug/moc_logpanelwidget.cpp debug/moc_settingspanelwidget.cpp debug/moc_datapanelwidget.cpp debug/moc_applogger.cpp debug/moc_tableheaderfilter.cpp
+compiler_moc_header_make_all: debug/moc_mainwindow.cpp debug/moc_dashboardpanelwidget.cpp debug/moc_dashboardpiechartwidget.cpp debug/moc_projectpanelwidget.cpp debug/moc_projecteditdialog.cpp debug/moc_projectdetaildialog.cpp debug/moc_projectsubtaskdialog.cpp debug/moc_subtaskeditdialog.cpp debug/moc_subtaskmemberspickerdialog.cpp debug/moc_memberpanelwidget.cpp debug/moc_membereditdialog.cpp debug/moc_departmentpanelwidget.cpp debug/moc_debugpanelwidget.cpp debug/moc_logpanelwidget.cpp debug/moc_changelogdialog.cpp debug/moc_settingspanelwidget.cpp debug/moc_datapanelwidget.cpp debug/moc_applogger.cpp debug/moc_tableheaderfilter.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) debug\moc_mainwindow.cpp debug\moc_projectpanelwidget.cpp debug\moc_projecteditdialog.cpp debug\moc_projectdetaildialog.cpp debug\moc_projectsubtaskdialog.cpp debug\moc_subtaskeditdialog.cpp debug\moc_subtaskmemberspickerdialog.cpp debug\moc_memberpanelwidget.cpp debug\moc_membereditdialog.cpp debug\moc_departmentpanelwidget.cpp debug\moc_debugpanelwidget.cpp debug\moc_logpanelwidget.cpp debug\moc_settingspanelwidget.cpp debug\moc_datapanelwidget.cpp debug\moc_applogger.cpp debug\moc_tableheaderfilter.cpp
+	-$(DEL_FILE) debug\moc_mainwindow.cpp debug\moc_dashboardpanelwidget.cpp debug\moc_dashboardpiechartwidget.cpp debug\moc_projectpanelwidget.cpp debug\moc_projecteditdialog.cpp debug\moc_projectdetaildialog.cpp debug\moc_projectsubtaskdialog.cpp debug\moc_subtaskeditdialog.cpp debug\moc_subtaskmemberspickerdialog.cpp debug\moc_memberpanelwidget.cpp debug\moc_membereditdialog.cpp debug\moc_departmentpanelwidget.cpp debug\moc_debugpanelwidget.cpp debug\moc_logpanelwidget.cpp debug\moc_changelogdialog.cpp debug\moc_settingspanelwidget.cpp debug\moc_datapanelwidget.cpp debug\moc_applogger.cpp debug\moc_tableheaderfilter.cpp
 debug/moc_mainwindow.cpp: ../../app/mainwindow.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QMainWindow \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qmainwindow.h \
@@ -418,7 +444,421 @@ debug/moc_mainwindow.cpp: ../../app/mainwindow.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtabwidget.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\app\mainwindow.h -o debug\moc_mainwindow.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\app\mainwindow.h -o debug\moc_mainwindow.cpp
+
+debug/moc_dashboardpanelwidget.cpp: ../../dashboard/dashboardpanelwidget.h \
+		../../dashboard/dashboardstats.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonArray \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonarray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatetime.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcalendar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvariant.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetatype.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcomparehelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatastream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevicebase.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfloat16.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmath.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetacontainer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionaltools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopeguard.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdebug.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtextstream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qset.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q23utility.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborcommon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qregularexpression.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QHash \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtgui-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmargins.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qaction.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qkeysequence.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qicon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsize.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpaintdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrect.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcolor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgb.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgba64.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qimage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixelformat.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtransform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpolygon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qregion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qline.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpalette.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbrush.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfont.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontmetrics.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcursor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbitmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qeventpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvector2d.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvectornd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpointingdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QRect \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSize \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSizeF \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QTransform \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnativeinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qeventloop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfutureinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmutex.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtsan_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qresultstore.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthreadpool.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthread.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrunnable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexception.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpromise.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputmethod.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		debug/moc_predefs.h \
+		D:/qt6/6.7.3/mingw_64/bin/moc.exe
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\dashboard\dashboardpanelwidget.h -o debug\moc_dashboardpanelwidget.cpp
+
+debug/moc_dashboardpiechartwidget.cpp: ../../dashboard/dashboardpiechartwidget.h \
+		../../dashboard/dashboardstats.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonArray \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonarray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatetime.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcalendar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvariant.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetatype.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcomparehelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatastream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevicebase.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfloat16.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmath.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetacontainer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionaltools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopeguard.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdebug.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtextstream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qset.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q23utility.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborcommon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qregularexpression.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QColor \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcolor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtgui-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgb.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgba64.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmargins.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qaction.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qkeysequence.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qicon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsize.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpaintdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrect.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qimage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixelformat.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtransform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpolygon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qregion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qline.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpalette.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbrush.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfont.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontmetrics.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcursor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbitmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qeventpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvector2d.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvectornd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpointingdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QRect \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSize \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSizeF \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QTransform \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnativeinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qeventloop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfutureinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmutex.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtsan_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qresultstore.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthreadpool.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthread.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrunnable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexception.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpromise.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputmethod.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		debug/moc_predefs.h \
+		D:/qt6/6.7.3/mingw_64/bin/moc.exe
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\dashboard\dashboardpiechartwidget.h -o debug\moc_dashboardpiechartwidget.cpp
 
 debug/moc_projectpanelwidget.cpp: ../../project/projectpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -620,7 +1060,7 @@ debug/moc_projectpanelwidget.cpp: ../../project/projectpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projectpanelwidget.h -o debug\moc_projectpanelwidget.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projectpanelwidget.h -o debug\moc_projectpanelwidget.cpp
 
 debug/moc_projecteditdialog.cpp: ../../project/projecteditdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
@@ -824,7 +1264,7 @@ debug/moc_projecteditdialog.cpp: ../../project/projecteditdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QMap \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projecteditdialog.h -o debug\moc_projecteditdialog.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projecteditdialog.h -o debug\moc_projecteditdialog.cpp
 
 debug/moc_projectdetaildialog.cpp: ../../project/projectdetaildialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
@@ -1027,7 +1467,7 @@ debug/moc_projectdetaildialog.cpp: ../../project/projectdetaildialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projectdetaildialog.h -o debug\moc_projectdetaildialog.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projectdetaildialog.h -o debug\moc_projectdetaildialog.cpp
 
 debug/moc_projectsubtaskdialog.cpp: ../../project/projectsubtaskdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
@@ -1230,7 +1670,7 @@ debug/moc_projectsubtaskdialog.cpp: ../../project/projectsubtaskdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projectsubtaskdialog.h -o debug\moc_projectsubtaskdialog.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\projectsubtaskdialog.h -o debug\moc_projectsubtaskdialog.cpp
 
 debug/moc_subtaskeditdialog.cpp: ../../project/subtaskeditdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
@@ -1434,7 +1874,7 @@ debug/moc_subtaskeditdialog.cpp: ../../project/subtaskeditdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QMap \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\subtaskeditdialog.h -o debug\moc_subtaskeditdialog.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\subtaskeditdialog.h -o debug\moc_subtaskeditdialog.cpp
 
 debug/moc_subtaskmemberspickerdialog.cpp: ../../project/subtaskmemberspickerdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
@@ -1636,7 +2076,7 @@ debug/moc_subtaskmemberspickerdialog.cpp: ../../project/subtaskmemberspickerdial
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QMap \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\subtaskmemberspickerdialog.h -o debug\moc_subtaskmemberspickerdialog.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\project\subtaskmemberspickerdialog.h -o debug\moc_subtaskmemberspickerdialog.cpp
 
 debug/moc_memberpanelwidget.cpp: ../../member/memberpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -1838,7 +2278,7 @@ debug/moc_memberpanelwidget.cpp: ../../member/memberpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\member\memberpanelwidget.h -o debug\moc_memberpanelwidget.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\member\memberpanelwidget.h -o debug\moc_memberpanelwidget.cpp
 
 debug/moc_membereditdialog.cpp: ../../member/membereditdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
@@ -2041,7 +2481,7 @@ debug/moc_membereditdialog.cpp: ../../member/membereditdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\member\membereditdialog.h -o debug\moc_membereditdialog.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\member\membereditdialog.h -o debug\moc_membereditdialog.cpp
 
 debug/moc_departmentpanelwidget.cpp: ../../department/departmentpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -2243,7 +2683,7 @@ debug/moc_departmentpanelwidget.cpp: ../../department/departmentpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\department\departmentpanelwidget.h -o debug\moc_departmentpanelwidget.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\department\departmentpanelwidget.h -o debug\moc_departmentpanelwidget.cpp
 
 debug/moc_debugpanelwidget.cpp: ../../debug/debugpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -2434,7 +2874,7 @@ debug/moc_debugpanelwidget.cpp: ../../debug/debugpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\debugpanelwidget.h -o debug\moc_debugpanelwidget.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\debugpanelwidget.h -o debug\moc_debugpanelwidget.cpp
 
 debug/moc_logpanelwidget.cpp: ../../debug/logpanelwidget.h \
 		../../core/applogger.h \
@@ -2628,7 +3068,199 @@ debug/moc_logpanelwidget.cpp: ../../debug/logpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\logpanelwidget.h -o debug\moc_logpanelwidget.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\logpanelwidget.h -o debug\moc_logpanelwidget.cpp
+
+debug/moc_changelogdialog.cpp: ../../debug/changelogdialog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtgui-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionaltools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetatype.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcomparehelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatastream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevicebase.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfloat16.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmath.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetacontainer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopeguard.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmargins.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q23utility.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qaction.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qkeysequence.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qicon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsize.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpaintdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrect.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcolor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgb.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgba64.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qimage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixelformat.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtransform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpolygon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qregion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qline.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvariant.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdebug.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtextstream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qset.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpalette.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbrush.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfont.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontmetrics.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcursor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbitmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qeventpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvector2d.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvectornd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpointingdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QRect \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSize \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSizeF \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QTransform \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnativeinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qeventloop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfutureinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmutex.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtsan_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qresultstore.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthreadpool.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthread.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrunnable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexception.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpromise.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputmethod.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		debug/moc_predefs.h \
+		D:/qt6/6.7.3/mingw_64/bin/moc.exe
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\changelogdialog.h -o debug\moc_changelogdialog.cpp
 
 debug/moc_settingspanelwidget.cpp: ../../debug/settingspanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -2828,7 +3460,7 @@ debug/moc_settingspanelwidget.cpp: ../../debug/settingspanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\settingspanelwidget.h -o debug\moc_settingspanelwidget.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\settingspanelwidget.h -o debug\moc_settingspanelwidget.cpp
 
 debug/moc_datapanelwidget.cpp: ../../debug/datapanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -3019,7 +3651,7 @@ debug/moc_datapanelwidget.cpp: ../../debug/datapanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\datapanelwidget.h -o debug\moc_datapanelwidget.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\debug\datapanelwidget.h -o debug\moc_datapanelwidget.cpp
 
 debug/moc_applogger.cpp: ../../core/applogger.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QObject \
@@ -3126,7 +3758,7 @@ debug/moc_applogger.cpp: ../../core/applogger.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QStringList \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\core\applogger.h -o debug\moc_applogger.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\core\applogger.h -o debug\moc_applogger.cpp
 
 debug/moc_tableheaderfilter.cpp: ../../core/tableheaderfilter.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QHash \
@@ -3260,7 +3892,7 @@ debug/moc_tableheaderfilter.cpp: ../../core/tableheaderfilter.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QStringList \
 		debug/moc_predefs.h \
 		D:/qt6/6.7.3/mingw_64/bin/moc.exe
-	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\core\tableheaderfilter.h -o debug\moc_tableheaderfilter.cpp
+	D:\qt6\6.7.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTProject/TOYOTAProject/ProjectShow/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/qt6/6.7.3/mingw_64/mkspecs/win32-g++ -ID:/QTProject/TOYOTAProject/ProjectShow -ID:/QTProject/TOYOTAProject/ProjectShow/app -ID:/QTProject/TOYOTAProject/ProjectShow/dashboard -ID:/QTProject/TOYOTAProject/ProjectShow/project -ID:/QTProject/TOYOTAProject/ProjectShow/member -ID:/QTProject/TOYOTAProject/ProjectShow/department -ID:/QTProject/TOYOTAProject/ProjectShow/debug -ID:/QTProject/TOYOTAProject/ProjectShow/core -ID:/qt6/6.7.3/mingw_64/include -ID:/qt6/6.7.3/mingw_64/include/QtWidgets -ID:/qt6/6.7.3/mingw_64/include/QtGui -ID:/qt6/6.7.3/mingw_64/include/QtNetwork -ID:/qt6/6.7.3/mingw_64/include/QtCore -I. -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/qt6/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/qt6/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\..\core\tableheaderfilter.h -o debug\moc_tableheaderfilter.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -3674,7 +4306,8 @@ debug/mainwindow.o: ../../app/mainwindow.cpp ../../app/mainwindow.h \
 		../../core/debugaccess.h \
 		../../debug/debughubwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
-		../../department/departmentpanelwidget.h \
+		../../dashboard/dashboardpanelwidget.h \
+		../../dashboard/dashboardstats.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonArray \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonarray.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonvalue.h \
@@ -3686,6 +4319,10 @@ debug/mainwindow.o: ../../app/mainwindow.cpp ../../app/mainwindow.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QHash \
+		../../department/departmentpanelwidget.h \
 		../../member/memberpanelwidget.h \
 		../../project/projectpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QInputDialog \
@@ -3743,6 +4380,653 @@ debug/mainwindow.o: ../../app/mainwindow.cpp ../../app/mainwindow.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlayoutitem.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qgridlayout.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o ..\..\app\mainwindow.cpp
+
+debug/dashboardpanelwidget.o: ../../dashboard/dashboardpanelwidget.cpp ../../dashboard/dashboardpanelwidget.h \
+		../../dashboard/dashboardstats.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonArray \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonarray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatetime.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcalendar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvariant.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetatype.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcomparehelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatastream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevicebase.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfloat16.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmath.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetacontainer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionaltools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopeguard.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdebug.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtextstream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qset.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q23utility.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborcommon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qregularexpression.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QHash \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtgui-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmargins.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qaction.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qkeysequence.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qicon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsize.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpaintdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrect.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcolor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgb.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgba64.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qimage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixelformat.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtransform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpolygon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qregion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qline.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpalette.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbrush.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfont.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontmetrics.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcursor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbitmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qeventpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvector2d.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvectornd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpointingdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QRect \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSize \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSizeF \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QTransform \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnativeinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qeventloop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfutureinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmutex.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtsan_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qresultstore.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthreadpool.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthread.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrunnable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexception.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpromise.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputmethod.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../dashboard/dashboardpiechartwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QColor \
+		../../app/mainwindow.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QMainWindow \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qmainwindow.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtabwidget.h \
+		../../core/projectstatusutils.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QDate \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QApplication \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QComboBox \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qcombobox.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractitemdelegate.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qstyleoption.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractspinbox.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvalidator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qslider.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractslider.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qstyle.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtabbar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qrubberband.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qframe.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qabstractitemmodel.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QEvent \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QMouseEvent \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QPalette \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSet \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QFrame \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QGridLayout \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qgridlayout.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlayout.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlayoutitem.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qboxlayout.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QHBoxLayout \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QHeaderView \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qheaderview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractitemview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractscrollarea.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qitemselectionmodel.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonDocument \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsondocument.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QLabel \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlabel.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpicture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtextdocument.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QMessageBox \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qmessagebox.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialogbuttonbox.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/QNetworkReply \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qnetworkreply.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qtnetworkglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qtnetwork-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qtnetworkexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QIODevice \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVariant \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/QNetworkRequest \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qnetworkrequest.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSharedDataPointer \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QUrl \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/QNetworkAccessManager \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qnetworkaccessmanager.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/QSslConfiguration \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qsslconfiguration.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qsslsocket.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qtcpsocket.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qabstractsocket.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qhostaddress.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qsslerror.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qsslcertificate.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcryptographichash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qssl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QFlags \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QMetaType \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QPushButton \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qpushbutton.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractbutton.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QScrollArea \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qscrollarea.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QShowEvent \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QSizePolicy \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QTableWidget \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtablewidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtableview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QTableWidgetItem \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QVBoxLayout
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\dashboardpanelwidget.o ..\..\dashboard\dashboardpanelwidget.cpp
+
+debug/dashboardpiechartwidget.o: ../../dashboard/dashboardpiechartwidget.cpp ../../dashboard/dashboardpiechartwidget.h \
+		../../dashboard/dashboardstats.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonArray \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonarray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatetime.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcalendar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvariant.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetatype.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcomparehelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatastream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevicebase.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfloat16.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmath.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetacontainer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionaltools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopeguard.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdebug.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtextstream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qset.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q23utility.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborcommon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qregularexpression.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QColor \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcolor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtgui-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgb.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgba64.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmargins.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qaction.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qkeysequence.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qicon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsize.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpaintdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrect.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qimage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixelformat.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtransform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpolygon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qregion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qline.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpalette.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbrush.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfont.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontmetrics.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcursor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbitmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qeventpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvector2d.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvectornd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpointingdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QRect \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSize \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSizeF \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QTransform \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnativeinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qeventloop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfutureinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmutex.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtsan_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qresultstore.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthreadpool.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthread.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrunnable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexception.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpromise.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputmethod.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../core/projectstatusutils.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QDate \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QPainter \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpainter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtextoption.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpen.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QPaintEvent
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\dashboardpiechartwidget.o ..\..\dashboard\dashboardpiechartwidget.cpp
+
+debug/dashboardstats.o: ../../dashboard/dashboardstats.cpp ../../dashboard/dashboardstats.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonArray \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonarray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborvalue.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatetime.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcalendar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvariant.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetatype.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcomparehelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatastream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevicebase.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfloat16.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmath.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetacontainer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionaltools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopeguard.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdebug.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtextstream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qset.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q23utility.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborcommon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qregularexpression.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h \
+		../../core/projectstatusutils.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QColor \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcolor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtgui-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgb.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgba64.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QDate \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QHash
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\dashboardstats.o ..\..\dashboard\dashboardstats.cpp
 
 debug/projectpanelwidget.o: ../../project/projectpanelwidget.cpp ../../project/projectpanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -3945,7 +5229,6 @@ debug/projectpanelwidget.o: ../../project/projectpanelwidget.cpp ../../project/p
 		../../core/applogger.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QStringList \
-		../../core/appversion.h \
 		../../app/mainwindow.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QMainWindow \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qmainwindow.h \
@@ -6801,6 +8084,9 @@ debug/logpanelwidget.o: ../../debug/logpanelwidget.cpp ../../debug/logpanelwidge
 		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputmethod.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
 		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../debug/changelogdialog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialog.h \
 		../../app/mainwindow.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QMainWindow \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qmainwindow.h \
@@ -6861,7 +8147,6 @@ debug/logpanelwidget.o: ../../debug/logpanelwidget.cpp ../../debug/logpanelwidge
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QListWidgetItem \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QMessageBox \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qmessagebox.h \
-		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialog.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialogbuttonbox.h \
 		D:/qt6/6.7.3/mingw_64/include/QtNetwork/QNetworkReply \
 		D:/qt6/6.7.3/mingw_64/include/QtNetwork/qnetworkreply.h \
@@ -6910,6 +8195,235 @@ debug/logpanelwidget.o: ../../debug/logpanelwidget.cpp ../../debug/logpanelwidge
 		D:/qt6/6.7.3/mingw_64/include/QtGui/QTextCursor \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QVBoxLayout
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\logpanelwidget.o ..\..\debug\logpanelwidget.cpp
+
+debug/changelogdialog.o: ../../debug/changelogdialog.cpp ../../debug/changelogdialog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialog \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtgui-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtguiexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionaltools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetatype.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcomparehelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdatastream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevicebase.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfloat16.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmath.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmetacontainer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qscopeguard.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmargins.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q23utility.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qaction.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qkeysequence.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qicon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsize.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpaintdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrect.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcolor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgb.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qrgba64.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qimage.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpixelformat.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtransform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpolygon.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qregion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qline.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvariant.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdebug.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtextstream.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qset.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhash.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpalette.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbrush.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfont.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontmetrics.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qfontinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qcursor.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qbitmap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qevent.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiodevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qeventpoint.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvector2d.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvectornd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpointingdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputdevice.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QRect \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSize \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QSizeF \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/QTransform \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnativeinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qscreen_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qeventloop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfutureinterface.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmutex.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtsan_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qresultstore.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfuture_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthreadpool.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qthread.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrunnable.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexception.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpromise.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qinputmethod.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlocale.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../core/appchangelog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QStringList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h \
+		../../core/appversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QDialogButtonBox \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qdialogbuttonbox.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QHeaderView \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qheaderview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractitemview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractscrollarea.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qframe.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qabstractitemmodel.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qitemselectionmodel.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractitemdelegate.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qstyleoption.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractspinbox.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qvalidator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qregularexpression.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qslider.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qabstractslider.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qstyle.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtabbar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtabwidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qrubberband.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QLabel \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlabel.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qpicture.h \
+		D:/qt6/6.7.3/mingw_64/include/QtGui/qtextdocument.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QTableWidget \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtablewidget.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qtableview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QTableWidgetItem \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QVBoxLayout \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qboxlayout.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlayout.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlayoutitem.h \
+		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qgridlayout.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\changelogdialog.o ..\..\debug\changelogdialog.cpp
 
 debug/settingspanelwidget.o: ../../debug/settingspanelwidget.cpp ../../debug/settingspanelwidget.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QWidget \
@@ -7971,6 +9485,92 @@ debug/appstyle.o: ../../core/appstyle.cpp ../../core/appstyle.h \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qstylefactory.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\appstyle.o ..\..\core\appstyle.cpp
 
+debug/appchangelog.o: ../../core/appchangelog.cpp ../../core/appchangelog.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qchar.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobal.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversionchecks.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfiginclude.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconfig.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcore-config.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtcoreexports.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qprocessordetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsystemdetection.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qassert.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtnoop.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypes.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtversion.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtypeinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qsysinfo.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlogging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qflags.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcompare_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbasicatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qgenericatomic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qyieldcpu.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qconstructormacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qforeach.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttypetraits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qglobalstatic.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qmalloc.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qminmax.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnumeric.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qoverload.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qswap.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtresource.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qttranslation.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qversiontagging.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearray.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qrefcount.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qnamespace.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qtmetamacros.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydata.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qpair.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qarraydataops.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qxptype_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20type_traits.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20functional.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/q20memory.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearrayview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringfwd.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringliteral.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlatin1stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qanystringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qutf8stringview.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringbuilder.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QStringList \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qlist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qhashfunctions.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qiterator.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qbytearraylist.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qalgorithms.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qstringmatcher.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QVector \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qvector.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\appchangelog.o ..\..\core\appchangelog.cpp
+
 debug/datepickerutils.o: ../../core/datepickerutils.cpp ../../core/datepickerutils.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qstring.h \
@@ -8320,8 +9920,8 @@ debug/projectstatusutils.o: ../../core/projectstatusutils.cpp ../../core/project
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qcoreevent.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qobject_impl.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qbindingstorage.h \
-		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
-		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonArray \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonarray.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonvalue.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborvalue.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qcborcommon.h \
@@ -8329,6 +9929,8 @@ debug/projectstatusutils.o: ../../core/projectstatusutils.cpp ../../core/project
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qurl.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/quuid.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/qendian.h \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/QJsonObject \
+		D:/qt6/6.7.3/mingw_64/include/QtCore/qjsonobject.h \
 		D:/qt6/6.7.3/mingw_64/include/QtCore/QString \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/QLabel \
 		D:/qt6/6.7.3/mingw_64/include/QtWidgets/qlabel.h \
@@ -8729,6 +10331,12 @@ debug/debugaccess.o: ../../core/debugaccess.cpp ../../core/debugaccess.h \
 debug/moc_mainwindow.o: debug/moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_mainwindow.o debug\moc_mainwindow.cpp
 
+debug/moc_dashboardpanelwidget.o: debug/moc_dashboardpanelwidget.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_dashboardpanelwidget.o debug\moc_dashboardpanelwidget.cpp
+
+debug/moc_dashboardpiechartwidget.o: debug/moc_dashboardpiechartwidget.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_dashboardpiechartwidget.o debug\moc_dashboardpiechartwidget.cpp
+
 debug/moc_projectpanelwidget.o: debug/moc_projectpanelwidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_projectpanelwidget.o debug\moc_projectpanelwidget.cpp
 
@@ -8761,6 +10369,9 @@ debug/moc_debugpanelwidget.o: debug/moc_debugpanelwidget.cpp
 
 debug/moc_logpanelwidget.o: debug/moc_logpanelwidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_logpanelwidget.o debug\moc_logpanelwidget.cpp
+
+debug/moc_changelogdialog.o: debug/moc_changelogdialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_changelogdialog.o debug\moc_changelogdialog.cpp
 
 debug/moc_settingspanelwidget.o: debug/moc_settingspanelwidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_settingspanelwidget.o debug\moc_settingspanelwidget.cpp

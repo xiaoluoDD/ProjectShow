@@ -4,6 +4,7 @@
 #include "appversion.h"
 #include "debugaccess.h"
 #include "debughubwidget.h"
+#include "dashboardpanelwidget.h"
 #include "departmentpanelwidget.h"
 #include "memberpanelwidget.h"
 #include "projectpanelwidget.h"
@@ -71,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_net(new QNetworkAccessManager(this))
 {
     setWindowTitle(AppVersion::windowTitle());
-    resize(960, 640);
+    resize(1180, 760);
 
     QSettings settings;
     QString saved = settings.value(QStringLiteral("serverBaseUrl"),
@@ -87,15 +88,28 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_tabs = new MainTabWidget(this, this);
     m_tabs->setObjectName(QStringLiteral("mainTabWidget"));
+    m_dashboardPanel = new DashboardPanelWidget(this);
     m_projectPanel = new ProjectPanelWidget(this);
     m_memberPanel = new MemberPanelWidget(this);
     m_departmentPanel = new DepartmentPanelWidget(this);
     m_debugHub = new DebugHubWidget(this);
+    m_tabs->addTab(m_dashboardPanel, QStringLiteral("总览看板"));
     m_tabs->addTab(m_projectPanel, QStringLiteral("项目面板"));
     m_tabs->addTab(m_memberPanel, QStringLiteral("项目成员"));
     m_tabs->addTab(m_departmentPanel, QStringLiteral("部门管理"));
     m_tabs->addTab(m_debugHub, QStringLiteral("调试"));
     root->addWidget(m_tabs, 1);
+
+    connect(m_dashboardPanel, &DashboardPanelWidget::navigateToProjectSubtasks, this,
+            [this](int projectId) {
+                m_tabs->setCurrentIndex(projectTabIndex());
+                m_projectPanel->navigateToProject(projectId, true);
+            });
+    connect(m_dashboardPanel, &DashboardPanelWidget::navigateToProjectDetail, this,
+            [this](int projectId) {
+                m_tabs->setCurrentIndex(projectTabIndex());
+                m_projectPanel->navigateToProject(projectId, false);
+            });
 
     connect(m_tabs, &QTabWidget::currentChanged, this, &MainWindow::onMainTabChanged);
 
@@ -199,6 +213,14 @@ void MainWindow::loadServerUrlFromBackend()
             settings.value(QStringLiteral("debug_password_enabled")).toBool(false),
             settings.value(QStringLiteral("debug_password")).toString());
     });
+}
+
+int MainWindow::dashboardTabIndex() const
+{
+    if (!m_dashboardPanel || !m_tabs)
+        return 0;
+    const int idx = m_tabs->indexOf(m_dashboardPanel);
+    return idx >= 0 ? idx : 0;
 }
 
 int MainWindow::projectTabIndex() const

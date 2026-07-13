@@ -1,5 +1,8 @@
 debug/main.o
 debug/mainwindow.o
+debug/dashboardpanelwidget.o
+debug/dashboardpiechartwidget.o
+debug/dashboardstats.o
 debug/projectpanelwidget.o
 debug/projecteditdialog.o
 debug/projectdetaildialog.o
@@ -12,16 +15,20 @@ debug/departmentpanelwidget.o
 debug/debugpanelwidget.o
 debug/debughubwidget.o
 debug/logpanelwidget.o
+debug/changelogdialog.o
 debug/settingspanelwidget.o
 debug/datapanelwidget.o
 debug/localdatastore.o
 debug/applogger.o
 debug/appstyle.o
+debug/appchangelog.o
 debug/datepickerutils.o
 debug/projectstatusutils.o
 debug/tableheaderfilter.o
 debug/debugaccess.o
 debug/moc_mainwindow.o
+debug/moc_dashboardpanelwidget.o
+debug/moc_dashboardpiechartwidget.o
 debug/moc_projectpanelwidget.o
 debug/moc_projecteditdialog.o
 debug/moc_projectdetaildialog.o
@@ -33,6 +40,7 @@ debug/moc_membereditdialog.o
 debug/moc_departmentpanelwidget.o
 debug/moc_debugpanelwidget.o
 debug/moc_logpanelwidget.o
+debug/moc_changelogdialog.o
 debug/moc_settingspanelwidget.o
 debug/moc_datapanelwidget.o
 debug/moc_applogger.o
