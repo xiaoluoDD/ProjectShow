@@ -100,17 +100,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_tabs->addTab(m_debugHub, QStringLiteral("调试"));
     root->addWidget(m_tabs, 1);
 
-    connect(m_dashboardPanel, &DashboardPanelWidget::navigateToProjectSubtasks, this,
-            [this](int projectId) {
-                m_tabs->setCurrentIndex(projectTabIndex());
-                m_projectPanel->navigateToProject(projectId, true);
-            });
-    connect(m_dashboardPanel, &DashboardPanelWidget::navigateToProjectDetail, this,
-            [this](int projectId) {
-                m_tabs->setCurrentIndex(projectTabIndex());
-                m_projectPanel->navigateToProject(projectId, false);
-            });
-
     connect(m_tabs, &QTabWidget::currentChanged, this, &MainWindow::onMainTabChanged);
 
     setCentralWidget(central);

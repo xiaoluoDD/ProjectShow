@@ -1,6 +1,7 @@
 debug/main.o
 debug/mainwindow.o
 debug/dashboardpanelwidget.o
+debug/dashboardpersontasksdialog.o
 debug/dashboardpiechartwidget.o
 debug/dashboardstats.o
 debug/projectpanelwidget.o
@@ -28,6 +29,7 @@ debug/tableheaderfilter.o
 debug/debugaccess.o
 debug/moc_mainwindow.o
 debug/moc_dashboardpanelwidget.o
+debug/moc_dashboardpersontasksdialog.o
 debug/moc_dashboardpiechartwidget.o
 debug/moc_projectpanelwidget.o
 debug/moc_projecteditdialog.o

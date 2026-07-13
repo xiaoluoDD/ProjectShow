@@ -21,6 +21,7 @@ SOURCES += \
     main.cpp \
     app/mainwindow.cpp \
     dashboard/dashboardpanelwidget.cpp \
+    dashboard/dashboardpersontasksdialog.cpp \
     dashboard/dashboardpiechartwidget.cpp \
     dashboard/dashboardstats.cpp \
     project/projectpanelwidget.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
 HEADERS += \
     app/mainwindow.h \
     dashboard/dashboardpanelwidget.h \
+    dashboard/dashboardpersontasksdialog.h \
     dashboard/dashboardpiechartwidget.h \
     dashboard/dashboardstats.h \
     project/projectpanelwidget.h \

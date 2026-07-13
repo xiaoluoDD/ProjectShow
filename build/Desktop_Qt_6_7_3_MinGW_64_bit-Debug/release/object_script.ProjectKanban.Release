@@ -1,6 +1,7 @@
 release/main.o
 release/mainwindow.o
 release/dashboardpanelwidget.o
+release/dashboardpersontasksdialog.o
 release/dashboardpiechartwidget.o
 release/dashboardstats.o
 release/projectpanelwidget.o
@@ -28,6 +29,7 @@ release/tableheaderfilter.o
 release/debugaccess.o
 release/moc_mainwindow.o
 release/moc_dashboardpanelwidget.o
+release/moc_dashboardpersontasksdialog.o
 release/moc_dashboardpiechartwidget.o
 release/moc_projectpanelwidget.o
 release/moc_projecteditdialog.o
