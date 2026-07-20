@@ -73,10 +73,23 @@
       notifyChanged();
       return currentUser;
     } catch (e) {
-      currentUser = null;
-      persist('', null);
+      const msg = String((e && e.message) || '');
+      // 仅在明确未授权时清登录态；网络抖动/临时错误保留 token，避免误退登
+      const unauthorized =
+        msg.indexOf('401') >= 0 ||
+        msg.indexOf('未登录') >= 0 ||
+        msg.indexOf('失效') >= 0 ||
+        msg.indexOf('登录已失效') >= 0;
+      if (unauthorized) {
+        currentUser = null;
+        persist('', null);
+        notifyChanged();
+        return null;
+      }
+      // 保留本地缓存用户，便于页面继续显示已登录
+      if (!currentUser) currentUser = readStoredUser();
       notifyChanged();
-      return null;
+      return currentUser;
     }
   }
 
@@ -99,12 +112,8 @@
     notifyChanged();
   }
 
-  // 启动时恢复本地缓存用户，再后台校验。
+  // 先挂载 Auth，再异步校验；避免首请求拿不到 Authorization
   currentUser = readStoredUser();
-  if (readStoredToken()) {
-    refreshMe();
-  }
-
   window.Auth = {
     getUser,
     isLoggedIn,
@@ -116,4 +125,10 @@
     setAuthHeaders,
     getToken: readStoredToken,
   };
+
+  if (readStoredToken()) {
+    refreshMe();
+  } else {
+    notifyChanged();
+  }
 })();

@@ -5,19 +5,32 @@ function apiBase() {
 
 function authHeaders(extra) {
   const headers = Object.assign({ Accept: 'application/json' }, extra || {});
-  if (window.Auth && typeof window.Auth.setAuthHeaders === 'function') {
-    return window.Auth.setAuthHeaders(headers);
+  // 直接读 localStorage，避免 Auth 尚未挂载时丢 Token
+  let token = '';
+  try {
+    token = localStorage.getItem('projectshow_auth_token') || '';
+  } catch (e) {
+    token = '';
   }
+  if (!token && window.Auth && typeof window.Auth.getToken === 'function') {
+    token = window.Auth.getToken() || '';
+  }
+  if (token) headers.Authorization = `Bearer ${token}`;
   return headers;
 }
 
 async function apiGet(path) {
   const url = `${apiBase()}${path}`;
   const res = await fetch(url, { method: 'GET', headers: authHeaders() });
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}`);
+  let data = null;
+  try {
+    data = await res.json();
+  } catch (e) {
+    data = null;
   }
-  const data = await res.json();
+  if (!res.ok) {
+    throw new Error((data && data.error) || `HTTP ${res.status}`);
+  }
   if (!data || data.ok === false) {
     throw new Error((data && data.error) || '接口返回失败');
   }
@@ -72,6 +85,10 @@ function updateProject(payload) {
 
 function fetchSubtasks(projectId) {
   return apiGet(`/api/project-subtasks?project_id=${encodeURIComponent(projectId)}`);
+}
+
+function updateSubtask(payload) {
+  return apiPut('/api/project-subtasks', payload);
 }
 
 function fetchDashboardSummary(year) {

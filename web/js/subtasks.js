@@ -3,6 +3,14 @@
   const summaryBar = document.getElementById('summaryBar');
   const backLink = document.getElementById('backLink');
   const pageTitle = document.getElementById('pageTitle');
+  const completeModal = document.getElementById('completeModal');
+  const completeTitle = document.getElementById('completeTitle');
+  const completeHint = document.getElementById('completeHint');
+  const completeTaskName = document.getElementById('completeTaskName');
+  const completeDate = document.getElementById('completeDate');
+  const completeError = document.getElementById('completeError');
+  const btnCompleteCancel = document.getElementById('btnCompleteCancel');
+  const btnCompleteSave = document.getElementById('btnCompleteSave');
 
   const projectId = queryParam('project_id');
   const statusFilter = (queryParam('status') || '').trim();
@@ -20,13 +28,119 @@
   } else {
     backLink.href = `project.html?id=${encodeURIComponent(projectId)}`;
   }
-  document.getElementById('btnRefresh').addEventListener('click', loadSubtasks);
+
+  let allSubtasks = [];
+  let editingSubtask = null;
+  let saving = false;
+
+  document.getElementById('btnRefresh').addEventListener('click', () => loadSubtasks(true));
+
+  function todayIso() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function canEdit() {
+    return !!(window.Auth && window.Auth.canEditProjects());
+  }
+
+  function hasActualEnd(st) {
+    return !!(st && String(st.actual_end_date || '').trim());
+  }
 
   function effectiveStatus(st) {
     return (st.status || '').trim();
   }
 
+  function filteredList() {
+    if (!statusFilter) return allSubtasks.slice();
+    return allSubtasks.filter((st) => effectiveStatus(st) === statusFilter);
+  }
+
+  function subtaskToPayload(st, actualEndDate) {
+    return {
+      id: st.id,
+      project_id: st.project_id || Number(projectId),
+      content: st.content || '',
+      owner_userid: st.owner_userid || '',
+      owner_name: st.owner_name || '',
+      status: st.status || '',
+      planned_start_date: st.planned_start_date || '',
+      actual_start_date: st.actual_start_date || '',
+      planned_end_date: st.planned_end_date || '',
+      actual_end_date: actualEndDate,
+      remark: st.remark || '',
+      members: Array.isArray(st.members) ? st.members : [],
+    };
+  }
+
+  function openCompleteModal(st) {
+    if (!canEdit() || !st) return;
+    editingSubtask = st;
+    completeError.hidden = true;
+    completeError.textContent = '';
+    const editing = hasActualEnd(st);
+    completeTitle.textContent = editing ? '修改实际完成日期' : '标记子任务完结';
+    completeHint.textContent = editing
+      ? '修改该子任务的实际完成日期。'
+      : '填写实际完成日期后，该子任务将视为已完结。';
+    completeTaskName.textContent = `任务：${displayOrDash(st.content)}`;
+    completeDate.value = editing
+      ? String(st.actual_end_date || '').trim() || todayIso()
+      : todayIso();
+    completeModal.hidden = false;
+  }
+
+  function closeCompleteModal() {
+    completeModal.hidden = true;
+    editingSubtask = null;
+  }
+
+  async function saveCompleteDate() {
+    if (saving || !editingSubtask) return;
+    const date = (completeDate.value || '').trim();
+    if (!date) {
+      completeError.textContent = '请选择实际完成日期';
+      completeError.hidden = false;
+      return;
+    }
+    saving = true;
+    btnCompleteSave.disabled = true;
+    completeError.hidden = true;
+    try {
+      const data = await updateSubtask(subtaskToPayload(editingSubtask, date));
+      const updated = data.subtask || null;
+      if (updated && updated.id) {
+        const idx = allSubtasks.findIndex((x) => x.id === updated.id);
+        if (idx >= 0) allSubtasks[idx] = updated;
+      } else {
+        await loadSubtasks(true);
+        closeCompleteModal();
+        return;
+      }
+      closeCompleteModal();
+      renderList();
+    } catch (err) {
+      completeError.textContent = err.message || '保存失败';
+      completeError.hidden = false;
+    } finally {
+      saving = false;
+      btnCompleteSave.disabled = false;
+    }
+  }
+
   function renderSubtaskCard(st) {
+    const editable = canEdit();
+    const done = hasActualEnd(st);
+    const completeBtn = editable
+      ? `<button type="button" class="btn btn-sm ${done ? '' : 'btn-primary'}" data-complete-id="${st.id}">
+           ${done ? '修改完成日期' : '标记完结'}
+         </button>`
+      : '';
+
     return `
       <article class="subtask-card">
         <div class="card-top">
@@ -45,29 +159,43 @@
             ? `<div class="card-row"><span class="label">备注：</span>${escapeHtml(st.remark)}</div>`
             : ''
         }
+        ${completeBtn ? `<div class="account-actions">${completeBtn}</div>` : ''}
       </article>
     `;
+  }
+
+  function renderList() {
+    const list = filteredList();
+    const editable = canEdit();
+    summaryBar.textContent = statusFilter
+      ? `状态「${statusFilter}」共 ${list.length} 条${editable ? '' : '（只读）'}`
+      : `共 ${list.length} 条子任务${editable ? '' : '（只读，登录后可标记完结）'}`;
+
+    if (list.length === 0) {
+      subtaskRoot.innerHTML = '<div class="state-box"><p>暂无子任务</p></div>';
+      return;
+    }
+
+    subtaskRoot.innerHTML = list.map(renderSubtaskCard).join('');
+    subtaskRoot.querySelectorAll('[data-complete-id]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sid = Number(btn.getAttribute('data-complete-id'));
+        const st = allSubtasks.find((x) => x.id === sid);
+        if (st) openCompleteModal(st);
+      });
+    });
   }
 
   async function loadSubtasks() {
     showLoading(subtaskRoot, '正在加载子任务…');
     summaryBar.textContent = '加载中…';
     try {
+      if (window.Auth && typeof window.Auth.refreshMe === 'function') {
+        await window.Auth.refreshMe();
+      }
       const data = await fetchSubtasks(projectId);
-      let list = data.subtasks || [];
-      if (statusFilter) {
-        list = list.filter((st) => effectiveStatus(st) === statusFilter);
-      }
-      summaryBar.textContent = statusFilter
-        ? `状态「${statusFilter}」共 ${list.length} 条（只读）`
-        : `共 ${list.length} 条子任务（只读）`;
-
-      if (list.length === 0) {
-        subtaskRoot.innerHTML = '<div class="state-box"><p>暂无子任务</p></div>';
-        return;
-      }
-
-      subtaskRoot.innerHTML = list.map(renderSubtaskCard).join('');
+      allSubtasks = data.subtasks || [];
+      renderList();
     } catch (err) {
       showError(subtaskRoot, err.message || '加载失败');
       summaryBar.textContent = '加载失败';
@@ -88,6 +216,15 @@
     .catch(() => {
       if (statusFilter) pageTitle.textContent = `子任务（${statusFilter}）`;
     });
+
+  btnCompleteCancel.addEventListener('click', closeCompleteModal);
+  btnCompleteSave.addEventListener('click', saveCompleteDate);
+  completeModal.addEventListener('click', (e) => {
+    if (e.target === completeModal) closeCompleteModal();
+  });
+  document.addEventListener('authchange', () => {
+    if (allSubtasks.length) renderList();
+  });
 
   loadSubtasks();
 })();
