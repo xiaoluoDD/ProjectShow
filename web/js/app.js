@@ -51,7 +51,7 @@
 
     if (projectsHint) {
       projectsHint.textContent = canEdit
-        ? '已登录，可在桌面端增改项目 · 网页端当前以查看为主'
+        ? '已登录，可新增项目 · 下拉页面可刷新'
         : '未登录仅可查看 · 下拉页面可刷新';
     }
 

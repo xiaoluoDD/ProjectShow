@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.1.1</title>
+  <title>项目管理看板 v1.1.2</title>
   <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
@@ -35,7 +35,10 @@
 
     <!-- 项目列表 -->
     <section id="projectsView" hidden>
-      <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷新</p>
+      <div class="projects-toolbar">
+        <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷新</p>
+        <button type="button" class="btn btn-primary" id="btnAddProject" hidden>新增项目</button>
+      </div>
 
       <section class="filter-panel" id="filterPanel">
         <label for="filterYear">年度</label>
@@ -116,6 +119,54 @@
     </div>
   </div>
 
+  <!-- 新建项目弹窗（字段对齐 Qt 桌面） -->
+  <div class="modal-mask" id="projectModal" hidden>
+    <div class="modal-card modal-card-form" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+      <h2 id="projectModalTitle">新建项目</h2>
+      <div class="modal-scroll">
+        <label for="projectYear">年度</label>
+        <input id="projectYear" type="text" inputmode="numeric" autocomplete="off" />
+
+        <label for="projectWorkNo">工番号</label>
+        <input id="projectWorkNo" type="text" autocomplete="off" />
+
+        <label for="projectName">项目名称</label>
+        <input id="projectName" type="text" autocomplete="off" />
+
+        <label for="projectManagerDept">负责人部门</label>
+        <select id="projectManagerDept"></select>
+
+        <label for="projectManager">项目负责人</label>
+        <select id="projectManager" disabled>
+          <option value="">（未指定）</option>
+        </select>
+
+        <label for="projectMemberDept">成员部门</label>
+        <select id="projectMemberDept"></select>
+
+        <label>项目成员</label>
+        <div class="member-checklist" id="projectMemberList" aria-live="polite"></div>
+        <p class="modal-hint" id="projectSelectedCount">已选成员：0 人</p>
+        <p class="modal-hint" id="projectSelectedSummary">（暂无）</p>
+
+        <label for="projectStartDate">项目启动日期</label>
+        <input id="projectStartDate" type="date" />
+
+        <label for="projectEndDate">实际完结日期</label>
+        <input id="projectEndDate" type="date" />
+
+        <p class="modal-hint">项目状态由启动日期与实际完结日期自动计算（待启动 / 进行中 / 已完结）。</p>
+        <p class="modal-hint">项目任务由子任务组成，创建后可在详情页管理子任务。</p>
+        <p class="modal-hint">选负责人：先选部门再选人；选成员：先选部门再勾选，可切换部门继续添加。新建或新增成员后将发送项目加入提醒。</p>
+      </div>
+      <p class="modal-error" id="projectError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnProjectCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnProjectSave">创建</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/config.js"></script>
   <script src="js/status.js"></script>
   <script src="js/utils.js"></script>
@@ -123,6 +174,7 @@
   <script src="js/auth.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/list.js"></script>
+  <script src="js/project-form.js"></script>
   <script src="js/accounts.js"></script>
   <script src="js/app.js"></script>
 </body>

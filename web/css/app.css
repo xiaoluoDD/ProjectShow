@@ -521,6 +521,23 @@ a {
   flex: 1;
 }
 
+.projects-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.projects-toolbar .pull-hint {
+  margin: 0;
+  flex: 1;
+}
+
+.projects-toolbar .btn {
+  flex-shrink: 0;
+}
+
 .account-card {
   background: #fff;
   border-radius: 12px;
@@ -574,9 +591,26 @@ a {
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
 }
 
+.modal-card-form {
+  max-width: 420px;
+  max-height: min(92vh, 720px);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 12px;
+}
+
+.modal-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-height: 0;
+  padding-right: 2px;
+}
+
 .modal-card h2 {
   margin: 0 0 14px;
   font-size: 17px;
+  flex-shrink: 0;
 }
 
 .modal-card label {
@@ -596,10 +630,41 @@ a {
   background: #fff;
 }
 
+.member-checklist {
+  max-height: 140px;
+  overflow-y: auto;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  padding: 6px 8px;
+  background: #fafbfc;
+}
+
+.member-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 2px;
+  font-size: 14px;
+  color: #263238;
+}
+
+.member-check-row input {
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.member-empty {
+  margin: 8px 0;
+  font-size: 13px;
+}
+
 .modal-actions {
   display: flex;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 12px;
+  flex-shrink: 0;
 }
 
 .modal-actions .btn {
@@ -610,6 +675,7 @@ a {
   margin: 10px 0 0;
   color: #c62828;
   font-size: 13px;
+  flex-shrink: 0;
 }
 
 .modal-hint {

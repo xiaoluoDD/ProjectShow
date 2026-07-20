@@ -79,8 +79,20 @@ function fetchProject(id) {
   return apiGet(`/api/projects?id=${encodeURIComponent(id)}`);
 }
 
+function createProject(payload) {
+  return apiPost('/api/projects', payload);
+}
+
 function updateProject(payload) {
   return apiPut('/api/projects', payload);
+}
+
+function fetchDepartments() {
+  return apiGet('/api/departments');
+}
+
+function fetchWecomUsers() {
+  return apiGet('/api/wecom/users');
 }
 
 function fetchSubtasks(projectId) {
