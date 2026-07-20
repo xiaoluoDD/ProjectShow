@@ -42,7 +42,7 @@
   }
 
   function buildPieSvg(rows) {
-    const size = 220;
+    const size = 260;
     const cx = size / 2;
     const cy = size / 2;
     const r = 78;
@@ -59,31 +59,38 @@
     let angle = -Math.PI / 2;
     const paths = [];
     const labels = [];
+    const fullCircle = Math.PI * 2 - 1e-6;
 
     rows.forEach((row) => {
       const count = row.count || 0;
       if (count <= 0) return;
       const slice = (count / total) * Math.PI * 2;
-      const x1 = cx + r * Math.cos(angle);
-      const y1 = cy + r * Math.sin(angle);
-      const next = angle + slice;
-      const x2 = cx + r * Math.cos(next);
-      const y2 = cy + r * Math.sin(next);
-      const large = slice > Math.PI ? 1 : 0;
       const color = statusColor(row.status);
-      paths.push(
-        `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z" fill="${color}"></path>`
-      );
-
       const mid = angle + slice / 2;
-      const lx = cx + (r + 28) * Math.cos(mid);
-      const ly = cy + (r + 28) * Math.sin(mid);
+
+      // 单片约 100% 时 SVG 圆弧起终点重合画不出来，改用整圆。
+      if (slice >= fullCircle) {
+        paths.push(`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"></circle>`);
+      } else {
+        const x1 = cx + r * Math.cos(angle);
+        const y1 = cy + r * Math.sin(angle);
+        const next = angle + slice;
+        const x2 = cx + r * Math.cos(next);
+        const y2 = cy + r * Math.sin(next);
+        const large = slice > Math.PI ? 1 : 0;
+        paths.push(
+          `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z" fill="${color}"></path>`
+        );
+      }
+
+      const lx = cx + (r + 36) * Math.cos(mid);
+      const ly = cy + (r + 36) * Math.sin(mid);
       const pct = ((count / total) * 100).toFixed(2);
       labels.push(`
         <text x="${lx}" y="${ly - 6}" text-anchor="middle" fill="${color}" font-size="11" font-weight="600">${escapeHtml(row.status)}</text>
         <text x="${lx}" y="${ly + 8}" text-anchor="middle" fill="#546e7a" font-size="11">${count} (${pct}%)</text>
       `);
-      angle = next;
+      angle += slice;
     });
 
     return `
