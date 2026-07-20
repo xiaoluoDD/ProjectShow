@@ -12,11 +12,15 @@
     <select class="view-switch" id="viewSwitch" aria-label="界面切换">
       <option value="dashboard">总览看板</option>
       <option value="projects">项目界面</option>
+      <option value="accounts" id="optAccounts" hidden>账户管理</option>
     </select>
     <span class="app-version" id="appVersion"></span>
     <button type="button" class="btn" id="btnFilter" hidden>筛选</button>
     <button type="button" class="btn btn-primary" id="btnRefresh">刷新</button>
+    <button type="button" class="btn" id="btnLogin">登录</button>
+    <button type="button" class="btn" id="btnLogout" hidden>退出</button>
   </header>
+  <p class="auth-user-bar" id="authUserBar" hidden></p>
 
   <main class="app-main">
     <!-- 总览看板 -->
@@ -31,7 +35,7 @@
 
     <!-- 项目列表 -->
     <section id="projectsView" hidden>
-      <p class="pull-hint">只读查看 · 下拉页面可刷新</p>
+      <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷新</p>
 
       <section class="filter-panel" id="filterPanel">
         <label for="filterYear">年度</label>
@@ -60,14 +64,66 @@
       <p class="hint-bar" id="summaryBar">加载中…</p>
       <div id="listRoot"></div>
     </section>
+
+    <!-- 账户管理 -->
+    <section id="accountsView" hidden>
+      <div class="accounts-toolbar">
+        <p class="hint-bar" id="accountsSummaryBar">仅管理员可管理账户</p>
+        <button type="button" class="btn btn-primary" id="btnAddAccount">新增账户</button>
+      </div>
+      <div id="accountsRoot"></div>
+    </section>
   </main>
+
+  <!-- 登录弹窗 -->
+  <div class="modal-mask" id="loginModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <h2 id="loginTitle">登录</h2>
+      <label for="loginUsername">账号</label>
+      <input id="loginUsername" type="text" autocomplete="username" placeholder="请输入账号" />
+      <label for="loginPassword">密码</label>
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="请输入密码" />
+      <p class="modal-error" id="loginError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnLoginCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnLoginSubmit">登录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 账户编辑弹窗 -->
+  <div class="modal-mask" id="accountModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <h2 id="accountModalTitle">新增账户</h2>
+      <input type="hidden" id="accountEditId" value="" />
+      <label for="accountUsername">用户名</label>
+      <input id="accountUsername" type="text" autocomplete="off" />
+      <label for="accountDisplayName">显示名</label>
+      <input id="accountDisplayName" type="text" autocomplete="off" />
+      <label for="accountRole">权限</label>
+      <select id="accountRole">
+        <option value="user">普通（可增改项目）</option>
+        <option value="admin">管理员（可增改项目 + 管理账户）</option>
+      </select>
+      <label for="accountPassword" id="accountPasswordLabel">密码</label>
+      <input id="accountPassword" type="password" autocomplete="new-password" />
+      <p class="modal-hint" id="accountPasswordHint" hidden>留空表示不修改密码</p>
+      <p class="modal-error" id="accountError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnAccountCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnAccountSave">保存</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/config.js"></script>
   <script src="js/status.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/list.js"></script>
+  <script src="js/accounts.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
