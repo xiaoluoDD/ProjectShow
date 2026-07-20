@@ -96,7 +96,6 @@
     return `
       <svg class="pie-svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
         ${paths.join('')}
-        <circle cx="${cx}" cy="${cy}" r="42" fill="#fff"></circle>
         ${labels.join('')}
       </svg>`;
   }
