@@ -97,7 +97,7 @@
   }
 
   function openCompleteModal(st) {
-    if (!st) return;
+    if (!st || !completeModal) return;
     if (!ensureCanEdit()) return;
     editingSubtask = st;
     completeError.hidden = true;
@@ -120,7 +120,7 @@
   }
 
   async function saveCompleteDate() {
-    if (saving || !editingSubtask) return;
+    if (saving || !editingSubtask || !btnCompleteSave) return;
     const date = (completeDate.value || '').trim();
     if (!date) {
       completeError.textContent = '请选择实际完成日期';
@@ -213,10 +213,11 @@
     showLoading(subtaskRoot, '正在加载子任务…');
     summaryBar.textContent = '加载中…';
     try {
-      if (window.Auth && typeof window.Auth.refreshMe === 'function') {
-        await window.Auth.refreshMe();
-      }
-      const data = await fetchSubtasks(projectId);
+      // 与 fetchSubtasks 并行校验登录态，避免 /api/auth/me 慢或不可达时阻塞列表
+      const refresh = window.Auth && typeof window.Auth.refreshMe === 'function'
+        ? window.Auth.refreshMe()
+        : Promise.resolve();
+      const [data] = await Promise.all([fetchSubtasks(projectId), refresh]);
       allSubtasks = data.subtasks || [];
       renderList();
     } catch (err) {
@@ -240,14 +241,16 @@
       if (statusFilter) pageTitle.textContent = `子任务（${statusFilter}）`;
     });
 
-  btnCompleteCancel.addEventListener('click', closeCompleteModal);
-  btnCompleteSave.addEventListener('click', saveCompleteDate);
-  completeModal.addEventListener('click', (e) => {
-    if (e.target === completeModal) closeCompleteModal();
-  });
+  loadSubtasks();
+
+  if (btnCompleteCancel && btnCompleteSave && completeModal) {
+    btnCompleteCancel.addEventListener('click', closeCompleteModal);
+    btnCompleteSave.addEventListener('click', saveCompleteDate);
+    completeModal.addEventListener('click', (e) => {
+      if (e.target === completeModal) closeCompleteModal();
+    });
+  }
   document.addEventListener('authchange', () => {
     if (allSubtasks.length) renderList();
   });
-
-  loadSubtasks();
 })();
