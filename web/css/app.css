@@ -250,11 +250,14 @@ a {
   display: flex;
   gap: 8px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
-.action-bar .btn {
+.action-bar .btn,
+.action-bar a.btn {
   flex: 1;
   text-align: center;
+  text-decoration: none;
 }
 
 .muted {

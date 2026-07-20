@@ -15,14 +15,31 @@
   <main class="app-main">
     <div id="detailRoot"></div>
     <div class="action-bar" id="actionBar" hidden>
+      <button type="button" class="btn btn-primary" id="btnComplete" hidden>标记完结</button>
       <a class="btn btn-primary" id="btnSubtasks" href="#">查看子任务</a>
     </div>
+    <p class="hint-bar" id="editHint" hidden>登录后可标记项目完结</p>
   </main>
+
+  <div class="modal-mask" id="completeModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="completeTitle">
+      <h2 id="completeTitle">标记完结</h2>
+      <p class="modal-hint" id="completeHint">填写实际完结日期后，项目状态将变为「已完结」。</p>
+      <label for="completeDate">实际完结日期</label>
+      <input id="completeDate" type="date" />
+      <p class="modal-error" id="completeError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnCompleteCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnCompleteSave">确认</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/config.js"></script>
   <script src="js/status.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/detail.js"></script>
 </body>
 </html>

@@ -66,6 +66,10 @@ function fetchProject(id) {
   return apiGet(`/api/projects?id=${encodeURIComponent(id)}`);
 }
 
+function updateProject(payload) {
+  return apiPut('/api/projects', payload);
+}
+
 function fetchSubtasks(projectId) {
   return apiGet(`/api/project-subtasks?project_id=${encodeURIComponent(projectId)}`);
 }
