@@ -173,4 +173,10 @@
 
   refreshAuthUI();
   setView(currentView(), true);
+
+  // 从子任务等页面跳转回来时自动弹出登录
+  const loginFlag = new URLSearchParams(window.location.search).get('login');
+  if (loginFlag === '1' && !(window.Auth && window.Auth.isLoggedIn())) {
+    openLogin();
+  }
 })();

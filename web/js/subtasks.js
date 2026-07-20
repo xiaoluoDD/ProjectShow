@@ -44,7 +44,26 @@
   }
 
   function canEdit() {
-    return !!(window.Auth && window.Auth.canEditProjects());
+    if (window.Auth && window.Auth.canEditProjects()) return true;
+    // 兜底：Auth 尚未刷新完成时，读本地缓存用户权限
+    try {
+      const raw = localStorage.getItem('projectshow_auth_user');
+      if (!raw) return false;
+      const user = JSON.parse(raw);
+      return !!(user && user.can_edit_projects);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function ensureCanEdit() {
+    if (canEdit()) return true;
+    const goLogin = confirm('标记完结需要先登录。是否前往登录？');
+    if (goLogin) {
+      const returnTo = encodeURIComponent(window.location.href);
+      window.location.href = `index.html?view=projects&login=1&return=${returnTo}`;
+    }
+    return false;
   }
 
   function hasActualEnd(st) {
@@ -78,7 +97,8 @@
   }
 
   function openCompleteModal(st) {
-    if (!canEdit() || !st) return;
+    if (!st) return;
+    if (!ensureCanEdit()) return;
     editingSubtask = st;
     completeError.hidden = true;
     completeError.textContent = '';
@@ -133,13 +153,10 @@
   }
 
   function renderSubtaskCard(st) {
-    const editable = canEdit();
     const done = hasActualEnd(st);
-    const completeBtn = editable
-      ? `<button type="button" class="btn btn-sm ${done ? '' : 'btn-primary'}" data-complete-id="${st.id}">
+    const completeBtn = `<button type="button" class="btn btn-sm ${done ? '' : 'btn-primary'}" data-complete-id="${st.id}">
            ${done ? '修改完成日期' : '标记完结'}
-         </button>`
-      : '';
+         </button>`;
 
     return `
       <article class="subtask-card">
@@ -159,7 +176,7 @@
             ? `<div class="card-row"><span class="label">备注：</span>${escapeHtml(st.remark)}</div>`
             : ''
         }
-        ${completeBtn ? `<div class="account-actions">${completeBtn}</div>` : ''}
+        <div class="account-actions">${completeBtn}</div>
       </article>
     `;
   }
@@ -167,9 +184,15 @@
   function renderList() {
     const list = filteredList();
     const editable = canEdit();
-    summaryBar.textContent = statusFilter
-      ? `状态「${statusFilter}」共 ${list.length} 条${editable ? '' : '（只读）'}`
-      : `共 ${list.length} 条子任务${editable ? '' : '（只读，登录后可标记完结）'}`;
+    if (statusFilter) {
+      summaryBar.textContent = editable
+        ? `状态「${statusFilter}」共 ${list.length} 条`
+        : `状态「${statusFilter}」共 ${list.length} 条 · 未登录仅可查看，点「标记完结」将提示登录`;
+    } else {
+      summaryBar.textContent = editable
+        ? `共 ${list.length} 条子任务 · 可标记完结`
+        : `共 ${list.length} 条子任务 · 未登录，点卡片上的「标记完结」可去登录`;
+    }
 
     if (list.length === 0) {
       subtaskRoot.innerHTML = '<div class="state-box"><p>暂无子任务</p></div>';
