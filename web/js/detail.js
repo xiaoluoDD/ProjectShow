@@ -2,6 +2,15 @@
   const detailRoot = document.getElementById('detailRoot');
   const actionBar = document.getElementById('actionBar');
   const btnSubtasks = document.getElementById('btnSubtasks');
+  const btnComplete = document.getElementById('btnComplete');
+  const editHint = document.getElementById('editHint');
+  const completeModal = document.getElementById('completeModal');
+  const completeTitle = document.getElementById('completeTitle');
+  const completeHint = document.getElementById('completeHint');
+  const completeDate = document.getElementById('completeDate');
+  const completeError = document.getElementById('completeError');
+  const btnCompleteCancel = document.getElementById('btnCompleteCancel');
+  const btnCompleteSave = document.getElementById('btnCompleteSave');
 
   const id = queryParam('id');
   if (!id) {
@@ -9,9 +18,42 @@
     return;
   }
 
+  let currentProject = null;
+  let saving = false;
+
   btnSubtasks.href = `subtasks.html?project_id=${encodeURIComponent(id)}`;
 
+  function todayIso() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function hasEndDate(project) {
+    return !!(project && String(project.end_date || '').trim());
+  }
+
+  function canEdit() {
+    return !!(window.Auth && window.Auth.canEditProjects());
+  }
+
+  function refreshCompleteButton() {
+    if (!currentProject) {
+      btnComplete.hidden = true;
+      editHint.hidden = true;
+      return;
+    }
+    const editable = canEdit();
+    btnComplete.hidden = !editable;
+    editHint.hidden = editable;
+    if (!editable) return;
+    btnComplete.textContent = hasEndDate(currentProject) ? '修改完结日期' : '标记完结';
+  }
+
   function renderDetail(project) {
+    currentProject = project;
     document.title = project.name ? `项目详情 — ${project.name}` : '项目详情';
 
     const rows = [
@@ -52,18 +94,92 @@
 
     actionBar.hidden = false;
     btnSubtasks.textContent = subCount > 0 ? `查看子任务（${subCount}）` : '查看子任务';
+    refreshCompleteButton();
+  }
+
+  function openCompleteModal() {
+    if (!currentProject || !canEdit()) return;
+    completeError.hidden = true;
+    completeError.textContent = '';
+    const editing = hasEndDate(currentProject);
+    completeTitle.textContent = editing ? '修改完结日期' : '标记完结';
+    completeHint.textContent = editing
+      ? '修改实际完结日期。若需取消完结，请在桌面端清空该日期。'
+      : '填写实际完结日期后，项目状态将变为「已完结」。';
+    completeDate.value = editing
+      ? String(currentProject.end_date || '').trim() || todayIso()
+      : todayIso();
+    completeModal.hidden = false;
+  }
+
+  function closeCompleteModal() {
+    completeModal.hidden = true;
+  }
+
+  function projectToUpdatePayload(project, endDate) {
+    return {
+      id: project.id,
+      year: project.year || '',
+      work_no: project.work_no || '',
+      name: project.name || '',
+      manager_userid: project.manager_userid || '',
+      manager_name: project.manager_name || '',
+      group_chat: project.group_chat || '',
+      group_chat_id: project.group_chat_id || '',
+      start_date: project.start_date || '',
+      end_date: endDate,
+      tasks: project.tasks || '',
+    };
+  }
+
+  async function saveCompleteDate() {
+    if (saving || !currentProject) return;
+    const date = (completeDate.value || '').trim();
+    if (!date) {
+      completeError.textContent = '请选择实际完结日期';
+      completeError.hidden = false;
+      return;
+    }
+
+    saving = true;
+    btnCompleteSave.disabled = true;
+    completeError.hidden = true;
+    try {
+      const data = await updateProject(projectToUpdatePayload(currentProject, date));
+      closeCompleteModal();
+      renderDetail(data.project || currentProject);
+    } catch (err) {
+      completeError.textContent = err.message || '保存失败';
+      completeError.hidden = false;
+    } finally {
+      saving = false;
+      btnCompleteSave.disabled = false;
+    }
   }
 
   async function loadDetail() {
     showLoading(detailRoot, '正在加载详情…');
     try {
+      if (window.Auth && typeof window.Auth.refreshMe === 'function') {
+        await window.Auth.refreshMe();
+      }
       const data = await fetchProject(id);
       renderDetail(data.project || {});
     } catch (err) {
       showError(detailRoot, err.message || '加载失败');
       actionBar.hidden = true;
+      btnComplete.hidden = true;
+      editHint.hidden = true;
     }
   }
+
+  btnComplete.addEventListener('click', openCompleteModal);
+  btnCompleteCancel.addEventListener('click', closeCompleteModal);
+  btnCompleteSave.addEventListener('click', saveCompleteDate);
+  completeModal.addEventListener('click', (e) => {
+    if (e.target === completeModal) closeCompleteModal();
+  });
+  document.addEventListener('authchange', refreshCompleteButton);
 
   loadDetail();
 })();
