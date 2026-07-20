@@ -6,7 +6,7 @@ CONFIG   += c++17 warn_on depend_includepath
 win32-g++: QMAKE_CXXFLAGS += -std=gnu++17
 TEMPLATE = app
 TARGET   = ProjectKanban
-VERSION  = 1.1.1
+VERSION  = 1.2.1
 
 INCLUDEPATH += \
     $$PWD/app \
