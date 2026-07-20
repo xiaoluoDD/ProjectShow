@@ -186,11 +186,11 @@
     const editable = canEdit();
     if (statusFilter) {
       summaryBar.textContent = editable
-        ? `状态「${statusFilter}」共 ${list.length} 条`
+        ? `状态「${statusFilter}」共 ${list.length} 条 · 可新增 / 标记完结`
         : `状态「${statusFilter}」共 ${list.length} 条 · 未登录仅可查看，点「标记完结」将提示登录`;
     } else {
       summaryBar.textContent = editable
-        ? `共 ${list.length} 条子任务 · 可标记完结`
+        ? `共 ${list.length} 条子任务 · 可新增 / 标记完结`
         : `共 ${list.length} 条子任务 · 未登录，点卡片上的「标记完结」可去登录`;
     }
 
@@ -253,4 +253,8 @@
   document.addEventListener('authchange', () => {
     if (allSubtasks.length) renderList();
   });
+
+  window.SubtasksApp = {
+    reload: () => loadSubtasks(),
+  };
 })();

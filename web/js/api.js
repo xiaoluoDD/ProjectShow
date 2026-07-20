@@ -99,6 +99,10 @@ function fetchSubtasks(projectId) {
   return apiGet(`/api/project-subtasks?project_id=${encodeURIComponent(projectId)}`);
 }
 
+function createSubtask(payload) {
+  return apiPost('/api/project-subtasks', payload);
+}
+
 function updateSubtask(payload) {
   return apiPut('/api/project-subtasks', payload);
 }

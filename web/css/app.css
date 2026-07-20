@@ -622,13 +622,20 @@ a {
 }
 
 .modal-card input,
-.modal-card select {
+.modal-card select,
+.modal-card textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #cfd8dc;
   border-radius: 8px;
   font-size: 15px;
   background: #fff;
+  font-family: inherit;
+}
+
+.modal-card textarea {
+  resize: vertical;
+  min-height: 72px;
 }
 
 .member-checklist {

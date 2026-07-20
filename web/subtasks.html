@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>子任务</title>
-  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/app.css?v=1.1.5" />
 </head>
 <body>
   <header class="app-header">
     <a class="back-link" id="backLink" href="index.html">‹ 返回</a>
     <h1 id="pageTitle">子任务</h1>
+    <button type="button" class="btn btn-primary" id="btnAddSubtask" hidden>新增子任务</button>
     <button type="button" class="btn btn-primary" id="btnRefresh">刷新</button>
   </header>
 
@@ -33,11 +34,66 @@
     </div>
   </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/status.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/subtasks.js"></script>
+  <!-- 新增子任务（字段对齐 Qt 桌面 SubTaskEditDialog） -->
+  <div class="modal-mask" id="subtaskModal" hidden>
+    <div class="modal-card modal-card-form" role="dialog" aria-modal="true" aria-labelledby="subtaskModalTitle">
+      <h2 id="subtaskModalTitle">新增子任务</h2>
+      <div class="modal-scroll">
+        <label for="subtaskContent">任务内容</label>
+        <input id="subtaskContent" type="text" autocomplete="off" placeholder="请输入任务内容" />
+
+        <label>负责人</label>
+        <p class="modal-hint" id="subtaskOwnerLabel">（加载中…）</p>
+
+        <label for="subtaskMemberDept">筛选部门</label>
+        <select id="subtaskMemberDept"></select>
+
+        <label>子项目成员</label>
+        <div class="member-checklist" id="subtaskMemberList" aria-live="polite"></div>
+        <p class="modal-hint" id="subtaskSelectedCount">已选成员：0 人</p>
+        <p class="modal-hint" id="subtaskSelectedSummary">（暂无）</p>
+
+        <label for="subtaskStatus">任务状态</label>
+        <select id="subtaskStatus">
+          <option value="待启动">待启动</option>
+          <option value="进行中">进行中</option>
+          <option value="已完结">已完结</option>
+          <option value="逾期">逾期</option>
+          <option value="暂停">暂停</option>
+        </select>
+        <p class="modal-hint">保存后状态以后端日期规则为准（与桌面端一致）。</p>
+
+        <label for="subtaskPlannedStart">计划开始日期</label>
+        <input id="subtaskPlannedStart" type="date" />
+
+        <label for="subtaskActualStart">实际开始日期</label>
+        <input id="subtaskActualStart" type="date" />
+
+        <label for="subtaskPlannedEnd">计划完成日期</label>
+        <input id="subtaskPlannedEnd" type="date" />
+
+        <label for="subtaskActualEnd">实际完成日期</label>
+        <input id="subtaskActualEnd" type="date" />
+
+        <label for="subtaskRemark">备注</label>
+        <textarea id="subtaskRemark" rows="3" placeholder="可选"></textarea>
+
+        <p class="modal-hint">负责人固定为所属项目负责人；子项目成员按部门筛选勾选，可不在项目成员范围内。</p>
+      </div>
+      <p class="modal-error" id="subtaskFormError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnSubtaskCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnSubtaskSave">创建</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=1.1.5"></script>
+  <script src="js/status.js?v=1.1.5"></script>
+  <script src="js/utils.js?v=1.1.5"></script>
+  <script src="js/api.js?v=1.1.5"></script>
+  <script src="js/auth.js?v=1.1.5"></script>
+  <script src="js/subtasks.js?v=1.1.5"></script>
+  <script src="js/subtask-form.js?v=1.1.5"></script>
 </body>
 </html>
