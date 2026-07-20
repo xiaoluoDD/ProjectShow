@@ -1,6 +1,4 @@
 (function () {
-  applyAppVersionBadge();
-
   const listRoot = document.getElementById('listRoot');
   const summaryBar = document.getElementById('summaryBar');
   const filterPanel = document.getElementById('filterPanel');
@@ -10,6 +8,7 @@
   const filterStatus = document.getElementById('filterStatus');
 
   let allProjects = [];
+  let loadedOnce = false;
   let touchStartY = 0;
   let pulling = false;
 
@@ -17,7 +16,6 @@
     filterPanel.classList.toggle('open');
   });
 
-  document.getElementById('btnRefresh').addEventListener('click', () => loadList());
   document.getElementById('btnApplyFilter').addEventListener('click', () => {
     renderList();
     filterPanel.classList.remove('open');
@@ -34,7 +32,6 @@
     el.addEventListener('change', renderList);
   });
 
-  // 简易下拉刷新
   document.addEventListener('touchstart', (e) => {
     if (window.scrollY <= 0) {
       touchStartY = e.touches[0].clientY;
@@ -47,7 +44,8 @@
     pulling = false;
     const delta = e.changedTouches[0].clientY - touchStartY;
     if (window.scrollY <= 0 && delta > 80) {
-      loadList();
+      const view = document.getElementById('viewSwitch');
+      if (view && view.value === 'projects') load(true);
     }
   }, { passive: true });
 
@@ -136,12 +134,17 @@
     listRoot.innerHTML = filtered.map(renderCard).join('');
   }
 
-  async function loadList() {
+  async function load(force) {
+    if (loadedOnce && !force && allProjects.length) {
+      renderList();
+      return;
+    }
     showLoading(listRoot, '正在加载项目…');
     summaryBar.textContent = '加载中…';
     try {
       const data = await fetchProjects();
       allProjects = data.projects || [];
+      loadedOnce = true;
       rebuildFilterOptions();
       renderList();
     } catch (err) {
@@ -150,5 +153,5 @@
     }
   }
 
-  loadList();
+  window.ProjectListApp = { load };
 })();

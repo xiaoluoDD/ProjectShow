@@ -5,14 +5,26 @@
   const pageTitle = document.getElementById('pageTitle');
 
   const projectId = queryParam('project_id');
+  const statusFilter = (queryParam('status') || '').trim();
+  const from = (queryParam('from') || '').trim();
+
   if (!projectId) {
     showError(subtaskRoot, '缺少 project_id');
     summaryBar.textContent = '';
     return;
   }
 
-  backLink.href = `project.html?id=${encodeURIComponent(projectId)}`;
+  if (from === 'dashboard') {
+    backLink.href = 'index.html?view=dashboard';
+    backLink.textContent = '‹ 返回总览';
+  } else {
+    backLink.href = `project.html?id=${encodeURIComponent(projectId)}`;
+  }
   document.getElementById('btnRefresh').addEventListener('click', loadSubtasks);
+
+  function effectiveStatus(st) {
+    return (st.status || '').trim();
+  }
 
   function renderSubtaskCard(st) {
     return `
@@ -42,8 +54,13 @@
     summaryBar.textContent = '加载中…';
     try {
       const data = await fetchSubtasks(projectId);
-      const list = data.subtasks || [];
-      summaryBar.textContent = `共 ${list.length} 条子任务（只读）`;
+      let list = data.subtasks || [];
+      if (statusFilter) {
+        list = list.filter((st) => effectiveStatus(st) === statusFilter);
+      }
+      summaryBar.textContent = statusFilter
+        ? `状态「${statusFilter}」共 ${list.length} 条（只读）`
+        : `共 ${list.length} 条子任务（只读）`;
 
       if (list.length === 0) {
         subtaskRoot.innerHTML = '<div class="state-box"><p>暂无子任务</p></div>';
@@ -57,13 +74,20 @@
     }
   }
 
-  // 尝试显示项目名称（可选，失败不影响子任务列表）
   fetchProject(projectId)
     .then((data) => {
       const name = (data.project && data.project.name) || '';
-      if (name) pageTitle.textContent = `子任务 · ${name}`;
+      if (name) {
+        pageTitle.textContent = statusFilter
+          ? `子任务 · ${name}（${statusFilter}）`
+          : `子任务 · ${name}`;
+      } else if (statusFilter) {
+        pageTitle.textContent = `子任务（${statusFilter}）`;
+      }
     })
-    .catch(() => {});
+    .catch(() => {
+      if (statusFilter) pageTitle.textContent = `子任务（${statusFilter}）`;
+    });
 
   loadSubtasks();
 })();
