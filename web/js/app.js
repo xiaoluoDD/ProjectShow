@@ -169,6 +169,19 @@
     refreshAuthUI();
     if (viewSwitch.value === 'accounts') setView('dashboard', true);
   });
+
+  if (btnAddProject) {
+    btnAddProject.addEventListener('click', () => {
+      if (window.ProjectFormApp && typeof window.ProjectFormApp.openCreate === 'function') {
+        window.ProjectFormApp.openCreate();
+        return;
+      }
+      alert(
+        '新建项目脚本未加载。请确认已同步 js/project-form.js，并强制刷新页面（Ctrl+F5）。'
+      );
+    });
+  }
+
   document.getElementById('btnLoginCancel').addEventListener('click', closeLogin);
   document.getElementById('btnLoginSubmit').addEventListener('click', submitLogin);
   loginPassword.addEventListener('keydown', (e) => {
