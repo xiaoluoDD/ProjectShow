@@ -29,6 +29,7 @@ a {
   z-index: 10;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 12px 14px;
   background: #fff;

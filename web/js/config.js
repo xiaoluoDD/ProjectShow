@@ -5,5 +5,5 @@
 // （不同源时浏览器可能因 CORS 拦截，需 Nginx 同域或后端加 CORS。）
 window.APP_CONFIG = {
   apiBase: '',
-  appVersion: 'v1.1.2',
+  appVersion: 'v1.1.3',
 };

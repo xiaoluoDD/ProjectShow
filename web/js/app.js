@@ -4,6 +4,7 @@
   const viewSwitch = document.getElementById('viewSwitch');
   const optAccounts = document.getElementById('optAccounts');
   const btnFilter = document.getElementById('btnFilter');
+  const btnAddProject = document.getElementById('btnAddProject');
   const btnRefresh = document.getElementById('btnRefresh');
   const btnLogin = document.getElementById('btnLogin');
   const btnLogout = document.getElementById('btnLogout');
@@ -51,13 +52,22 @@
 
     if (projectsHint) {
       projectsHint.textContent = canEdit
-        ? '已登录，可新增项目 · 下拉页面可刷新'
+        ? '已登录，可点顶栏「新增项目」· 下拉页面可刷新'
         : '未登录仅可查看 · 下拉页面可刷新';
     }
+
+    refreshAddProjectButton();
 
     if (!canManage && viewSwitch.value === 'accounts') {
       setView('dashboard', true);
     }
+  }
+
+  function refreshAddProjectButton() {
+    if (!btnAddProject) return;
+    const canEdit = window.Auth && window.Auth.canEditProjects();
+    const onProjects = viewSwitch.value === 'projects';
+    btnAddProject.hidden = !(canEdit && onProjects);
   }
 
   function setView(view, pushUrl) {
@@ -78,6 +88,7 @@
     projectsView.hidden = !isProjects;
     accountsView.hidden = !isAccounts;
     btnFilter.hidden = !isProjects;
+    refreshAddProjectButton();
 
     if (pushUrl) {
       const url = new URL(window.location.href);

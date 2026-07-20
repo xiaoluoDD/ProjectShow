@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.1.2</title>
+  <title>项目管理看板 v1.1.3</title>
   <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
@@ -16,6 +16,7 @@
     </select>
     <span class="app-version" id="appVersion"></span>
     <button type="button" class="btn" id="btnFilter" hidden>筛选</button>
+    <button type="button" class="btn btn-primary" id="btnAddProject" hidden>新增项目</button>
     <button type="button" class="btn btn-primary" id="btnRefresh">刷新</button>
     <button type="button" class="btn" id="btnLogin">登录</button>
     <button type="button" class="btn" id="btnLogout" hidden>退出</button>
@@ -35,10 +36,7 @@
 
     <!-- 项目列表 -->
     <section id="projectsView" hidden>
-      <div class="projects-toolbar">
-        <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷新</p>
-        <button type="button" class="btn btn-primary" id="btnAddProject" hidden>新增项目</button>
-      </div>
+      <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷新</p>
 
       <section class="filter-panel" id="filterPanel">
         <label for="filterYear">年度</label>
