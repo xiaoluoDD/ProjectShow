@@ -33,7 +33,57 @@
   let editingSubtask = null;
   let saving = false;
 
+  const btnRefresh = document.getElementById('btnRefresh');
+  let btnAddSubtask = document.getElementById('btnAddSubtask');
+
+  // 兼容旧版 HTML（无按钮节点时动态插入）
+  if (!btnAddSubtask && btnRefresh && btnRefresh.parentNode) {
+    btnAddSubtask = document.createElement('button');
+    btnAddSubtask.type = 'button';
+    btnAddSubtask.className = 'btn btn-primary';
+    btnAddSubtask.id = 'btnAddSubtask';
+    btnAddSubtask.textContent = '新增子任务';
+    btnRefresh.parentNode.insertBefore(btnAddSubtask, btnRefresh);
+  }
+
+  function openAddSubtask() {
+    function tryOpen() {
+      if (window.SubtaskFormApp && typeof window.SubtaskFormApp.openCreate === 'function') {
+        window.SubtaskFormApp.openCreate();
+        return true;
+      }
+      return false;
+    }
+    if (tryOpen()) return;
+
+    // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
+    if (!document.querySelector('script[data-subtask-form]')) {
+      const s = document.createElement('script');
+      s.src = 'js/subtask-form.js?v=1.1.6';
+      s.setAttribute('data-subtask-form', '1');
+      s.onload = () => {
+        if (!tryOpen()) {
+          alert('新增子任务弹窗未就绪，请确认已同步最新 subtasks.html 并强制刷新。');
+        }
+      };
+      s.onerror = () => {
+        alert('无法加载 js/subtask-form.js，请在服务器执行 update-all.sh 后强制刷新。');
+      };
+      document.body.appendChild(s);
+      return;
+    }
+    alert('新增子任务脚本未加载。请确认已同步 js/subtask-form.js 并强制刷新（Ctrl+F5）。');
+  }
+
+  function refreshAddButton() {
+    if (!btnAddSubtask) return;
+    btnAddSubtask.hidden = !canEdit();
+  }
+
   document.getElementById('btnRefresh').addEventListener('click', () => loadSubtasks(true));
+  if (btnAddSubtask) {
+    btnAddSubtask.addEventListener('click', openAddSubtask);
+  }
 
   function todayIso() {
     const d = new Date();
@@ -184,6 +234,7 @@
   function renderList() {
     const list = filteredList();
     const editable = canEdit();
+    refreshAddButton();
     if (statusFilter) {
       summaryBar.textContent = editable
         ? `状态「${statusFilter}」共 ${list.length} 条 · 可新增 / 标记完结`
@@ -195,7 +246,19 @@
     }
 
     if (list.length === 0) {
-      subtaskRoot.innerHTML = '<div class="state-box"><p>暂无子任务</p></div>';
+      if (editable) {
+        subtaskRoot.innerHTML = `
+          <div class="state-box">
+            <p>暂无子任务</p>
+            <p style="margin-top:12px">
+              <button type="button" class="btn btn-primary" id="btnAddSubtaskEmpty">新增子任务</button>
+            </p>
+          </div>`;
+        const emptyBtn = document.getElementById('btnAddSubtaskEmpty');
+        if (emptyBtn) emptyBtn.addEventListener('click', openAddSubtask);
+      } else {
+        subtaskRoot.innerHTML = '<div class="state-box"><p>暂无子任务</p></div>';
+      }
       return;
     }
 
@@ -251,8 +314,11 @@
     });
   }
   document.addEventListener('authchange', () => {
-    if (allSubtasks.length) renderList();
+    refreshAddButton();
+    renderList();
   });
+
+  refreshAddButton();
 
   window.SubtasksApp = {
     reload: () => loadSubtasks(),

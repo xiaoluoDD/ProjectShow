@@ -50,8 +50,7 @@
   }
 
   function refreshAddButton() {
-    if (!btnAddSubtask) return;
-    btnAddSubtask.hidden = !canEdit();
+    // 显隐由 subtasks.js 统一控制
   }
 
   function ensureCanEdit() {
@@ -360,12 +359,6 @@
   });
   subtaskMemberDept.addEventListener('change', refreshMemberList);
 
-  if (btnAddSubtask) {
-    btnAddSubtask.addEventListener('click', openCreateModal);
-  }
-
-  document.addEventListener('authchange', refreshAddButton);
-  refreshAddButton();
-
+  // 点击由 subtasks.js 统一绑定并控制显隐，避免旧 HTML / 脚本加载顺序问题
   window.SubtaskFormApp = { openCreate: openCreateModal };
 })();
