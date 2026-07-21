@@ -516,6 +516,71 @@ a {
   }
 }
 
+/* —— 全屏展示（门口电视 / 大屏） —— */
+body.kiosk-mode .app-header,
+body.kiosk-mode .auth-user-bar,
+body.kiosk-mode .dash-toolbar,
+body.kiosk-mode #dashSummaryBar {
+  display: none !important;
+}
+
+body.kiosk-mode .app-main {
+  max-width: none;
+  padding: 16px 20px 20px;
+  min-height: 100vh;
+}
+
+body.kiosk-mode #dashboardView {
+  min-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+}
+
+body.kiosk-mode #dashboardRoot.dash-layout {
+  flex: 1;
+  min-height: 0;
+}
+
+body.kiosk-mode .dash-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 960px) {
+  body.kiosk-mode #dashboardRoot.dash-layout {
+    grid-template-rows: minmax(240px, 0.9fr) minmax(320px, 1.1fr);
+    height: calc(100vh - 40px);
+  }
+
+  body.kiosk-mode .dash-card .table-wrap {
+    max-height: none;
+  }
+
+  body.kiosk-mode .pie-svg {
+    width: min(100%, 360px);
+    height: auto;
+  }
+}
+
+.btn-kiosk-exit {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 200;
+  opacity: 0.35;
+  background: #fff;
+  border: 1px solid #cfd8dc;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.btn-kiosk-exit:hover,
+.btn-kiosk-exit:focus {
+  opacity: 1;
+}
+
+.btn-kiosk-exit[hidden] {
+  display: none !important;
+}
+
 .kpi-title {
   font-size: 13px;
   color: #607080;

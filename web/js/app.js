@@ -5,6 +5,8 @@
   const optAccounts = document.getElementById('optAccounts');
   const btnFilter = document.getElementById('btnFilter');
   const btnAddProject = document.getElementById('btnAddProject');
+  const btnKiosk = document.getElementById('btnKiosk');
+  const btnKioskExit = document.getElementById('btnKioskExit');
   const btnRefresh = document.getElementById('btnRefresh');
   const btnLogin = document.getElementById('btnLogin');
   const btnLogout = document.getElementById('btnLogout');
@@ -195,8 +197,105 @@
     refreshAuthUI();
   });
 
+  let kioskMode = false;
+  let kioskTimer = null;
+  const KIOSK_REFRESH_MS = 60 * 1000;
+
+  function isKioskQuery() {
+    const q = new URLSearchParams(window.location.search);
+    return q.get('kiosk') === '1' || q.get('fullscreen') === '1';
+  }
+
+  function syncKioskUrl(on) {
+    const url = new URL(window.location.href);
+    if (on) {
+      url.searchParams.set('view', 'dashboard');
+      url.searchParams.set('kiosk', '1');
+    } else {
+      url.searchParams.delete('kiosk');
+      url.searchParams.delete('fullscreen');
+    }
+    history.replaceState(null, '', url);
+  }
+
+  function stopKioskAutoRefresh() {
+    if (kioskTimer) {
+      clearInterval(kioskTimer);
+      kioskTimer = null;
+    }
+  }
+
+  function startKioskAutoRefresh() {
+    stopKioskAutoRefresh();
+    kioskTimer = setInterval(() => {
+      if (window.DashboardApp) window.DashboardApp.load(true);
+    }, KIOSK_REFRESH_MS);
+  }
+
+  async function requestBrowserFullscreen() {
+    const el = document.documentElement;
+    try {
+      if (el.requestFullscreen) await el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } catch (e) {
+      /* 部分浏览器需用户手势；失败时仍用页面内全屏布局 */
+    }
+  }
+
+  async function exitBrowserFullscreen() {
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+      else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function setKioskMode(on, opts) {
+    const options = opts || {};
+    kioskMode = !!on;
+    document.body.classList.toggle('kiosk-mode', kioskMode);
+    if (btnKiosk) btnKiosk.hidden = kioskMode;
+    if (btnKioskExit) btnKioskExit.hidden = !kioskMode;
+
+    if (kioskMode) {
+      setView('dashboard', false);
+      syncKioskUrl(true);
+      startKioskAutoRefresh();
+      if (options.browserFullscreen !== false) requestBrowserFullscreen();
+      if (window.DashboardApp) window.DashboardApp.load(true);
+    } else {
+      syncKioskUrl(false);
+      stopKioskAutoRefresh();
+      exitBrowserFullscreen();
+    }
+  }
+
+  if (btnKiosk) {
+    btnKiosk.addEventListener('click', () => setKioskMode(true));
+  }
+  if (btnKioskExit) {
+    btnKioskExit.addEventListener('click', () => setKioskMode(false));
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && kioskMode) setKioskMode(false);
+  });
+  document.addEventListener('fullscreenchange', () => {
+    // 用户按系统 Esc 退出浏览器全屏时，同步退出看板展示模式
+    if (!document.fullscreenElement && kioskMode) {
+      setKioskMode(false, { browserFullscreen: false });
+    }
+  });
+
   refreshAuthUI();
   setView(currentView(), true);
+
+  // 电视常用：同一链接加 ?kiosk=1 开机直进展示模式
+  if (isKioskQuery()) {
+    setKioskMode(true, { browserFullscreen: true });
+  }
 
   // 从子任务等页面跳转回来时自动弹出登录
   const loginFlag = new URLSearchParams(window.location.search).get('login');
