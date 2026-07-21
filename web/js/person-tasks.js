@@ -48,6 +48,9 @@
     showLoading(taskRoot, '正在加载相关任务…');
     summaryBar.textContent = '加载中…';
     try {
+      if (typeof fetchDashboardPersonTasks !== 'function') {
+        throw new Error('接口脚本未更新，请强制刷新或重新同步 web（缺少 fetchDashboardPersonTasks）');
+      }
       const data = await fetchDashboardPersonTasks({ userid, name, status, year });
       const tasks = data.tasks || [];
       summaryBar.textContent = `共 ${tasks.length} 条相关任务（只读）`;
