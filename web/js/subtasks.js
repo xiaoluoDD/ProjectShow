@@ -59,7 +59,7 @@
     // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
     if (!document.querySelector('script[data-subtask-form]')) {
       const s = document.createElement('script');
-      s.src = 'js/subtask-form.js?v=1.2.2';
+      s.src = 'js/subtask-form.js?v=1.2.3';
       s.setAttribute('data-subtask-form', '1');
       s.onload = () => {
         if (!tryOpen()) {

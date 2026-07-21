@@ -217,8 +217,8 @@
     });
 
     const year = dashYear.value;
-    dashboardRoot.innerHTML = `
-      <article class="dash-card">
+    const pieBlock = `
+      <article class="dash-card dash-cell dash-cell-pie">
         <div class="dash-card-head">
           <h2>项目状态</h2>
         </div>
@@ -228,11 +228,18 @@
           { status: '待启动', count: 0 },
           { status: '已完结', count: 0 },
         ])}</div>
-      </article>
+      </article>`;
 
-      ${kpiHtml(projectSummary)}
+    const kpiBlock = `
+      <article class="dash-card dash-cell dash-cell-kpi">
+        <div class="dash-card-head">
+          <h2>项目概览</h2>
+        </div>
+        ${kpiHtml(projectSummary)}
+      </article>`;
 
-      <article class="dash-card">
+    const personBlock = `
+      <article class="dash-card dash-cell dash-cell-person">
         <div class="dash-card-head">
           <h2>相关责任人</h2>
         </div>
@@ -248,9 +255,10 @@
             return `person-tasks.html?${q.toString()}`;
           }
         )}
-      </article>
+      </article>`;
 
-      <article class="dash-card">
+    const workBlock = `
+      <article class="dash-card dash-cell dash-cell-work">
         <div class="dash-card-head">
           <h2>项目进度</h2>
         </div>
@@ -265,8 +273,11 @@
             return `subtasks.html?${q.toString()}`;
           }
         )}
-      </article>
-    `;
+      </article>`;
+
+    // 手机：从上到下；电脑：CSS Grid 对齐 Qt（饼图|KPI|责任人 / 进度跨两列）
+    dashboardRoot.className = 'dash-layout';
+    dashboardRoot.innerHTML = `${pieBlock}${kpiBlock}${personBlock}${workBlock}`;
 
     dashSummaryBar.textContent = `已加载 ${summary.project_count || 0} 个项目`;
   }
