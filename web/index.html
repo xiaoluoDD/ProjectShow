@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.2.4</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.4" />
+  <title>项目管理看板 v1.2.5</title>
+  <link rel="stylesheet" href="css/app.css?v=1.2.5" />
 </head>
 <body>
   <header class="app-header">
@@ -20,6 +20,7 @@
     <button type="button" class="btn" id="btnKiosk">全屏展示</button>
     <button type="button" class="btn btn-primary" id="btnRefresh">刷新</button>
     <button type="button" class="btn" id="btnLogin">登录</button>
+    <button type="button" class="btn" id="btnChangePassword" hidden>修改密码</button>
     <button type="button" class="btn" id="btnLogout" hidden>退出</button>
   </header>
   <p class="auth-user-bar" id="authUserBar" hidden></p>
@@ -91,6 +92,23 @@
       <div class="modal-actions">
         <button type="button" class="btn" id="btnLoginCancel">取消</button>
         <button type="button" class="btn btn-primary" id="btnLoginSubmit">登录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 修改密码弹窗 -->
+  <div class="modal-mask" id="passwordModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
+      <h2 id="passwordTitle">修改密码</h2>
+      <p class="modal-hint">无需原密码，直接设置新密码并写入数据库。</p>
+      <label for="newPassword">新密码</label>
+      <input id="newPassword" type="password" autocomplete="new-password" placeholder="至少 4 位" />
+      <label for="newPasswordConfirm">确认新密码</label>
+      <input id="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="再输入一次" />
+      <p class="modal-error" id="passwordError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnPasswordCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnPasswordSave">保存</button>
       </div>
     </div>
   </div>
@@ -168,15 +186,15 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.4"></script>
-  <script src="js/status.js?v=1.2.4"></script>
-  <script src="js/utils.js?v=1.2.4"></script>
-  <script src="js/api.js?v=1.2.4"></script>
-  <script src="js/auth.js?v=1.2.4"></script>
-  <script src="js/dashboard.js?v=1.2.4"></script>
-  <script src="js/list.js?v=1.2.4"></script>
-  <script src="js/project-form.js?v=1.2.4"></script>
-  <script src="js/accounts.js?v=1.2.4"></script>
-  <script src="js/app.js?v=1.2.4"></script>
+  <script src="js/config.js?v=1.2.5"></script>
+  <script src="js/status.js?v=1.2.5"></script>
+  <script src="js/utils.js?v=1.2.5"></script>
+  <script src="js/api.js?v=1.2.5"></script>
+  <script src="js/auth.js?v=1.2.5"></script>
+  <script src="js/dashboard.js?v=1.2.5"></script>
+  <script src="js/list.js?v=1.2.5"></script>
+  <script src="js/project-form.js?v=1.2.5"></script>
+  <script src="js/accounts.js?v=1.2.5"></script>
+  <script src="js/app.js?v=1.2.5"></script>
 </body>
 </html>

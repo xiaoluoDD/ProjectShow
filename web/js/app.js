@@ -9,6 +9,7 @@
   const btnKioskExit = document.getElementById('btnKioskExit');
   const btnRefresh = document.getElementById('btnRefresh');
   const btnLogin = document.getElementById('btnLogin');
+  const btnChangePassword = document.getElementById('btnChangePassword');
   const btnLogout = document.getElementById('btnLogout');
   const authUserBar = document.getElementById('authUserBar');
   const dashboardView = document.getElementById('dashboardView');
@@ -18,7 +19,18 @@
   const loginUsername = document.getElementById('loginUsername');
   const loginPassword = document.getElementById('loginPassword');
   const loginError = document.getElementById('loginError');
+  const passwordModal = document.getElementById('passwordModal');
+  const newPassword = document.getElementById('newPassword');
+  const newPasswordConfirm = document.getElementById('newPasswordConfirm');
+  const passwordError = document.getElementById('passwordError');
   const projectsHint = document.getElementById('projectsHint');
+
+  function canChangeOwnPassword(user) {
+    if (!user || !user.username) return false;
+    // 内置超级管理员 root 密码写死在代码里，不可通过此接口修改
+    if (user.is_super_admin || String(user.username).toLowerCase() === 'root') return false;
+    return true;
+  }
 
   function currentView() {
     const q = new URLSearchParams(window.location.search).get('view');
@@ -42,6 +54,7 @@
 
     btnLogin.hidden = !!loggedIn;
     btnLogout.hidden = !loggedIn;
+    if (btnChangePassword) btnChangePassword.hidden = !(loggedIn && canChangeOwnPassword(user));
     optAccounts.hidden = !canManage;
 
     if (loggedIn && user) {
@@ -129,6 +142,49 @@
     loginModal.hidden = true;
   }
 
+  function openPasswordModal() {
+    if (!passwordModal) return;
+    passwordError.hidden = true;
+    passwordError.textContent = '';
+    newPassword.value = '';
+    newPasswordConfirm.value = '';
+    passwordModal.hidden = false;
+    setTimeout(() => newPassword.focus(), 50);
+  }
+
+  function closePasswordModal() {
+    if (passwordModal) passwordModal.hidden = true;
+  }
+
+  async function submitPasswordChange() {
+    passwordError.hidden = true;
+    const pwd = (newPassword.value || '').trim();
+    const confirm = (newPasswordConfirm.value || '').trim();
+    if (!pwd) {
+      passwordError.textContent = '请输入新密码';
+      passwordError.hidden = false;
+      return;
+    }
+    if (pwd.length < 4) {
+      passwordError.textContent = '新密码至少 4 位';
+      passwordError.hidden = false;
+      return;
+    }
+    if (pwd !== confirm) {
+      passwordError.textContent = '两次输入的密码不一致';
+      passwordError.hidden = false;
+      return;
+    }
+    try {
+      await changeOwnPassword(pwd);
+      closePasswordModal();
+      alert('密码已更新，请牢记新密码。');
+    } catch (err) {
+      passwordError.textContent = err.message || '修改失败';
+      passwordError.hidden = false;
+    }
+  }
+
   async function submitLogin() {
     loginError.hidden = true;
     const username = loginUsername.value.trim();
@@ -166,6 +222,9 @@
   });
 
   btnLogin.addEventListener('click', openLogin);
+  if (btnChangePassword) {
+    btnChangePassword.addEventListener('click', openPasswordModal);
+  }
   btnLogout.addEventListener('click', async () => {
     await window.Auth.logout();
     refreshAuthUI();
@@ -192,6 +251,17 @@
   loginModal.addEventListener('click', (e) => {
     if (e.target === loginModal) closeLogin();
   });
+
+  if (passwordModal) {
+    document.getElementById('btnPasswordCancel').addEventListener('click', closePasswordModal);
+    document.getElementById('btnPasswordSave').addEventListener('click', submitPasswordChange);
+    newPasswordConfirm.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') submitPasswordChange();
+    });
+    passwordModal.addEventListener('click', (e) => {
+      if (e.target === passwordModal) closePasswordModal();
+    });
+  }
 
   document.addEventListener('authchange', () => {
     refreshAuthUI();

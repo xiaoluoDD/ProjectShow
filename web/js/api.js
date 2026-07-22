@@ -127,6 +127,10 @@ function fetchAccounts() {
   return apiGet('/api/accounts');
 }
 
+function changeOwnPassword(password) {
+  return apiPost('/api/auth/password', { password });
+}
+
 function createAccount(payload) {
   return apiPost('/api/accounts', payload);
 }
