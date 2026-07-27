@@ -155,6 +155,24 @@ a {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
+.project-card-wrap {
+  margin-bottom: 10px;
+}
+
+.project-card-wrap .project-card {
+  margin-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+.project-card-wrap .account-actions {
+  background: #fff;
+  border: 1px solid #e2e6ea;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  padding: 0 14px 12px;
+  margin-top: 0;
+}
+
 .project-card:active {
   background: #f8f9fa;
 }
@@ -502,6 +520,10 @@ a {
   }
 
   #listRoot .project-card {
+    margin-bottom: 0;
+  }
+
+  #listRoot .project-card-wrap {
     margin-bottom: 0;
   }
 

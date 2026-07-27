@@ -87,6 +87,10 @@ function updateProject(payload) {
   return apiPut('/api/projects', payload);
 }
 
+function deleteProject(id) {
+  return apiDelete(`/api/projects?id=${encodeURIComponent(id)}`);
+}
+
 function fetchDepartments() {
   return apiGet('/api/departments');
 }
@@ -105,6 +109,10 @@ function createSubtask(payload) {
 
 function updateSubtask(payload) {
   return apiPut('/api/project-subtasks', payload);
+}
+
+function deleteSubtask(id) {
+  return apiDelete(`/api/project-subtasks?id=${encodeURIComponent(id)}`);
 }
 
 function fetchDashboardSummary(year) {

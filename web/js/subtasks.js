@@ -59,7 +59,7 @@
     // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
     if (!document.querySelector('script[data-subtask-form]')) {
       const s = document.createElement('script');
-      s.src = 'js/subtask-form.js?v=1.2.5';
+      s.src = 'js/subtask-form.js?v=1.2.6';
       s.setAttribute('data-subtask-form', '1');
       s.onload = () => {
         if (!tryOpen()) {
@@ -207,6 +207,9 @@
     const completeBtn = `<button type="button" class="btn btn-sm ${done ? '' : 'btn-primary'}" data-complete-id="${st.id}">
            ${done ? '修改完成日期' : '标记完结'}
          </button>`;
+    const deleteBtn = canEdit()
+      ? `<button type="button" class="btn btn-sm btn-danger" data-del-subtask="${st.id}">删除</button>`
+      : '';
 
     return `
       <article class="subtask-card">
@@ -226,9 +229,24 @@
             ? `<div class="card-row"><span class="label">备注：</span>${escapeHtml(st.remark)}</div>`
             : ''
         }
-        <div class="account-actions">${completeBtn}</div>
+        <div class="account-actions">${completeBtn}${deleteBtn}</div>
       </article>
     `;
+  }
+
+  async function deleteOneSubtask(st, btn) {
+    if (!st || !canEdit()) return;
+    const name = displayOrDash(st.content);
+    if (!confirm(`确定删除子任务「${name}」？\n此操作不可恢复。`)) return;
+    if (btn) btn.disabled = true;
+    try {
+      await deleteSubtask(st.id);
+      allSubtasks = allSubtasks.filter((x) => x.id !== st.id);
+      renderList();
+    } catch (err) {
+      alert(err.message || '删除失败');
+      if (btn) btn.disabled = false;
+    }
   }
 
   function renderList() {
@@ -237,11 +255,11 @@
     refreshAddButton();
     if (statusFilter) {
       summaryBar.textContent = editable
-        ? `状态「${statusFilter}」共 ${list.length} 条 · 可新增 / 标记完结`
+        ? `状态「${statusFilter}」共 ${list.length} 条 · 可新增 / 标记完结 / 删除`
         : `状态「${statusFilter}」共 ${list.length} 条 · 未登录仅可查看，点「标记完结」将提示登录`;
     } else {
       summaryBar.textContent = editable
-        ? `共 ${list.length} 条子任务 · 可新增 / 标记完结`
+        ? `共 ${list.length} 条子任务 · 可新增 / 标记完结 / 删除`
         : `共 ${list.length} 条子任务 · 未登录，点卡片上的「标记完结」可去登录`;
     }
 
@@ -268,6 +286,13 @@
         const sid = Number(btn.getAttribute('data-complete-id'));
         const st = allSubtasks.find((x) => x.id === sid);
         if (st) openCompleteModal(st);
+      });
+    });
+    subtaskRoot.querySelectorAll('[data-del-subtask]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sid = Number(btn.getAttribute('data-del-subtask'));
+        const st = allSubtasks.find((x) => x.id === sid);
+        if (st) deleteOneSubtask(st, btn);
       });
     });
   }

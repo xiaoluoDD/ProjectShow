@@ -92,33 +92,57 @@
     return true;
   }
 
+  function canEdit() {
+    if (window.Auth && window.Auth.canEditProjects()) return true;
+    try {
+      const raw = localStorage.getItem('projectshow_auth_user');
+      if (!raw) return false;
+      const user = JSON.parse(raw);
+      return !!(user && user.can_edit_projects);
+    } catch (e) {
+      return false;
+    }
+  }
+
   function renderCard(project) {
     const id = project.id;
     const title = displayOrDash(project.name);
     const meta = [project.year, project.work_no].filter((x) => String(x || '').trim()).join(' · ');
     const summary = (project.task_summary || '').trim();
     const subCount = project.subtask_count ?? 0;
+    const editable = canEdit();
+    const delBtn = editable
+      ? `<button type="button" class="btn btn-sm btn-danger" data-del-project="${id}">删除</button>`
+      : '';
+
+    const cardInner = `
+        <a class="project-card" href="project.html?id=${encodeURIComponent(id)}">
+          <div class="card-top">
+            <span class="card-meta">${escapeHtml(meta || '—')}</span>
+            ${statusBadgeHtml(project.status)}
+          </div>
+          <h2 class="card-title">${escapeHtml(title)}</h2>
+          <div class="card-row"><span class="label">负责人：</span>${escapeHtml(managerText(project))}</div>
+          <div class="card-row"><span class="label">启动：</span>${escapeHtml(displayOrDash(project.start_date))}</div>
+          <div class="card-row"><span class="label">完结：</span>${escapeHtml(displayOrDash(project.end_date))}</div>
+          ${
+            summary
+              ? `<div class="card-row"><span class="label">任务：</span>${escapeHtml(summary)}</div>`
+              : subCount > 0
+                ? `<div class="card-row"><span class="label">子任务：</span>${subCount} 项</div>`
+                : ''
+          }
+          <div class="card-row"><span class="label">成员：</span>${escapeHtml(membersSummary(project.members))}</div>
+          <div class="card-foot">查看详情 ›</div>
+        </a>`;
+
+    if (!editable) return cardInner;
 
     return `
-      <a class="project-card" href="project.html?id=${encodeURIComponent(id)}">
-        <div class="card-top">
-          <span class="card-meta">${escapeHtml(meta || '—')}</span>
-          ${statusBadgeHtml(project.status)}
-        </div>
-        <h2 class="card-title">${escapeHtml(title)}</h2>
-        <div class="card-row"><span class="label">负责人：</span>${escapeHtml(managerText(project))}</div>
-        <div class="card-row"><span class="label">启动：</span>${escapeHtml(displayOrDash(project.start_date))}</div>
-        <div class="card-row"><span class="label">完结：</span>${escapeHtml(displayOrDash(project.end_date))}</div>
-        ${
-          summary
-            ? `<div class="card-row"><span class="label">任务：</span>${escapeHtml(summary)}</div>`
-            : subCount > 0
-              ? `<div class="card-row"><span class="label">子任务：</span>${subCount} 项</div>`
-              : ''
-        }
-        <div class="card-row"><span class="label">成员：</span>${escapeHtml(membersSummary(project.members))}</div>
-        <div class="card-foot">查看详情 ›</div>
-      </a>
+      <div class="project-card-wrap">
+        ${cardInner}
+        <div class="account-actions">${delBtn}</div>
+      </div>
     `;
   }
 
@@ -132,6 +156,29 @@
     }
 
     listRoot.innerHTML = filtered.map(renderCard).join('');
+    listRoot.querySelectorAll('[data-del-project]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!canEdit()) return;
+        const pid = Number(btn.getAttribute('data-del-project'));
+        const project = allProjects.find((p) => p.id === pid);
+        const name = project ? displayOrDash(project.name) : String(pid);
+        if (!confirm(`确定删除项目「${name}」？\n子任务等关联数据也会一并删除，且不可恢复。`)) {
+          return;
+        }
+        btn.disabled = true;
+        try {
+          await deleteProject(pid);
+          allProjects = allProjects.filter((p) => p.id !== pid);
+          rebuildFilterOptions();
+          renderList();
+        } catch (err) {
+          alert(err.message || '删除失败');
+          btn.disabled = false;
+        }
+      });
+    });
   }
 
   async function load(force) {
@@ -154,4 +201,8 @@
   }
 
   window.ProjectListApp = { load };
+
+  document.addEventListener('authchange', () => {
+    if (loadedOnce) renderList();
+  });
 })();

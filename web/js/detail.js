@@ -3,6 +3,7 @@
   const actionBar = document.getElementById('actionBar');
   const btnSubtasks = document.getElementById('btnSubtasks');
   const btnComplete = document.getElementById('btnComplete');
+  const btnDeleteProject = document.getElementById('btnDeleteProject');
   const editHint = document.getElementById('editHint');
   const completeModal = document.getElementById('completeModal');
   const completeTitle = document.getElementById('completeTitle');
@@ -39,14 +40,16 @@
     return !!(window.Auth && window.Auth.canEditProjects());
   }
 
-  function refreshCompleteButton() {
+  function refreshActionButtons() {
     if (!currentProject) {
       btnComplete.hidden = true;
+      if (btnDeleteProject) btnDeleteProject.hidden = true;
       editHint.hidden = true;
       return;
     }
     const editable = canEdit();
     btnComplete.hidden = !editable;
+    if (btnDeleteProject) btnDeleteProject.hidden = !editable;
     editHint.hidden = editable;
     if (!editable) return;
     btnComplete.textContent = hasEndDate(currentProject) ? '修改完结日期' : '标记完结';
@@ -94,7 +97,23 @@
 
     actionBar.hidden = false;
     btnSubtasks.textContent = subCount > 0 ? `查看子任务（${subCount}）` : '查看子任务';
-    refreshCompleteButton();
+    refreshActionButtons();
+  }
+
+  async function deleteCurrentProject() {
+    if (!currentProject || !canEdit() || !btnDeleteProject) return;
+    const name = displayOrDash(currentProject.name);
+    if (!confirm(`确定删除项目「${name}」？\n子任务等关联数据也会一并删除，且不可恢复。`)) {
+      return;
+    }
+    btnDeleteProject.disabled = true;
+    try {
+      await deleteProject(currentProject.id);
+      window.location.href = 'index.html?view=projects';
+    } catch (err) {
+      alert(err.message || '删除失败');
+      btnDeleteProject.disabled = false;
+    }
   }
 
   function openCompleteModal() {
@@ -169,17 +188,21 @@
       showError(detailRoot, err.message || '加载失败');
       actionBar.hidden = true;
       btnComplete.hidden = true;
+      if (btnDeleteProject) btnDeleteProject.hidden = true;
       editHint.hidden = true;
     }
   }
 
   btnComplete.addEventListener('click', openCompleteModal);
+  if (btnDeleteProject) {
+    btnDeleteProject.addEventListener('click', deleteCurrentProject);
+  }
   btnCompleteCancel.addEventListener('click', closeCompleteModal);
   btnCompleteSave.addEventListener('click', saveCompleteDate);
   completeModal.addEventListener('click', (e) => {
     if (e.target === completeModal) closeCompleteModal();
   });
-  document.addEventListener('authchange', refreshCompleteButton);
+  document.addEventListener('authchange', refreshActionButtons);
 
   loadDetail();
 })();
