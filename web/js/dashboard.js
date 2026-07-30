@@ -5,6 +5,7 @@
 
   let loadedOnce = false;
   let currentSummary = null;
+  let tableScrollTimers = [];
 
   const PIE_COLORS = {
     待启动: '#90a4ae',
@@ -41,11 +42,66 @@
     if ((years || []).includes(current)) dashYear.value = current;
   }
 
+  function isKioskMode() {
+    return document.body.classList.contains('kiosk-mode');
+  }
+
+  function stopTableAutoScroll() {
+    tableScrollTimers.forEach((id) => clearInterval(id));
+    tableScrollTimers = [];
+  }
+
+  function startOneTableAutoScroll(wrap) {
+    if (!wrap) return;
+    wrap.scrollTop = 0;
+    // 内容未超出可视区则无需滚动
+    if (wrap.scrollHeight <= wrap.clientHeight + 2) return;
+
+    const pauseMs = 2200;
+    let dir = 1;
+    let pauseUntil = 0;
+
+    const id = setInterval(() => {
+      if (!isKioskMode() || !wrap.isConnected) return;
+      const now = performance.now();
+      if (now < pauseUntil) return;
+      const max = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
+      if (max <= 0) return;
+      wrap.scrollTop += dir * 0.9;
+      if (dir > 0 && wrap.scrollTop >= max - 0.5) {
+        wrap.scrollTop = max;
+        dir = -1;
+        pauseUntil = now + pauseMs;
+      } else if (dir < 0 && wrap.scrollTop <= 0.5) {
+        wrap.scrollTop = 0;
+        dir = 1;
+        pauseUntil = now + pauseMs;
+      }
+    }, 32);
+    tableScrollTimers.push(id);
+  }
+
+  function setupTableAutoScroll() {
+    stopTableAutoScroll();
+    if (!isKioskMode() || !dashboardRoot) return;
+    // 等布局完成后再测 scrollHeight
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!isKioskMode()) return;
+        dashboardRoot.querySelectorAll('.dash-cell-work .table-wrap, .dash-cell-person .table-wrap').forEach((wrap) => {
+          startOneTableAutoScroll(wrap);
+        });
+      });
+    });
+  }
+
   function buildPieSvg(rows) {
-    const size = 260;
+    const kiosk = isKioskMode();
+    const size = kiosk ? 200 : 260;
     const cx = size / 2;
     const cy = size / 2;
-    const r = 78;
+    const r = kiosk ? 60 : 78;
+    const labelOffset = kiosk ? 28 : 36;
     const total = rows.reduce((sum, row) => sum + (row.count || 0), 0);
     if (total <= 0) {
       return `
@@ -83,8 +139,8 @@
         );
       }
 
-      const lx = cx + (r + 36) * Math.cos(mid);
-      const ly = cy + (r + 36) * Math.sin(mid);
+      const lx = cx + (r + labelOffset) * Math.cos(mid);
+      const ly = cy + (r + labelOffset) * Math.sin(mid);
       const pct = ((count / total) * 100).toFixed(2);
       labels.push(`
         <text x="${lx}" y="${ly - 6}" text-anchor="middle" fill="${color}" font-size="11" font-weight="600">${escapeHtml(row.status)}</text>
@@ -276,10 +332,12 @@
       </article>`;
 
     // 手机：从上到下；电脑：CSS Grid 对齐 Qt（饼图|KPI|责任人 / 进度跨两列）
+    stopTableAutoScroll();
     dashboardRoot.className = 'dash-layout';
     dashboardRoot.innerHTML = `${pieBlock}${kpiBlock}${personBlock}${workBlock}`;
 
     dashSummaryBar.textContent = `已加载 ${summary.project_count || 0} 个项目`;
+    setupTableAutoScroll();
   }
 
   async function load(force) {
@@ -303,5 +361,11 @@
     }
   }
 
-  window.DashboardApp = { load };
+  window.DashboardApp = {
+    load,
+    onKioskChange(enabled) {
+      if (enabled) setupTableAutoScroll();
+      else stopTableAutoScroll();
+    },
+  };
 })();

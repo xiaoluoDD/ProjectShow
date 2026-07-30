@@ -539,6 +539,12 @@ a {
 }
 
 /* —— 全屏展示（门口电视 / 大屏） —— */
+body.kiosk-mode {
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+}
+
 body.kiosk-mode .app-header,
 body.kiosk-mode .auth-user-bar,
 body.kiosk-mode .dash-toolbar,
@@ -548,12 +554,17 @@ body.kiosk-mode #dashSummaryBar {
 
 body.kiosk-mode .app-main {
   max-width: none;
-  padding: 16px 20px 20px;
-  min-height: 100vh;
+  padding: 10px 14px 12px;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 body.kiosk-mode #dashboardView {
-  min-height: calc(100vh - 32px);
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -565,20 +576,91 @@ body.kiosk-mode #dashboardRoot.dash-layout {
 
 body.kiosk-mode .dash-card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 10px 12px;
+}
+
+body.kiosk-mode .dash-card-head {
+  margin-bottom: 6px;
+}
+
+body.kiosk-mode .dash-card-head h2 {
+  font-size: 15px;
+}
+
+body.kiosk-mode .pie-legend {
+  margin-bottom: 2px;
+  gap: 10px;
+}
+
+body.kiosk-mode .pie-wrap {
+  padding: 0;
+}
+
+body.kiosk-mode .kpi-card {
+  padding: 10px 12px;
+}
+
+body.kiosk-mode .kpi-title {
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+body.kiosk-mode .kpi-value {
+  font-size: 26px;
+}
+
+body.kiosk-mode .dash-table th,
+body.kiosk-mode .dash-table td {
+  padding: 8px 6px;
+}
+
+body.kiosk-mode .dash-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fafbfc;
+  box-shadow: 0 1px 0 #eef1f4;
 }
 
 @media (min-width: 960px) {
+  /* 上排按内容高度收缩，下排吃剩余空间给两个可滚动表格 */
   body.kiosk-mode #dashboardRoot.dash-layout {
-    grid-template-rows: minmax(240px, 0.9fr) minmax(320px, 1.1fr);
-    height: calc(100vh - 40px);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100%;
+    gap: 10px;
+  }
+
+  body.kiosk-mode .dash-cell-pie,
+  body.kiosk-mode .dash-cell-kpi {
+    height: auto;
+    align-self: stretch;
+  }
+
+  body.kiosk-mode .dash-cell-pie .pie-wrap,
+  body.kiosk-mode .dash-cell-kpi .kpi-grid {
+    flex: 0 0 auto;
+  }
+
+  body.kiosk-mode .dash-cell-work,
+  body.kiosk-mode .dash-cell-person {
+    min-height: 0;
   }
 
   body.kiosk-mode .dash-card .table-wrap {
+    flex: 1;
+    min-height: 0;
     max-height: none;
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+
+  body.kiosk-mode .dash-card .table-wrap::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 
   body.kiosk-mode .pie-svg {
-    width: min(100%, 360px);
+    width: min(100%, 220px);
     height: auto;
   }
 }

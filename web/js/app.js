@@ -335,11 +335,19 @@
       syncKioskUrl(true);
       startKioskAutoRefresh();
       if (options.browserFullscreen !== false) requestBrowserFullscreen();
-      if (window.DashboardApp) window.DashboardApp.load(true);
+      if (window.DashboardApp) {
+        window.DashboardApp.load(true);
+        if (typeof window.DashboardApp.onKioskChange === 'function') {
+          window.DashboardApp.onKioskChange(true);
+        }
+      }
     } else {
       syncKioskUrl(false);
       stopKioskAutoRefresh();
       exitBrowserFullscreen();
+      if (window.DashboardApp && typeof window.DashboardApp.onKioskChange === 'function') {
+        window.DashboardApp.onKioskChange(false);
+      }
     }
   }
 
