@@ -270,6 +270,7 @@
   let kioskMode = false;
   let kioskTimer = null;
   let idleKioskTimer = null;
+  let promoteFsHandler = null;
   const KIOSK_REFRESH_MS = 60 * 1000;
   const IDLE_KIOSK_MS = 20 * 1000;
 
@@ -293,6 +294,51 @@
     }
   }
 
+  function clearPromoteFullscreen() {
+    if (!promoteFsHandler) return;
+    document.removeEventListener('pointerdown', promoteFsHandler, true);
+    document.removeEventListener('keydown', promoteFsHandler, true);
+    promoteFsHandler = null;
+  }
+
+  function isBrowserFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+
+  /** 系统全屏必须在真实用户手势里调用；定时器触发会失败，需等下一次点击/按键补上 */
+  function armPromoteBrowserFullscreen() {
+    clearPromoteFullscreen();
+    if (!kioskMode || isBrowserFullscreen()) return;
+    promoteFsHandler = (e) => {
+      if (!e || e.isTrusted === false) return;
+      if (!kioskMode) {
+        clearPromoteFullscreen();
+        return;
+      }
+      if (isBrowserFullscreen()) {
+        clearPromoteFullscreen();
+        return;
+      }
+      clearPromoteFullscreen();
+      requestBrowserFullscreen();
+    };
+    document.addEventListener('pointerdown', promoteFsHandler, true);
+    document.addEventListener('keydown', promoteFsHandler, true);
+  }
+
+  function enterKioskLikeButton() {
+    // 与手动点「全屏展示」同一条路径
+    if (btnKiosk) {
+      btnKiosk.click();
+    } else {
+      setKioskMode(true);
+    }
+    // 定时器触发的 click 浏览器不给系统全屏权限，下一轮真实操作时补上
+    setTimeout(() => {
+      if (kioskMode && !isBrowserFullscreen()) armPromoteBrowserFullscreen();
+    }, 0);
+  }
+
   function scheduleIdleKiosk() {
     clearIdleKioskTimer();
     if (!isDesktopLayout()) return;
@@ -300,11 +346,10 @@
       idleKioskTimer = null;
       if (!isDesktopLayout()) return;
       if (kioskMode || anyModalOpen()) {
-        // 已在全屏或弹窗打开时继续盯着，避免退出后不再计时
         scheduleIdleKiosk();
         return;
       }
-      setKioskMode(true);
+      enterKioskLikeButton();
     }, IDLE_KIOSK_MS);
   }
 
@@ -338,13 +383,18 @@
     }, KIOSK_REFRESH_MS);
   }
 
-  async function requestBrowserFullscreen() {
+  function requestBrowserFullscreen() {
     const el = document.documentElement;
     try {
-      if (el.requestFullscreen) await el.requestFullscreen();
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      // 尽量同步发起，保留用户手势激活态
+      if (el.requestFullscreen) {
+        const p = el.requestFullscreen();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
     } catch (e) {
-      /* 部分浏览器需用户手势；失败时仍用页面内全屏布局 */
+      /* 无用户手势时会失败；页面内 kiosk 布局仍可用 */
     }
   }
 
@@ -378,9 +428,10 @@
         }
       }
     } else {
+      clearPromoteFullscreen();
       syncKioskUrl(false);
       stopKioskAutoRefresh();
-      exitBrowserFullscreen();
+      if (options.browserFullscreen !== false) exitBrowserFullscreen();
       if (window.DashboardApp && typeof window.DashboardApp.onKioskChange === 'function') {
         window.DashboardApp.onKioskChange(false);
       }
@@ -390,7 +441,11 @@
   }
 
   if (btnKiosk) {
-    btnKiosk.addEventListener('click', () => setKioskMode(true));
+    // 在点击回调最前面同步申请系统全屏（与用户手势同一调用栈）
+    btnKiosk.addEventListener('click', () => {
+      requestBrowserFullscreen();
+      setKioskMode(true, { browserFullscreen: false });
+    });
   }
   if (btnKioskExit) {
     btnKioskExit.addEventListener('click', () => setKioskMode(false));
@@ -419,6 +474,9 @@
   // 电视常用：同一链接加 ?kiosk=1 开机直进展示模式
   if (isKioskQuery()) {
     setKioskMode(true, { browserFullscreen: true });
+    setTimeout(() => {
+      if (kioskMode && !isBrowserFullscreen()) armPromoteBrowserFullscreen();
+    }, 0);
   } else {
     scheduleIdleKiosk();
   }
