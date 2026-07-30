@@ -269,11 +269,47 @@
 
   let kioskMode = false;
   let kioskTimer = null;
+  let idleKioskTimer = null;
   const KIOSK_REFRESH_MS = 60 * 1000;
+  const IDLE_KIOSK_MS = 20 * 1000;
 
   function isKioskQuery() {
     const q = new URLSearchParams(window.location.search);
     return q.get('kiosk') === '1' || q.get('fullscreen') === '1';
+  }
+
+  function isDesktopLayout() {
+    return window.matchMedia('(min-width: 960px)').matches;
+  }
+
+  function anyModalOpen() {
+    return !!document.querySelector('.modal-mask:not([hidden])');
+  }
+
+  function clearIdleKioskTimer() {
+    if (idleKioskTimer) {
+      clearTimeout(idleKioskTimer);
+      idleKioskTimer = null;
+    }
+  }
+
+  function scheduleIdleKiosk() {
+    clearIdleKioskTimer();
+    if (!isDesktopLayout()) return;
+    idleKioskTimer = setTimeout(() => {
+      idleKioskTimer = null;
+      if (!isDesktopLayout()) return;
+      if (kioskMode || anyModalOpen()) {
+        // 已在全屏或弹窗打开时继续盯着，避免退出后不再计时
+        scheduleIdleKiosk();
+        return;
+      }
+      setKioskMode(true);
+    }, IDLE_KIOSK_MS);
+  }
+
+  function onUserActivityForIdleKiosk() {
+    scheduleIdleKiosk();
   }
 
   function syncKioskUrl(on) {
@@ -349,6 +385,8 @@
         window.DashboardApp.onKioskChange(false);
       }
     }
+    // 进入或退出全屏后都重新计时：退出后满 20 秒无操作会再进全屏
+    scheduleIdleKiosk();
   }
 
   if (btnKiosk) {
@@ -367,12 +405,22 @@
     }
   });
 
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel', 'pointerdown', 'scroll'].forEach((evt) => {
+    document.addEventListener(evt, onUserActivityForIdleKiosk, { passive: true });
+  });
+  window.addEventListener('resize', () => {
+    if (isDesktopLayout()) scheduleIdleKiosk();
+    else clearIdleKioskTimer();
+  });
+
   refreshAuthUI();
   setView(currentView(), true);
 
   // 电视常用：同一链接加 ?kiosk=1 开机直进展示模式
   if (isKioskQuery()) {
     setKioskMode(true, { browserFullscreen: true });
+  } else {
+    scheduleIdleKiosk();
   }
 
   // 从子任务等页面跳转回来时自动弹出登录

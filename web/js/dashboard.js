@@ -47,15 +47,99 @@
   }
 
   function stopTableAutoScroll() {
-    tableScrollTimers.forEach((id) => clearInterval(id));
+    tableScrollTimers.forEach((entry) => {
+      if (entry && entry.id) clearInterval(entry.id);
+    });
     tableScrollTimers = [];
+  }
+
+  function bindManualTableScroll(wrap, state) {
+    if (!wrap || wrap.dataset.dragBound === '1') return;
+    wrap.dataset.dragBound = '1';
+    wrap.classList.add('table-wrap-draggable');
+
+    let dragging = false;
+    let moved = false;
+    let startY = 0;
+    let startScroll = 0;
+    let pointerId = null;
+
+    const pauseManual = (ms) => {
+      state.manualUntil = performance.now() + (ms || 400);
+    };
+
+    wrap.addEventListener('pointerdown', (e) => {
+      if (!isKioskMode() || e.button !== 0) return;
+      dragging = true;
+      moved = false;
+      startY = e.clientY;
+      startScroll = wrap.scrollTop;
+      pointerId = e.pointerId;
+      try {
+        wrap.setPointerCapture(pointerId);
+      } catch (err) {
+        /* ignore */
+      }
+      wrap.classList.add('is-dragging');
+      pauseManual(60000);
+    });
+
+    wrap.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dy = e.clientY - startY;
+      if (Math.abs(dy) > 3) moved = true;
+      if (!moved) return;
+      e.preventDefault();
+      wrap.scrollTop = startScroll - dy;
+      pauseManual(60000);
+    });
+
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      wrap.classList.remove('is-dragging');
+      if (pointerId != null) {
+        try {
+          wrap.releasePointerCapture(pointerId);
+        } catch (err) {
+          /* ignore */
+        }
+        pointerId = null;
+      }
+      // 松开后稍停再继续自动滚动
+      pauseManual(moved ? 600 : 200);
+    };
+
+    wrap.addEventListener('pointerup', endDrag);
+    wrap.addEventListener('pointercancel', endDrag);
+    wrap.addEventListener('lostpointercapture', endDrag);
+
+    wrap.addEventListener(
+      'wheel',
+      () => {
+        if (!isKioskMode()) return;
+        pauseManual(1800);
+      },
+      { passive: true }
+    );
+
+    // 拖动时若点在链接上且几乎没移动，保留点击；移动过则阻止误点
+    wrap.addEventListener('click', (e) => {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+        moved = false;
+      }
+    }, true);
   }
 
   function startOneTableAutoScroll(wrap) {
     if (!wrap) return;
-    wrap.scrollTop = 0;
-    // 内容未超出可视区则无需滚动
-    if (wrap.scrollHeight <= wrap.clientHeight + 2) return;
+    const max0 = wrap.scrollHeight - wrap.clientHeight;
+    if (max0 <= 2) return;
+
+    const state = { manualUntil: 0 };
+    bindManualTableScroll(wrap, state);
 
     const pauseMs = 2200;
     let dir = 1;
@@ -64,6 +148,7 @@
     const id = setInterval(() => {
       if (!isKioskMode() || !wrap.isConnected) return;
       const now = performance.now();
+      if (now < state.manualUntil) return;
       if (now < pauseUntil) return;
       const max = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
       if (max <= 0) return;
@@ -78,17 +163,18 @@
         pauseUntil = now + pauseMs;
       }
     }, 32);
-    tableScrollTimers.push(id);
+    tableScrollTimers.push({ id, wrap, state });
   }
 
   function setupTableAutoScroll() {
     stopTableAutoScroll();
     if (!isKioskMode() || !dashboardRoot) return;
-    // 等布局完成后再测 scrollHeight
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (!isKioskMode()) return;
         dashboardRoot.querySelectorAll('.dash-cell-work .table-wrap, .dash-cell-person .table-wrap').forEach((wrap) => {
+          // 重新渲染后节点是新的，允许重新绑定
+          delete wrap.dataset.dragBound;
           startOneTableAutoScroll(wrap);
         });
       });
@@ -203,16 +289,26 @@
     const bodyRows = [];
     groups.forEach((group) => {
       const rows = group.rows || [];
+      const extras = Array.isArray(group.extraLabels) ? group.extraLabels : [];
       rows.forEach((row, idx) => {
         const hrefAll = buildHref(group, '');
         const hrefStatus = buildHref(group, row.status);
+        const extraCells =
+          idx === 0
+            ? extras
+                .map(
+                  (text) =>
+                    `<td class="col-extra" rowspan="${rows.length}">${escapeHtml(text || '—')}</td>`
+                )
+                .join('')
+            : '';
         bodyRows.push(`
           <tr>
             ${
               idx === 0
                 ? `<td class="col-group" rowspan="${rows.length}">
                      <a href="${hrefAll}">${escapeHtml(group.label)}</a>
-                   </td>`
+                   </td>${extraCells}`
                 : ''
             }
             <td><a class="status-link" href="${hrefStatus}">${escapeHtml(row.status)}</a></td>
@@ -243,6 +339,7 @@
 
     const workGroups = (summary.by_work_no || []).map((g) => ({
       label: g.work_no || '（无工番号）',
+      extraLabels: [g.project_name || '—'],
       projectId: g.project_id,
       rows: g.rows || [],
     }));
@@ -319,7 +416,7 @@
           <h2>项目进度</h2>
         </div>
         ${groupedTableHtml(
-          ['工番号', '任务状态', '记录数'],
+          ['工番号', '项目名称', '任务状态', '记录数'],
           workGroups,
           (group, status) => {
             const q = new URLSearchParams();

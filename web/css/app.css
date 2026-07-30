@@ -650,13 +650,26 @@ body.kiosk-mode .dash-table thead th {
     flex: 1;
     min-height: 0;
     max-height: none;
-    overflow: hidden;
+    overflow: auto;
     scrollbar-width: none;
+    cursor: grab;
+    touch-action: none;
   }
 
   body.kiosk-mode .dash-card .table-wrap::-webkit-scrollbar {
     width: 0;
     height: 0;
+  }
+
+  body.kiosk-mode .dash-card .table-wrap.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  body.kiosk-mode .dash-table .col-extra {
+    max-width: 220px;
+    word-break: break-word;
+    color: #37474f;
   }
 
   body.kiosk-mode .pie-svg {
@@ -744,6 +757,12 @@ body.kiosk-mode .dash-table thead th {
   font-weight: 600;
   color: #1565c0;
   white-space: nowrap;
+}
+
+.dash-table .col-extra {
+  color: #37474f;
+  max-width: 240px;
+  word-break: break-word;
 }
 
 .dash-table .col-num {
