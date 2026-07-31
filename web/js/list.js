@@ -186,17 +186,26 @@
       renderList();
       return;
     }
-    showLoading(listRoot, '正在加载项目…');
-    summaryBar.textContent = '加载中…';
+    const soft = !!force && loadedOnce && allProjects.length > 0;
+    if (!soft) {
+      showLoading(listRoot, '正在加载项目…');
+      summaryBar.textContent = '加载中…';
+    }
     try {
       const data = await fetchProjects();
-      allProjects = data.projects || [];
+      const next = data.projects || [];
+      const prevKey = JSON.stringify(allProjects);
+      const nextKey = JSON.stringify(next);
+      allProjects = next;
       loadedOnce = true;
       rebuildFilterOptions();
+      if (soft && prevKey === nextKey) return;
       renderList();
     } catch (err) {
-      showError(listRoot, err.message || '加载失败，请检查网络与后端地址');
-      summaryBar.textContent = '加载失败';
+      if (!soft) {
+        showError(listRoot, err.message || '加载失败，请检查网络与后端地址');
+        summaryBar.textContent = '加载失败';
+      }
     }
   }
 

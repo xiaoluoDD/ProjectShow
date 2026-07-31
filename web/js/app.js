@@ -112,7 +112,7 @@
     }
 
     if (isDash) {
-      if (window.DashboardApp) window.DashboardApp.load();
+      if (window.DashboardApp) window.DashboardApp.load(true);
       else {
         const bar = document.getElementById('dashSummaryBar');
         const root = document.getElementById('dashboardRoot');
@@ -122,10 +122,14 @@
             '<div class="state-box error"><p>缺少 js/dashboard.js，请确认已同步最新 web 静态文件后强制刷新。</p></div>';
         }
       }
-    } else if (isProjects) {
-      if (window.ProjectListApp) window.ProjectListApp.load();
-    } else if (isAccounts) {
-      if (window.AccountsApp) window.AccountsApp.load(true);
+      scheduleIdleKiosk();
+    } else {
+      clearIdleKioskTimer();
+      if (isProjects) {
+        if (window.ProjectListApp) window.ProjectListApp.load(true);
+      } else if (isAccounts) {
+        if (window.AccountsApp) window.AccountsApp.load(true);
+      }
     }
   }
 
@@ -339,12 +343,18 @@
     }, 0);
   }
 
+  function isOnDashboardView() {
+    return !!(viewSwitch && viewSwitch.value === 'dashboard');
+  }
+
   function scheduleIdleKiosk() {
     clearIdleKioskTimer();
     if (!isDesktopLayout()) return;
+    // 仅总览看板才自动进全屏；其它界面不计时
+    if (!isOnDashboardView()) return;
     idleKioskTimer = setTimeout(() => {
       idleKioskTimer = null;
-      if (!isDesktopLayout()) return;
+      if (!isDesktopLayout() || !isOnDashboardView()) return;
       if (kioskMode || anyModalOpen()) {
         scheduleIdleKiosk();
         return;
@@ -354,6 +364,10 @@
   }
 
   function onUserActivityForIdleKiosk() {
+    if (!isOnDashboardView()) {
+      clearIdleKioskTimer();
+      return;
+    }
     scheduleIdleKiosk();
   }
 
@@ -376,24 +390,18 @@
     }
   }
 
-  function refreshCurrentView() {
+  function refreshDashboardSoft() {
     if (anyModalOpen()) return;
-    const v = viewSwitch ? viewSwitch.value : 'dashboard';
-    if (v === 'dashboard') {
-      if (window.DashboardApp) window.DashboardApp.load(true);
-    } else if (v === 'projects') {
-      if (window.ProjectListApp) window.ProjectListApp.load(true);
-    } else if (v === 'accounts') {
-      if (window.AccountsApp) window.AccountsApp.load(true);
-    }
+    if (!isOnDashboardView()) return;
+    if (window.DashboardApp) window.DashboardApp.load(true);
   }
 
   function startAutoRefresh() {
     stopAutoRefresh();
     autoRefreshTimer = setInterval(() => {
-      // 后台标签不刷，节省请求；切回前台会在下次周期刷新
       if (document.hidden) return;
-      refreshCurrentView();
+      // 定时刷新只刷总览看板
+      refreshDashboardSoft();
     }, AUTO_REFRESH_MS);
   }
 
@@ -434,11 +442,8 @@
       setView('dashboard', false);
       syncKioskUrl(true);
       if (options.browserFullscreen !== false) requestBrowserFullscreen();
-      if (window.DashboardApp) {
-        window.DashboardApp.load(true);
-        if (typeof window.DashboardApp.onKioskChange === 'function') {
-          window.DashboardApp.onKioskChange(true);
-        }
+      if (window.DashboardApp && typeof window.DashboardApp.onKioskChange === 'function') {
+        window.DashboardApp.onKioskChange(true);
       }
     } else {
       clearPromoteFullscreen();
@@ -476,7 +481,7 @@
     document.addEventListener(evt, onUserActivityForIdleKiosk, { passive: true });
   });
   window.addEventListener('resize', () => {
-    if (isDesktopLayout()) scheduleIdleKiosk();
+    if (isDesktopLayout() && isOnDashboardView()) scheduleIdleKiosk();
     else clearIdleKioskTimer();
   });
 

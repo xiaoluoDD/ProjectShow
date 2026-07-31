@@ -416,12 +416,15 @@ a {
 .pie-wrap {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 4px 0 8px;
+  overflow: visible;
 }
 
 .pie-svg {
   max-width: 100%;
   height: auto;
+  overflow: visible;
 }
 
 .kpi-grid {
@@ -634,11 +637,32 @@ body.kiosk-mode .dash-table thead th {
   body.kiosk-mode .dash-cell-kpi {
     height: auto;
     align-self: stretch;
+    overflow: visible;
+  }
+
+  body.kiosk-mode .dash-cell-pie {
+    min-width: 0;
+  }
+
+  body.kiosk-mode .dash-cell-pie.dash-card {
+    overflow: visible;
   }
 
   body.kiosk-mode .dash-cell-pie .pie-wrap,
   body.kiosk-mode .dash-cell-kpi .kpi-grid {
     flex: 0 0 auto;
+  }
+
+  body.kiosk-mode .pie-wrap {
+    overflow: visible;
+    padding: 2px 4px 4px;
+  }
+
+  body.kiosk-mode .pie-svg {
+    width: min(100%, 260px);
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
   }
 
   body.kiosk-mode .dash-cell-work,
@@ -670,11 +694,6 @@ body.kiosk-mode .dash-table thead th {
     max-width: 220px;
     word-break: break-word;
     color: #37474f;
-  }
-
-  body.kiosk-mode .pie-svg {
-    width: min(100%, 220px);
-    height: auto;
   }
 }
 

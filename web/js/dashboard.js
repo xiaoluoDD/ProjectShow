@@ -5,7 +5,9 @@
 
   let loadedOnce = false;
   let currentSummary = null;
+  let lastSummaryKey = '';
   let tableScrollTimers = [];
+  let loading = false;
 
   const PIE_COLORS = {
     待启动: '#90a4ae',
@@ -35,6 +37,12 @@
 
   function fillYearOptions(years) {
     const current = dashYear.value;
+    const key = (years || []).join('\0');
+    if (dashYear.dataset.yearsKey === key) {
+      if ((years || []).includes(current)) dashYear.value = current;
+      return;
+    }
+    dashYear.dataset.yearsKey = key;
     const opts = ['<option value="">全部</option>'].concat(
       (years || []).map((y) => `<option value="${escapeHtml(y)}">${escapeHtml(y)}</option>`)
     );
@@ -183,11 +191,12 @@
 
   function buildPieSvg(rows) {
     const kiosk = isKioskMode();
-    const size = kiosk ? 200 : 260;
+    // 全屏时加大画布、略缩小半径，给外侧百分比标签留边，避免被裁切
+    const size = kiosk ? 260 : 260;
     const cx = size / 2;
     const cy = size / 2;
-    const r = kiosk ? 60 : 78;
-    const labelOffset = kiosk ? 28 : 36;
+    const r = kiosk ? 62 : 78;
+    const labelOffset = kiosk ? 38 : 36;
     const total = rows.reduce((sum, row) => sum + (row.count || 0), 0);
     if (total <= 0) {
       return `
@@ -328,7 +337,32 @@
       </div>`;
   }
 
-  function render(summary) {
+  function summaryKey(summary) {
+    try {
+      return JSON.stringify(summary || {});
+    } catch (e) {
+      return String(Date.now());
+    }
+  }
+
+  function captureTableScrolls() {
+    const map = {};
+    if (!dashboardRoot) return map;
+    dashboardRoot.querySelectorAll('.table-wrap').forEach((wrap, idx) => {
+      map[idx] = wrap.scrollTop || 0;
+    });
+    return map;
+  }
+
+  function restoreTableScrolls(map) {
+    if (!map || !dashboardRoot) return;
+    dashboardRoot.querySelectorAll('.table-wrap').forEach((wrap, idx) => {
+      if (map[idx] != null) wrap.scrollTop = map[idx];
+    });
+  }
+
+  function render(summary, opts) {
+    const options = opts || {};
     currentSummary = summary;
     const projectSummary = summary.project_summary || {};
     const pieRows = [
@@ -428,10 +462,11 @@
         )}
       </article>`;
 
-    // 手机：从上到下；电脑：CSS Grid 对齐 Qt（饼图|KPI|责任人 / 进度跨两列）
+    const savedScrolls = options.preserveScroll ? captureTableScrolls() : null;
     stopTableAutoScroll();
     dashboardRoot.className = 'dash-layout';
     dashboardRoot.innerHTML = `${pieBlock}${kpiBlock}${personBlock}${workBlock}`;
+    if (savedScrolls) restoreTableScrolls(savedScrolls);
 
     dashSummaryBar.textContent = `已加载 ${summary.project_count || 0} 个项目`;
     setupTableAutoScroll();
@@ -442,8 +477,19 @@
       render(currentSummary);
       return;
     }
-    showLoading(dashboardRoot, '正在加载看板…');
-    dashSummaryBar.textContent = '加载中…';
+    if (loading) return;
+    const soft =
+      !!force &&
+      loadedOnce &&
+      !!currentSummary &&
+      !!dashboardRoot &&
+      !!dashboardRoot.querySelector('.dash-cell-pie');
+
+    loading = true;
+    if (!soft) {
+      showLoading(dashboardRoot, '正在加载看板…');
+      dashSummaryBar.textContent = '加载中…';
+    }
     try {
       const year = dashYear.value;
       const data = await fetchDashboardSummary(year);
@@ -451,18 +497,45 @@
       fillYearOptions(summary.years || []);
       if (year) dashYear.value = year;
       loadedOnce = true;
-      render(summary);
+
+      const key = summaryKey(summary);
+      if (soft && key === lastSummaryKey) {
+        // 数据无变化：不重绘，避免闪烁
+        return;
+      }
+      lastSummaryKey = key;
+      render(summary, { preserveScroll: soft });
     } catch (err) {
-      showError(dashboardRoot, err.message || '加载失败');
-      dashSummaryBar.textContent = '加载失败';
+      if (!soft) {
+        showError(dashboardRoot, err.message || '加载失败');
+        dashSummaryBar.textContent = '加载失败';
+      } else if (dashSummaryBar) {
+        // 软刷新失败时保留旧画面，仅提示
+        dashSummaryBar.textContent = `刷新失败：${err.message || '网络异常'}`;
+      }
+    } finally {
+      loading = false;
     }
   }
 
   window.DashboardApp = {
     load,
     onKioskChange(enabled) {
-      if (enabled) setupTableAutoScroll();
-      else stopTableAutoScroll();
+      if (enabled) {
+        // 进入全屏时按全屏尺寸重绘饼图，并保留滚动位置
+        if (currentSummary) {
+          lastSummaryKey = '';
+          render(currentSummary, { preserveScroll: true });
+        } else {
+          setupTableAutoScroll();
+        }
+      } else {
+        stopTableAutoScroll();
+        if (currentSummary) {
+          lastSummaryKey = '';
+          render(currentSummary);
+        }
+      }
     },
   };
 })();
