@@ -268,10 +268,10 @@
   });
 
   let kioskMode = false;
-  let kioskTimer = null;
+  let autoRefreshTimer = null;
   let idleKioskTimer = null;
   let promoteFsHandler = null;
-  const KIOSK_REFRESH_MS = 60 * 1000;
+  const AUTO_REFRESH_MS = 60 * 1000;
   const IDLE_KIOSK_MS = 20 * 1000;
 
   function isKioskQuery() {
@@ -369,18 +369,32 @@
     history.replaceState(null, '', url);
   }
 
-  function stopKioskAutoRefresh() {
-    if (kioskTimer) {
-      clearInterval(kioskTimer);
-      kioskTimer = null;
+  function stopAutoRefresh() {
+    if (autoRefreshTimer) {
+      clearInterval(autoRefreshTimer);
+      autoRefreshTimer = null;
     }
   }
 
-  function startKioskAutoRefresh() {
-    stopKioskAutoRefresh();
-    kioskTimer = setInterval(() => {
+  function refreshCurrentView() {
+    if (anyModalOpen()) return;
+    const v = viewSwitch ? viewSwitch.value : 'dashboard';
+    if (v === 'dashboard') {
       if (window.DashboardApp) window.DashboardApp.load(true);
-    }, KIOSK_REFRESH_MS);
+    } else if (v === 'projects') {
+      if (window.ProjectListApp) window.ProjectListApp.load(true);
+    } else if (v === 'accounts') {
+      if (window.AccountsApp) window.AccountsApp.load(true);
+    }
+  }
+
+  function startAutoRefresh() {
+    stopAutoRefresh();
+    autoRefreshTimer = setInterval(() => {
+      // 后台标签不刷，节省请求；切回前台会在下次周期刷新
+      if (document.hidden) return;
+      refreshCurrentView();
+    }, AUTO_REFRESH_MS);
   }
 
   function requestBrowserFullscreen() {
@@ -419,7 +433,6 @@
     if (kioskMode) {
       setView('dashboard', false);
       syncKioskUrl(true);
-      startKioskAutoRefresh();
       if (options.browserFullscreen !== false) requestBrowserFullscreen();
       if (window.DashboardApp) {
         window.DashboardApp.load(true);
@@ -430,7 +443,6 @@
     } else {
       clearPromoteFullscreen();
       syncKioskUrl(false);
-      stopKioskAutoRefresh();
       if (options.browserFullscreen !== false) exitBrowserFullscreen();
       if (window.DashboardApp && typeof window.DashboardApp.onKioskChange === 'function') {
         window.DashboardApp.onKioskChange(false);
@@ -470,6 +482,7 @@
 
   refreshAuthUI();
   setView(currentView(), true);
+  startAutoRefresh();
 
   // 电视常用：同一链接加 ?kiosk=1 开机直进展示模式
   if (isKioskQuery()) {
