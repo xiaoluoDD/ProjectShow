@@ -337,8 +337,11 @@
     btnSubtaskSave.disabled = true;
     clearError();
     try {
-      await createSubtask(payload);
+      const data = await createSubtask(payload);
       closeModal();
+      if (data && data.project_completion_cleared) {
+        alert(data.msg || '子任务已创建；项目原已完结，已清空实际完结日期并更新项目状态');
+      }
       if (window.SubtasksApp && typeof window.SubtasksApp.reload === 'function') {
         await window.SubtasksApp.reload();
       } else {
