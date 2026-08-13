@@ -11,18 +11,47 @@
   const accountPasswordHint = document.getElementById('accountPasswordHint');
   const accountError = document.getElementById('accountError');
   const accountModalTitle = document.getElementById('accountModalTitle');
+  const loginHistoryModal = document.getElementById('loginHistoryModal');
+  const loginHistoryTitle = document.getElementById('loginHistoryTitle');
+  const loginHistoryHint = document.getElementById('loginHistoryHint');
+  const loginHistoryList = document.getElementById('loginHistoryList');
+  const btnLoginHistoryClose = document.getElementById('btnLoginHistoryClose');
 
   let loadedOnce = false;
 
   document.getElementById('btnAddAccount').addEventListener('click', () => openEditor(null));
   document.getElementById('btnAccountCancel').addEventListener('click', closeEditor);
   document.getElementById('btnAccountSave').addEventListener('click', saveEditor);
+  if (btnLoginHistoryClose) {
+    btnLoginHistoryClose.addEventListener('click', closeLoginHistory);
+  }
+  if (loginHistoryModal) {
+    loginHistoryModal.addEventListener('click', (e) => {
+      if (e.target === loginHistoryModal) closeLoginHistory();
+    });
+  }
 
   function roleLabel(role) {
     if (role === 'admin') return '管理员';
     if (role === 'super_admin') return '超级管理员';
     if (role === 'user') return '普通';
     return role || '—';
+  }
+
+  function formatLoginTime(raw) {
+    const s = String(raw || '').trim();
+    if (!s) return '—';
+    const d = new Date(s);
+    if (Number.isNaN(d.getTime())) return s;
+    return d.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
   }
 
   function openEditor(account) {
@@ -55,6 +84,43 @@
 
   function closeEditor() {
     accountModal.hidden = true;
+  }
+
+  function closeLoginHistory() {
+    if (loginHistoryModal) loginHistoryModal.hidden = true;
+  }
+
+  async function openLoginHistory(account) {
+    if (!loginHistoryModal || !account) return;
+    const username = (account.username || '').trim();
+    const titleName = account.display_name || username || '账户';
+    loginHistoryTitle.textContent = `登录记录 — ${titleName}`;
+    loginHistoryHint.textContent = `账号 ${username} · 最近 10 次`;
+    loginHistoryList.innerHTML = '<p class="muted">加载中…</p>';
+    loginHistoryModal.hidden = false;
+    try {
+      const data = await fetchAccountLoginHistory(username, 10);
+      const logs = data.logs || [];
+      if (!logs.length) {
+        loginHistoryList.innerHTML = '<p class="muted">暂无登录记录</p>';
+        return;
+      }
+      loginHistoryList.innerHTML = `
+        <ol class="login-history-ol">
+          ${logs
+            .map(
+              (log, idx) =>
+                `<li><span class="login-history-idx">${idx + 1}.</span> ${escapeHtml(
+                  formatLoginTime(log.logged_at)
+                )}</li>`
+            )
+            .join('')}
+        </ol>`;
+    } catch (err) {
+      loginHistoryList.innerHTML = `<p class="modal-error">${escapeHtml(
+        err.message || '加载失败'
+      )}</p>`;
+    }
   }
 
   async function saveEditor() {
@@ -97,9 +163,13 @@
     accountsRoot.innerHTML = accounts
       .map((a) => {
         const builtin = !!a.builtin;
+        const historyBtn = `<button type="button" class="btn btn-sm" data-login-history="${escapeHtml(
+          a.username || ''
+        )}">登录记录</button>`;
         const actions = builtin
-          ? '<span class="muted">系统内置，不可改删</span>'
+          ? `<div class="account-actions">${historyBtn}<span class="muted">系统内置，不可改删</span></div>`
           : `<div class="account-actions">
+               ${historyBtn}
                <button type="button" class="btn btn-sm" data-edit="${a.id}">编辑</button>
                <button type="button" class="btn btn-sm btn-danger" data-del="${a.id}">删除</button>
              </div>`;
@@ -115,6 +185,13 @@
       })
       .join('');
 
+    accountsRoot.querySelectorAll('[data-login-history]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const username = btn.getAttribute('data-login-history') || '';
+        const account = (window.__accountsCache || []).find((x) => x.username === username);
+        openLoginHistory(account || { username });
+      });
+    });
     accountsRoot.querySelectorAll('[data-edit]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const id = Number(btn.getAttribute('data-edit'));

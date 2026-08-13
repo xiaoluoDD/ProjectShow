@@ -851,8 +851,38 @@ body.kiosk-mode .dash-table thead th {
 
 .account-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 10px;
+  align-items: center;
+}
+
+.login-history-list {
+  margin: 8px 0 4px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.login-history-ol {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.login-history-ol li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eef1f4;
+  font-size: 14px;
+  color: #334155;
+}
+
+.login-history-ol li:last-child {
+  border-bottom: none;
+}
+
+.login-history-idx {
+  color: #78909c;
+  margin-right: 6px;
 }
 
 .btn-sm {

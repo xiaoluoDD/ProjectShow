@@ -135,6 +135,13 @@ function fetchAccounts() {
   return apiGet('/api/accounts');
 }
 
+function fetchAccountLoginHistory(username, limit) {
+  const q = new URLSearchParams();
+  q.set('username', username || '');
+  if (limit) q.set('limit', String(limit));
+  return apiGet(`/api/accounts/login-history?${q.toString()}`);
+}
+
 function changeOwnPassword(password) {
   return apiPost('/api/auth/password', { password });
 }
