@@ -48,6 +48,13 @@
     return !!(project && String(project.end_date || '').trim());
   }
 
+  function incompleteSubtasksBlockComplete(project) {
+    if (!project) return false;
+    const subCount = Number(project.subtask_count) || 0;
+    const allDone = !!project.subtask_all_completed;
+    return subCount > 0 && !allDone;
+  }
+
   function canEdit() {
     return !!(window.Auth && window.Auth.canEditProjects());
   }
@@ -135,10 +142,14 @@
     completeError.hidden = true;
     completeError.textContent = '';
     const editing = hasEndDate(currentProject);
+    if (!editing && incompleteSubtasksBlockComplete(currentProject)) {
+      alert('存在未完成的子任务，不能填写实际完结日期。\n请先将全部子任务标记为已完结。');
+      return;
+    }
     completeTitle.textContent = editing ? '修改完结日期' : '标记完结';
     completeHint.textContent = editing
       ? '修改实际完结日期。若需取消完结，请在桌面端清空该日期。'
-      : '填写实际完结日期后，项目状态将变为「已完结」。';
+      : '全部子任务完结后，填写实际完结日期，项目状态将变为「已完结」。';
     completeDate.value = editing
       ? String(currentProject.end_date || '').trim() || todayIso()
       : todayIso();
@@ -170,6 +181,11 @@
     const date = (completeDate.value || '').trim();
     if (!date) {
       completeError.textContent = '请选择实际完结日期';
+      completeError.hidden = false;
+      return;
+    }
+    if (incompleteSubtasksBlockComplete(currentProject)) {
+      completeError.textContent = '存在未完成的子任务，不能填写实际完结日期。请先将全部子任务标记为已完结。';
       completeError.hidden = false;
       return;
     }
