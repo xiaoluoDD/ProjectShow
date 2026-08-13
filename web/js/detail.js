@@ -14,9 +14,21 @@
   const btnCompleteSave = document.getElementById('btnCompleteSave');
 
   const id = queryParam('id');
+  const from = (queryParam('from') || '').trim();
   if (!id) {
     showError(detailRoot, '缺少项目 id');
     return;
+  }
+
+  const backLink = document.querySelector('.back-link');
+  if (backLink) {
+    if (from === 'dashboard') {
+      backLink.href = 'index.html?view=dashboard';
+      backLink.textContent = '‹ 返回总览';
+    } else {
+      backLink.href = 'index.html?view=projects';
+      backLink.textContent = '‹ 返回列表';
+    }
   }
 
   let currentProject = null;
@@ -109,7 +121,9 @@
     btnDeleteProject.disabled = true;
     try {
       await deleteProject(currentProject.id);
-      window.location.href = 'index.html?view=projects';
+      window.location.href = from === 'dashboard'
+        ? 'index.html?view=dashboard'
+        : 'index.html?view=projects';
     } catch (err) {
       alert(err.message || '删除失败');
       btnDeleteProject.disabled = false;

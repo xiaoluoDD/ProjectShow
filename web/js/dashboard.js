@@ -452,12 +452,11 @@
         ${groupedTableHtml(
           ['工番号', '项目名称', '任务状态', '记录数'],
           workGroups,
-          (group, status) => {
+          (group) => {
             const q = new URLSearchParams();
-            q.set('project_id', String(group.projectId || ''));
-            if (status) q.set('status', status);
+            q.set('id', String(group.projectId || ''));
             q.set('from', 'dashboard');
-            return `subtasks.html?${q.toString()}`;
+            return `project.html?${q.toString()}`;
           }
         )}
       </article>`;
