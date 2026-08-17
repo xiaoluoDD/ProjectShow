@@ -36,6 +36,8 @@
   let selectedMembers = {};
   let saving = false;
   let loadingMeta = false;
+  /** @type {object|null} */
+  let editingProject = null;
 
   function todayIso() {
     const d = new Date();
@@ -57,9 +59,11 @@
     }
   }
 
-  function ensureCanEdit() {
+  function ensureCanEdit(actionLabel) {
     if (canEdit()) return true;
-    const goLogin = confirm('新增项目需要先登录且具备编辑权限。是否前往登录？');
+    const goLogin = confirm(
+      `${actionLabel || '此操作'}需要先登录且具备编辑权限。是否前往登录？`
+    );
     if (goLogin) {
       const returnTo = encodeURIComponent(window.location.href);
       window.location.href = `index.html?view=projects&login=1&return=${returnTo}`;
@@ -268,11 +272,15 @@
   }
 
   async function openCreateModal() {
-    if (!ensureCanEdit()) return;
+    if (!ensureCanEdit('新增项目')) return;
     if (loadingMeta) return;
 
     loadingMeta = true;
+    editingProject = null;
     if (btnAddProject) btnAddProject.disabled = true;
+    const titleEl = document.getElementById('projectModalTitle');
+    if (titleEl) titleEl.textContent = '新建项目';
+    if (btnProjectSave) btnProjectSave.textContent = '创建';
 
     // 先打开弹窗，避免接口卡住时「点击无反应」
     resetFormBasics();
@@ -306,6 +314,77 @@
     }
   }
 
+  function fillFormFromProject(project) {
+    clearError();
+    projectYear.value = project.year || '';
+    projectWorkNo.value = project.work_no || '';
+    projectName.value = project.name || '';
+    projectStartDate.value = String(project.start_date || '').trim();
+    projectEndDate.value = String(project.end_date || '').trim();
+    selectedMembers = {};
+    (project.members || []).forEach((m) => {
+      const userid = (m.userid || '').trim();
+      if (!userid) return;
+      selectedMembers[userid] = (m.name || '').trim();
+    });
+    updateSelectedSummary();
+  }
+
+  async function openEditModal(project) {
+    if (!ensureCanEdit('编辑项目')) return;
+    if (!project || !project.id) {
+      alert('缺少项目数据');
+      return;
+    }
+    if (loadingMeta) return;
+
+    loadingMeta = true;
+    editingProject = project;
+    const titleEl = document.getElementById('projectModalTitle');
+    if (titleEl) titleEl.textContent = '编辑项目';
+    if (btnProjectSave) btnProjectSave.textContent = '保存';
+
+    fillFormFromProject(project);
+    setMetaLoading();
+    projectModal.hidden = false;
+
+    try {
+      await loadMeta();
+      setMetaReady();
+      fillDepartmentSelect(projectManagerDept);
+      fillDepartmentSelect(projectMemberDept);
+      const managerId = (project.manager_userid || '').trim();
+      const mgrDept = departmentIdForUser(managerId);
+      if (mgrDept != null) {
+        projectManagerDept.value = String(mgrDept);
+      } else {
+        projectManagerDept.value = DEPT_PLACEHOLDER;
+      }
+      refreshManagerCombo(managerId);
+      projectMemberDept.value = DEPT_PLACEHOLDER;
+      refreshMemberList();
+      clearError();
+    } catch (err) {
+      allDepartments = [];
+      allUsers = [];
+      setMetaReady();
+      fillDepartmentSelect(projectManagerDept);
+      fillDepartmentSelect(projectMemberDept);
+      refreshManagerCombo('');
+      refreshMemberList();
+      showError((err && err.message) || '加载部门/成员失败，仍可修改基本字段');
+    } finally {
+      loadingMeta = false;
+    }
+  }
+
+  function departmentIdForUser(userid) {
+    if (!userid) return null;
+    const u = allUsers.find((x) => (x.userid || '').trim() === userid);
+    if (!u) return null;
+    return userDeptId(u);
+  }
+
   function buildPayload() {
     const managerOpt = projectManager.selectedOptions[0];
     const managerUserid = (projectManager.value || '').trim();
@@ -318,22 +397,34 @@
       name: selectedMembers[userid] || '',
     }));
 
-    return {
+    const payload = {
       year: (projectYear.value || '').trim(),
       work_no: (projectWorkNo.value || '').trim(),
       name: (projectName.value || '').trim(),
       manager_userid: managerUserid,
       manager_name: managerName,
-      group_chat: '',
-      group_chat_id: '',
-      tasks: '',
+      group_chat: editingProject ? editingProject.group_chat || '' : '',
+      group_chat_id: editingProject ? editingProject.group_chat_id || '' : '',
+      tasks: editingProject ? editingProject.tasks || '' : '',
       start_date: (projectStartDate.value || '').trim(),
       end_date: (projectEndDate.value || '').trim(),
       members,
     };
+    if (editingProject && editingProject.id) {
+      payload.id = editingProject.id;
+    }
+    return payload;
   }
 
-  async function saveCreate() {
+  function incompleteSubtasksBlock(project, endDate) {
+    if (!endDate) return false;
+    if (!project) return false;
+    const subCount = Number(project.subtask_count) || 0;
+    const allDone = !!project.subtask_all_completed;
+    return subCount > 0 && !allDone;
+  }
+
+  async function saveProject() {
     if (saving) return;
     syncSelectionsFromList();
     const payload = buildPayload();
@@ -345,16 +436,30 @@
       showError('请填写项目启动日期');
       return;
     }
+    if (editingProject && incompleteSubtasksBlock(editingProject, payload.end_date)) {
+      showError('存在未完成的子任务，不能填写实际完结日期。请先将全部子任务标记为已完结。');
+      return;
+    }
 
     saving = true;
     btnProjectSave.disabled = true;
     clearError();
     try {
-      await createProject(payload);
-      closeModal();
-      if (window.ProjectListApp) await window.ProjectListApp.load(true);
+      if (editingProject && editingProject.id) {
+        const data = await updateProject(payload);
+        closeModal();
+        if (typeof window.onProjectSaved === 'function') {
+          await window.onProjectSaved(data.project || payload);
+        } else if (window.ProjectListApp) {
+          await window.ProjectListApp.load(true);
+        }
+      } else {
+        await createProject(payload);
+        closeModal();
+        if (window.ProjectListApp) await window.ProjectListApp.load(true);
+      }
     } catch (err) {
-      showError(err.message || '创建失败');
+      showError(err.message || '保存失败');
     } finally {
       saving = false;
       btnProjectSave.disabled = false;
@@ -362,7 +467,7 @@
   }
 
   btnProjectCancel.addEventListener('click', closeModal);
-  btnProjectSave.addEventListener('click', saveCreate);
+  btnProjectSave.addEventListener('click', saveProject);
   projectModal.addEventListener('click', (e) => {
     if (e.target === projectModal) closeModal();
   });
@@ -372,5 +477,6 @@
   // 点击由 app.js 统一绑定，避免脚本未加载时完全无反馈
   window.ProjectFormApp = {
     openCreate: openCreateModal,
+    openEdit: openEditModal,
   };
 })();

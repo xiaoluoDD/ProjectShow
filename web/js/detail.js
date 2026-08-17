@@ -2,6 +2,7 @@
   const detailRoot = document.getElementById('detailRoot');
   const actionBar = document.getElementById('actionBar');
   const btnSubtasks = document.getElementById('btnSubtasks');
+  const btnEdit = document.getElementById('btnEdit');
   const btnComplete = document.getElementById('btnComplete');
   const btnDeleteProject = document.getElementById('btnDeleteProject');
   const editHint = document.getElementById('editHint');
@@ -12,6 +13,7 @@
   const completeError = document.getElementById('completeError');
   const btnCompleteCancel = document.getElementById('btnCompleteCancel');
   const btnCompleteSave = document.getElementById('btnCompleteSave');
+  const btnCompleteClear = document.getElementById('btnCompleteClear');
 
   const id = queryParam('id');
   const from = (queryParam('from') || '').trim();
@@ -62,12 +64,14 @@
   function refreshActionButtons() {
     if (!currentProject) {
       btnComplete.hidden = true;
+      if (btnEdit) btnEdit.hidden = true;
       if (btnDeleteProject) btnDeleteProject.hidden = true;
       editHint.hidden = true;
       return;
     }
     const editable = canEdit();
     btnComplete.hidden = !editable;
+    if (btnEdit) btnEdit.hidden = !editable;
     if (btnDeleteProject) btnDeleteProject.hidden = !editable;
     editHint.hidden = editable;
     if (!editable) return;
@@ -137,6 +141,15 @@
     }
   }
 
+  function openEdit() {
+    if (!currentProject || !canEdit()) return;
+    if (!window.ProjectFormApp || typeof window.ProjectFormApp.openEdit !== 'function') {
+      alert('编辑表单未加载，请强制刷新后重试');
+      return;
+    }
+    window.ProjectFormApp.openEdit(currentProject);
+  }
+
   function openCompleteModal() {
     if (!currentProject || !canEdit()) return;
     completeError.hidden = true;
@@ -148,11 +161,12 @@
     }
     completeTitle.textContent = editing ? '修改完结日期' : '标记完结';
     completeHint.textContent = editing
-      ? '修改实际完结日期。若需取消完结，请在桌面端清空该日期。'
+      ? '可修改实际完结日期；清空日期可取消「已完结」状态。'
       : '全部子任务完结后，填写实际完结日期，项目状态将变为「已完结」。';
     completeDate.value = editing
       ? String(currentProject.end_date || '').trim() || todayIso()
       : todayIso();
+    if (btnCompleteClear) btnCompleteClear.hidden = !editing;
     completeModal.hidden = false;
   }
 
@@ -176,15 +190,15 @@
     };
   }
 
-  async function saveCompleteDate() {
+  async function saveCompleteDate(forceEmpty) {
     if (saving || !currentProject) return;
-    const date = (completeDate.value || '').trim();
-    if (!date) {
-      completeError.textContent = '请选择实际完结日期';
+    const date = forceEmpty ? '' : (completeDate.value || '').trim();
+    if (!forceEmpty && !date) {
+      completeError.textContent = '请选择实际完结日期，或点「清空完结日期」取消完结';
       completeError.hidden = false;
       return;
     }
-    if (incompleteSubtasksBlockComplete(currentProject)) {
+    if (date && incompleteSubtasksBlockComplete(currentProject)) {
       completeError.textContent = '存在未完成的子任务，不能填写实际完结日期。请先将全部子任务标记为已完结。';
       completeError.hidden = false;
       return;
@@ -192,6 +206,7 @@
 
     saving = true;
     btnCompleteSave.disabled = true;
+    if (btnCompleteClear) btnCompleteClear.disabled = true;
     completeError.hidden = true;
     try {
       const data = await updateProject(projectToUpdatePayload(currentProject, date));
@@ -203,6 +218,7 @@
     } finally {
       saving = false;
       btnCompleteSave.disabled = false;
+      if (btnCompleteClear) btnCompleteClear.disabled = false;
     }
   }
 
@@ -218,17 +234,33 @@
       showError(detailRoot, err.message || '加载失败');
       actionBar.hidden = true;
       btnComplete.hidden = true;
+      if (btnEdit) btnEdit.hidden = true;
       if (btnDeleteProject) btnDeleteProject.hidden = true;
       editHint.hidden = true;
     }
   }
 
+  window.onProjectSaved = async function (project) {
+    if (project && project.id) {
+      renderDetail(project);
+      return;
+    }
+    await loadDetail();
+  };
+
+  if (btnEdit) btnEdit.addEventListener('click', openEdit);
   btnComplete.addEventListener('click', openCompleteModal);
   if (btnDeleteProject) {
     btnDeleteProject.addEventListener('click', deleteCurrentProject);
   }
   btnCompleteCancel.addEventListener('click', closeCompleteModal);
-  btnCompleteSave.addEventListener('click', saveCompleteDate);
+  btnCompleteSave.addEventListener('click', () => saveCompleteDate(false));
+  if (btnCompleteClear) {
+    btnCompleteClear.addEventListener('click', () => {
+      if (!confirm('确定清空实际完结日期？项目将不再处于「已完结」状态。')) return;
+      saveCompleteDate(true);
+    });
+  }
   completeModal.addEventListener('click', (e) => {
     if (e.target === completeModal) closeCompleteModal();
   });

@@ -11,6 +11,7 @@
   const completeError = document.getElementById('completeError');
   const btnCompleteCancel = document.getElementById('btnCompleteCancel');
   const btnCompleteSave = document.getElementById('btnCompleteSave');
+  const btnCompleteClear = document.getElementById('btnCompleteClear');
 
   const projectId = queryParam('project_id');
   const statusFilter = (queryParam('status') || '').trim();
@@ -59,7 +60,7 @@
     // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
     if (!document.querySelector('script[data-subtask-form]')) {
       const s = document.createElement('script');
-      s.src = 'js/subtask-form.js?v=1.2.15';
+      s.src = 'js/subtask-form.js?v=1.2.16';
       s.setAttribute('data-subtask-form', '1');
       s.onload = () => {
         if (!tryOpen()) {
@@ -155,12 +156,13 @@
     const editing = hasActualEnd(st);
     completeTitle.textContent = editing ? '修改实际完成日期' : '标记子任务完结';
     completeHint.textContent = editing
-      ? '修改该子任务的实际完成日期。'
+      ? '可修改实际完成日期；清空日期可取消「已完结」。'
       : '填写实际完成日期后，该子任务将视为已完结。';
     completeTaskName.textContent = `任务：${displayOrDash(st.content)}`;
     completeDate.value = editing
       ? String(st.actual_end_date || '').trim() || todayIso()
       : todayIso();
+    if (btnCompleteClear) btnCompleteClear.hidden = !editing;
     completeModal.hidden = false;
   }
 
@@ -169,16 +171,17 @@
     editingSubtask = null;
   }
 
-  async function saveCompleteDate() {
+  async function saveCompleteDate(forceEmpty) {
     if (saving || !editingSubtask || !btnCompleteSave) return;
-    const date = (completeDate.value || '').trim();
-    if (!date) {
-      completeError.textContent = '请选择实际完成日期';
+    const date = forceEmpty ? '' : (completeDate.value || '').trim();
+    if (!forceEmpty && !date) {
+      completeError.textContent = '请选择实际完成日期，或点「清空完成日期」取消完结';
       completeError.hidden = false;
       return;
     }
     saving = true;
     btnCompleteSave.disabled = true;
+    if (btnCompleteClear) btnCompleteClear.disabled = true;
     completeError.hidden = true;
     try {
       const data = await updateSubtask(subtaskToPayload(editingSubtask, date));
@@ -199,15 +202,20 @@
     } finally {
       saving = false;
       btnCompleteSave.disabled = false;
+      if (btnCompleteClear) btnCompleteClear.disabled = false;
     }
   }
 
   function renderSubtaskCard(st) {
     const done = hasActualEnd(st);
+    const editable = canEdit();
     const completeBtn = `<button type="button" class="btn btn-sm ${done ? '' : 'btn-primary'}" data-complete-id="${st.id}">
            ${done ? '修改完成日期' : '标记完结'}
          </button>`;
-    const deleteBtn = canEdit()
+    const editBtn = editable
+      ? `<button type="button" class="btn btn-sm" data-edit-subtask="${st.id}">编辑</button>`
+      : '';
+    const deleteBtn = editable
       ? `<button type="button" class="btn btn-sm btn-danger" data-del-subtask="${st.id}">删除</button>`
       : '';
 
@@ -229,7 +237,7 @@
             ? `<div class="card-row"><span class="label">备注：</span>${escapeHtml(st.remark)}</div>`
             : ''
         }
-        <div class="account-actions">${completeBtn}${deleteBtn}</div>
+        <div class="account-actions">${editBtn}${completeBtn}${deleteBtn}</div>
       </article>
     `;
   }
@@ -255,11 +263,11 @@
     refreshAddButton();
     if (statusFilter) {
       summaryBar.textContent = editable
-        ? `状态「${statusFilter}」共 ${list.length} 条 · 可新增 / 标记完结 / 删除`
+        ? `状态「${statusFilter}」共 ${list.length} 条 · 可新增 / 编辑 / 标记完结 / 删除`
         : `状态「${statusFilter}」共 ${list.length} 条 · 未登录仅可查看，点「标记完结」将提示登录`;
     } else {
       summaryBar.textContent = editable
-        ? `共 ${list.length} 条子任务 · 可新增 / 标记完结 / 删除`
+        ? `共 ${list.length} 条子任务 · 可新增 / 编辑 / 标记完结 / 删除`
         : `共 ${list.length} 条子任务 · 未登录，点卡片上的「标记完结」可去登录`;
     }
 
@@ -286,6 +294,18 @@
         const sid = Number(btn.getAttribute('data-complete-id'));
         const st = allSubtasks.find((x) => x.id === sid);
         if (st) openCompleteModal(st);
+      });
+    });
+    subtaskRoot.querySelectorAll('[data-edit-subtask]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sid = Number(btn.getAttribute('data-edit-subtask'));
+        const st = allSubtasks.find((x) => x.id === sid);
+        if (!st) return;
+        if (window.SubtaskFormApp && typeof window.SubtaskFormApp.openEdit === 'function') {
+          window.SubtaskFormApp.openEdit(st);
+        } else {
+          alert('编辑表单未加载，请强制刷新后重试');
+        }
       });
     });
     subtaskRoot.querySelectorAll('[data-del-subtask]').forEach((btn) => {
@@ -333,7 +353,13 @@
 
   if (btnCompleteCancel && btnCompleteSave && completeModal) {
     btnCompleteCancel.addEventListener('click', closeCompleteModal);
-    btnCompleteSave.addEventListener('click', saveCompleteDate);
+    btnCompleteSave.addEventListener('click', () => saveCompleteDate(false));
+    if (btnCompleteClear) {
+      btnCompleteClear.addEventListener('click', () => {
+        if (!confirm('确定清空实际完成日期？该子任务将不再视为已完结。')) return;
+        saveCompleteDate(true);
+      });
+    }
     completeModal.addEventListener('click', (e) => {
       if (e.target === completeModal) closeCompleteModal();
     });

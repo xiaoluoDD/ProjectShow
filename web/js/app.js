@@ -3,6 +3,9 @@
 
   const viewSwitch = document.getElementById('viewSwitch');
   const optAccounts = document.getElementById('optAccounts');
+  const optDepartments = document.getElementById('optDepartments');
+  const optMembers = document.getElementById('optMembers');
+  const optTools = document.getElementById('optTools');
   const btnFilter = document.getElementById('btnFilter');
   const btnAddProject = document.getElementById('btnAddProject');
   const btnKiosk = document.getElementById('btnKiosk');
@@ -15,6 +18,9 @@
   const dashboardView = document.getElementById('dashboardView');
   const projectsView = document.getElementById('projectsView');
   const accountsView = document.getElementById('accountsView');
+  const departmentsView = document.getElementById('departmentsView');
+  const membersView = document.getElementById('membersView');
+  const toolsView = document.getElementById('toolsView');
   const loginModal = document.getElementById('loginModal');
   const loginUsername = document.getElementById('loginUsername');
   const loginPassword = document.getElementById('loginPassword');
@@ -25,16 +31,26 @@
   const passwordError = document.getElementById('passwordError');
   const projectsHint = document.getElementById('projectsHint');
 
+  const MANAGE_VIEWS = ['accounts', 'departments', 'members', 'tools'];
+
   function canChangeOwnPassword(user) {
     if (!user || !user.username) return false;
-    // 内置超级管理员 root 密码写死在代码里，不可通过此接口修改
     if (user.is_super_admin || String(user.username).toLowerCase() === 'root') return false;
     return true;
   }
 
   function currentView() {
     const q = new URLSearchParams(window.location.search).get('view');
-    if (q === 'projects' || q === 'dashboard' || q === 'accounts') return q;
+    if (
+      q === 'projects' ||
+      q === 'dashboard' ||
+      q === 'accounts' ||
+      q === 'departments' ||
+      q === 'members' ||
+      q === 'tools'
+    ) {
+      return q;
+    }
     return 'dashboard';
   }
 
@@ -56,6 +72,9 @@
     btnLogout.hidden = !loggedIn;
     if (btnChangePassword) btnChangePassword.hidden = !(loggedIn && canChangeOwnPassword(user));
     optAccounts.hidden = !canManage;
+    if (optDepartments) optDepartments.hidden = !canEdit;
+    if (optMembers) optMembers.hidden = !canEdit;
+    if (optTools) optTools.hidden = !canManage;
 
     if (loggedIn && user) {
       authUserBar.hidden = false;
@@ -73,9 +92,10 @@
 
     refreshAddProjectButton();
 
-    if (!canManage && viewSwitch.value === 'accounts') {
-      setView('dashboard', true);
-    }
+    const v = viewSwitch.value;
+    if (v === 'accounts' && !canManage) setView('dashboard', true);
+    else if ((v === 'departments' || v === 'members') && !canEdit) setView('dashboard', true);
+    else if (v === 'tools' && !canManage) setView('dashboard', true);
   }
 
   function refreshAddProjectButton() {
@@ -87,21 +107,29 @@
 
   function setView(view, pushUrl) {
     let next = view;
-    if (next !== 'projects' && next !== 'dashboard' && next !== 'accounts') {
-      next = 'dashboard';
-    }
-    if (next === 'accounts' && !(window.Auth && window.Auth.canManageAccounts())) {
-      next = 'dashboard';
-    }
+    const allowed = ['projects', 'dashboard', 'accounts', 'departments', 'members', 'tools'];
+    if (allowed.indexOf(next) < 0) next = 'dashboard';
+
+    const canManage = window.Auth && window.Auth.canManageAccounts();
+    const canEdit = window.Auth && window.Auth.canEditProjects();
+    if (next === 'accounts' && !canManage) next = 'dashboard';
+    if ((next === 'departments' || next === 'members') && !canEdit) next = 'dashboard';
+    if (next === 'tools' && !canManage) next = 'dashboard';
 
     viewSwitch.value = next;
     const isDash = next === 'dashboard';
     const isProjects = next === 'projects';
     const isAccounts = next === 'accounts';
+    const isDepartments = next === 'departments';
+    const isMembers = next === 'members';
+    const isTools = next === 'tools';
 
     dashboardView.hidden = !isDash;
     projectsView.hidden = !isProjects;
     accountsView.hidden = !isAccounts;
+    if (departmentsView) departmentsView.hidden = !isDepartments;
+    if (membersView) membersView.hidden = !isMembers;
+    if (toolsView) toolsView.hidden = !isTools;
     btnFilter.hidden = !isProjects;
     refreshAddProjectButton();
 
@@ -129,6 +157,12 @@
         if (window.ProjectListApp) window.ProjectListApp.load(true);
       } else if (isAccounts) {
         if (window.AccountsApp) window.AccountsApp.load(true);
+      } else if (isDepartments) {
+        if (window.DepartmentsApp) window.DepartmentsApp.load(true);
+      } else if (isMembers) {
+        if (window.MembersApp) window.MembersApp.load(true);
+      } else if (isTools) {
+        if (window.AdminToolsApp) window.AdminToolsApp.load(true);
       }
     }
   }
@@ -222,6 +256,15 @@
     } else if (v === 'accounts') {
       if (window.AccountsApp) window.AccountsApp.load(true);
       else setView('accounts', false);
+    } else if (v === 'departments') {
+      if (window.DepartmentsApp) window.DepartmentsApp.load(true);
+      else setView('departments', false);
+    } else if (v === 'members') {
+      if (window.MembersApp) window.MembersApp.load(true);
+      else setView('members', false);
+    } else if (v === 'tools') {
+      if (window.AdminToolsApp) window.AdminToolsApp.load(true);
+      else setView('tools', false);
     }
   });
 
@@ -232,7 +275,10 @@
   btnLogout.addEventListener('click', async () => {
     await window.Auth.logout();
     refreshAuthUI();
-    if (viewSwitch.value === 'accounts') setView('dashboard', true);
+    const v = viewSwitch.value;
+    if (v === 'accounts' || v === 'departments' || v === 'members' || v === 'tools') {
+      setView('dashboard', true);
+    }
   });
 
   if (btnAddProject) {

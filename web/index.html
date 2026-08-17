@@ -4,15 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.2.15</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.15" />
+  <title>项目管理看板 v1.2.16</title>
+  <link rel="stylesheet" href="css/app.css?v=1.2.16" />
 </head>
 <body>
   <header class="app-header">
     <select class="view-switch" id="viewSwitch" aria-label="界面切换">
       <option value="dashboard">总览看板</option>
       <option value="projects">项目界面</option>
+      <option value="departments" id="optDepartments" hidden>部门管理</option>
+      <option value="members" id="optMembers" hidden>成员管理</option>
       <option value="accounts" id="optAccounts" hidden>账户管理</option>
+      <option value="tools" id="optTools" hidden>运维工具</option>
     </select>
     <span class="app-version" id="appVersion"></span>
     <button type="button" class="btn" id="btnFilter" hidden>筛选</button>
@@ -77,6 +80,70 @@
         <button type="button" class="btn btn-primary" id="btnAddAccount">新增账户</button>
       </div>
       <div id="accountsRoot"></div>
+    </section>
+
+    <!-- 部门管理 -->
+    <section id="departmentsView" hidden>
+      <div class="accounts-toolbar">
+        <p class="hint-bar" id="departmentsSummaryBar">登录后可管理部门</p>
+        <button type="button" class="btn btn-primary" id="btnAddDepartment">新增部门</button>
+      </div>
+      <div id="departmentsRoot"></div>
+    </section>
+
+    <!-- 成员管理 -->
+    <section id="membersView" hidden>
+      <div class="accounts-toolbar">
+        <p class="hint-bar" id="membersSummaryBar">登录后可管理成员</p>
+        <button type="button" class="btn btn-primary" id="btnSyncMembers">同步可见成员</button>
+      </div>
+      <div id="membersRoot"></div>
+    </section>
+
+    <!-- 运维工具：设置 / 本地数据 / 日志 -->
+    <section id="toolsView" hidden>
+      <div class="tools-tabs" role="tablist">
+        <button type="button" class="btn tools-tab active" id="toolsTabSettings" aria-selected="true">设置</button>
+        <button type="button" class="btn tools-tab" id="toolsTabData" aria-selected="false">本地数据</button>
+        <button type="button" class="btn tools-tab" id="toolsTabLogs" aria-selected="false">日志</button>
+      </div>
+
+      <div id="toolsPanelSettings">
+        <p class="hint-bar">提醒与服务器配置（对应桌面调试→设置）</p>
+        <div class="tools-form">
+          <label for="settingServerBaseUrl">服务器根地址</label>
+          <input id="settingServerBaseUrl" type="text" autocomplete="off" placeholder="例如 http://8.134.255.174:8081" />
+          <label for="settingReminderTime">每日提醒时间</label>
+          <input id="settingReminderTime" type="time" />
+          <label for="settingProjectStartReminderDays">启动提前提醒天数</label>
+          <input id="settingProjectStartReminderDays" type="number" min="0" max="365" />
+          <label for="settingProjectEndReminderDays">完结提前提醒天数</label>
+          <input id="settingProjectEndReminderDays" type="number" min="0" max="365" />
+          <p class="modal-hint" id="settingsMessage" hidden></p>
+          <p class="modal-error" id="settingsError" hidden></p>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSaveSettings">保存设置</button>
+            <button type="button" class="btn" id="btnRunReminder">立即跑提醒</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="toolsPanelData" hidden>
+        <p class="hint-bar">导出快照或下载数据库（对应桌面调试→本地数据）</p>
+        <div class="filter-actions">
+          <button type="button" class="btn btn-primary" id="btnExportJson">导出 JSON 快照</button>
+          <button type="button" class="btn" id="btnDownloadDb">下载数据库</button>
+        </div>
+        <p class="hint-bar" id="exportSummary">尚未导出</p>
+      </div>
+
+      <div id="toolsPanelLogs" hidden>
+        <div class="accounts-toolbar">
+          <p class="hint-bar" id="logsSummaryBar">服务器日志</p>
+          <button type="button" class="btn" id="btnRefreshLogs">刷新日志列表</button>
+        </div>
+        <div id="logsRoot"></div>
+      </div>
     </section>
   </main>
 
@@ -150,6 +217,41 @@
     </div>
   </div>
 
+  <!-- 部门编辑弹窗 -->
+  <div class="modal-mask" id="departmentModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <h2 id="departmentModalTitle">新增部门</h2>
+      <input type="hidden" id="departmentEditId" value="" />
+      <label for="departmentName">部门名称</label>
+      <input id="departmentName" type="text" autocomplete="off" />
+      <p class="modal-error" id="departmentError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnDepartmentCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnDepartmentSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 成员编辑弹窗 -->
+  <div class="modal-mask" id="memberModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <h2 id="memberModalTitle">编辑成员</h2>
+      <label for="memberUserid">UserID</label>
+      <input id="memberUserid" type="text" readonly />
+      <label for="memberName">姓名</label>
+      <input id="memberName" type="text" readonly />
+      <label for="memberMobile">手机</label>
+      <input id="memberMobile" type="text" autocomplete="off" />
+      <label for="memberDepartment">部门</label>
+      <select id="memberDepartment"></select>
+      <p class="modal-error" id="memberError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnMemberCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnMemberSave">保存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 新建项目弹窗（字段对齐 Qt 桌面） -->
   <div class="modal-mask" id="projectModal" hidden>
     <div class="modal-card modal-card-form" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
@@ -198,15 +300,18 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.15"></script>
-  <script src="js/status.js?v=1.2.15"></script>
-  <script src="js/utils.js?v=1.2.15"></script>
-  <script src="js/api.js?v=1.2.15"></script>
-  <script src="js/auth.js?v=1.2.15"></script>
-  <script src="js/dashboard.js?v=1.2.15"></script>
-  <script src="js/list.js?v=1.2.15"></script>
-  <script src="js/project-form.js?v=1.2.15"></script>
-  <script src="js/accounts.js?v=1.2.15"></script>
-  <script src="js/app.js?v=1.2.15"></script>
+  <script src="js/config.js?v=1.2.16"></script>
+  <script src="js/status.js?v=1.2.16"></script>
+  <script src="js/utils.js?v=1.2.16"></script>
+  <script src="js/api.js?v=1.2.16"></script>
+  <script src="js/auth.js?v=1.2.16"></script>
+  <script src="js/dashboard.js?v=1.2.16"></script>
+  <script src="js/list.js?v=1.2.16"></script>
+  <script src="js/project-form.js?v=1.2.16"></script>
+  <script src="js/accounts.js?v=1.2.16"></script>
+  <script src="js/departments.js?v=1.2.16"></script>
+  <script src="js/members.js?v=1.2.16"></script>
+  <script src="js/admin-tools.js?v=1.2.16"></script>
+  <script src="js/app.js?v=1.2.16"></script>
 </body>
 </html>

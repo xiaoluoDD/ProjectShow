@@ -36,6 +36,8 @@
   let selectedMembers = {};
   let saving = false;
   let loadingMeta = false;
+  /** @type {object|null} */
+  let editingSubtask = null;
 
   function canEdit() {
     if (window.Auth && window.Auth.canEditProjects()) return true;
@@ -53,9 +55,11 @@
     // 显隐由 subtasks.js 统一控制
   }
 
-  function ensureCanEdit() {
+  function ensureCanEdit(actionLabel) {
     if (canEdit()) return true;
-    const goLogin = confirm('新增子任务需要先登录且具备编辑权限。是否前往登录？');
+    const goLogin = confirm(
+      `${actionLabel || '此操作'}需要先登录且具备编辑权限。是否前往登录？`
+    );
     if (goLogin) {
       const returnTo = encodeURIComponent(window.location.href);
       window.location.href = `index.html?view=projects&login=1&return=${returnTo}`;
@@ -265,11 +269,15 @@
   }
 
   async function openCreateModal() {
-    if (!ensureCanEdit()) return;
+    if (!ensureCanEdit('新增子任务')) return;
     if (loadingMeta) return;
 
     loadingMeta = true;
+    editingSubtask = null;
     if (btnAddSubtask) btnAddSubtask.disabled = true;
+    const titleEl = document.getElementById('subtaskModalTitle');
+    if (titleEl) titleEl.textContent = '新增子任务';
+    if (btnSubtaskSave) btnSubtaskSave.textContent = '创建';
 
     resetFormBasics();
     setMetaLoading();
@@ -303,13 +311,67 @@
     }
   }
 
+  function fillFormFromSubtask(st) {
+    clearError();
+    subtaskContent.value = st.content || '';
+    subtaskStatus.value = st.status || '待启动';
+    subtaskPlannedStart.value = String(st.planned_start_date || '').trim();
+    subtaskActualStart.value = String(st.actual_start_date || '').trim();
+    subtaskPlannedEnd.value = String(st.planned_end_date || '').trim();
+    subtaskActualEnd.value = String(st.actual_end_date || '').trim();
+    subtaskRemark.value = st.remark || '';
+    selectedMembers = {};
+    (st.members || []).forEach((m) => {
+      const userid = (m.userid || '').trim();
+      if (!userid) return;
+      selectedMembers[userid] = (m.name || '').trim();
+    });
+    subtaskOwnerLabel.textContent = formatOwnerLabel(currentProject);
+    updateSelectedSummary();
+  }
+
+  async function openEditModal(st) {
+    if (!ensureCanEdit('编辑子任务')) return;
+    if (!st || !st.id) return;
+    if (loadingMeta) return;
+
+    loadingMeta = true;
+    editingSubtask = st;
+    const titleEl = document.getElementById('subtaskModalTitle');
+    if (titleEl) titleEl.textContent = '编辑子任务';
+    if (btnSubtaskSave) btnSubtaskSave.textContent = '保存';
+
+    setMetaLoading();
+    subtaskModal.hidden = false;
+
+    try {
+      await loadMeta();
+      setMetaReady();
+      fillFormFromSubtask(st);
+      fillDepartmentSelect(subtaskMemberDept);
+      subtaskMemberDept.value = DEPT_PLACEHOLDER;
+      refreshMemberList();
+      preselectMemberDepartment();
+      clearError();
+    } catch (err) {
+      allDepartments = [];
+      allUsers = [];
+      setMetaReady();
+      fillFormFromSubtask(st);
+      applyMetaToForm();
+      showError((err && err.message) || '加载部门/成员失败，仍可修改基本字段');
+    } finally {
+      loadingMeta = false;
+    }
+  }
+
   function buildPayload() {
     const project = currentProject || {};
     const members = Object.keys(selectedMembers).map((userid) => ({
       userid,
       name: selectedMembers[userid] || '',
     }));
-    return {
+    const payload = {
       project_id: Number(projectId),
       content: (subtaskContent.value || '').trim(),
       owner_userid: (project.manager_userid || '').trim(),
@@ -322,9 +384,13 @@
       remark: (subtaskRemark.value || '').trim(),
       members,
     };
+    if (editingSubtask && editingSubtask.id) {
+      payload.id = editingSubtask.id;
+    }
+    return payload;
   }
 
-  async function saveCreate() {
+  async function saveSubtask() {
     if (saving) return;
     syncSelectionsFromList();
     const payload = buildPayload();
@@ -337,10 +403,15 @@
     btnSubtaskSave.disabled = true;
     clearError();
     try {
-      const data = await createSubtask(payload);
-      closeModal();
-      if (data && data.project_completion_cleared) {
-        alert(data.msg || '子任务已创建；项目原已完结，已清空实际完结日期并更新项目状态');
+      if (editingSubtask && editingSubtask.id) {
+        await updateSubtask(payload);
+        closeModal();
+      } else {
+        const data = await createSubtask(payload);
+        closeModal();
+        if (data && data.project_completion_cleared) {
+          alert(data.msg || '子任务已创建；项目原已完结，已清空实际完结日期并更新项目状态');
+        }
       }
       if (window.SubtasksApp && typeof window.SubtasksApp.reload === 'function') {
         await window.SubtasksApp.reload();
@@ -348,7 +419,7 @@
         window.location.reload();
       }
     } catch (err) {
-      showError(err.message || '创建失败');
+      showError(err.message || '保存失败');
     } finally {
       saving = false;
       btnSubtaskSave.disabled = false;
@@ -356,12 +427,14 @@
   }
 
   btnSubtaskCancel.addEventListener('click', closeModal);
-  btnSubtaskSave.addEventListener('click', saveCreate);
+  btnSubtaskSave.addEventListener('click', saveSubtask);
   subtaskModal.addEventListener('click', (e) => {
     if (e.target === subtaskModal) closeModal();
   });
   subtaskMemberDept.addEventListener('change', refreshMemberList);
 
-  // 点击由 subtasks.js 统一绑定并控制显隐，避免旧 HTML / 脚本加载顺序问题
-  window.SubtaskFormApp = { openCreate: openCreateModal };
+  window.SubtaskFormApp = {
+    openCreate: openCreateModal,
+    openEdit: openEditModal,
+  };
 })();

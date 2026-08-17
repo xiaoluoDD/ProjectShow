@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>项目详情</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.13" />
+  <link rel="stylesheet" href="css/app.css?v=1.2.16" />
 </head>
 <body>
   <header class="app-header">
@@ -15,11 +15,12 @@
   <main class="app-main">
     <div id="detailRoot"></div>
     <div class="action-bar" id="actionBar" hidden>
+      <button type="button" class="btn" id="btnEdit" hidden>编辑项目</button>
       <button type="button" class="btn btn-primary" id="btnComplete" hidden>标记完结</button>
       <a class="btn btn-primary" id="btnSubtasks" href="#">查看子任务</a>
       <button type="button" class="btn btn-danger" id="btnDeleteProject" hidden>删除项目</button>
     </div>
-    <p class="hint-bar" id="editHint" hidden>登录后可标记完结或删除项目</p>
+    <p class="hint-bar" id="editHint" hidden>登录后可编辑、标记完结或删除项目</p>
   </main>
 
   <div class="modal-mask" id="completeModal" hidden>
@@ -31,16 +32,55 @@
       <p class="modal-error" id="completeError" hidden></p>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnCompleteCancel">取消</button>
+        <button type="button" class="btn" id="btnCompleteClear" hidden>清空完结日期</button>
         <button type="button" class="btn btn-primary" id="btnCompleteSave">确认</button>
       </div>
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.13"></script>
-  <script src="js/status.js?v=1.2.13"></script>
-  <script src="js/utils.js?v=1.2.13"></script>
-  <script src="js/api.js?v=1.2.13"></script>
-  <script src="js/auth.js?v=1.2.13"></script>
-  <script src="js/detail.js?v=1.2.13"></script>
+  <!-- 编辑项目（复用新建表单字段） -->
+  <div class="modal-mask" id="projectModal" hidden>
+    <div class="modal-card modal-card-form" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+      <h2 id="projectModalTitle">编辑项目</h2>
+      <div class="modal-scroll">
+        <label for="projectYear">年度</label>
+        <input id="projectYear" type="text" inputmode="numeric" autocomplete="off" />
+        <label for="projectWorkNo">工番号</label>
+        <input id="projectWorkNo" type="text" autocomplete="off" />
+        <label for="projectName">项目名称</label>
+        <input id="projectName" type="text" autocomplete="off" />
+        <label for="projectManagerDept">负责人部门</label>
+        <select id="projectManagerDept"></select>
+        <label for="projectManager">项目负责人</label>
+        <select id="projectManager" disabled>
+          <option value="">（未指定）</option>
+        </select>
+        <label for="projectMemberDept">成员部门</label>
+        <select id="projectMemberDept"></select>
+        <label>项目成员</label>
+        <div class="member-checklist" id="projectMemberList" aria-live="polite"></div>
+        <p class="modal-hint" id="projectSelectedCount">已选成员：0 人</p>
+        <p class="modal-hint" id="projectSelectedSummary">（暂无）</p>
+        <label for="projectStartDate">项目启动日期</label>
+        <input id="projectStartDate" type="date" />
+        <label for="projectEndDate">实际完结日期</label>
+        <input id="projectEndDate" type="date" />
+        <p class="modal-hint">留空实际完结日期可取消「已完结」。有未完成子任务时不能填写完结日期。</p>
+      </div>
+      <p class="modal-error" id="projectError" hidden></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnProjectCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnProjectSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=1.2.16"></script>
+  <script src="js/status.js?v=1.2.16"></script>
+  <script src="js/utils.js?v=1.2.16"></script>
+  <script src="js/api.js?v=1.2.16"></script>
+  <script src="js/auth.js?v=1.2.16"></script>
+  <script src="js/project-form.js?v=1.2.16"></script>
+  <script src="js/detail.js?v=1.2.16"></script>
 </body>
 </html>

@@ -157,3 +157,47 @@ function updateAccount(payload) {
 function deleteAccount(id) {
   return apiDelete(`/api/accounts?id=${encodeURIComponent(id)}`);
 }
+
+function fetchDepartmentsWithMembers() {
+  return apiGet('/api/departments?with_members=1');
+}
+
+function createDepartment(payload) {
+  return apiPost('/api/departments', payload);
+}
+
+function updateDepartment(payload) {
+  return apiPut('/api/departments', payload);
+}
+
+function deleteDepartment(id) {
+  return apiDelete(`/api/departments?id=${encodeURIComponent(id)}`);
+}
+
+function syncWecomUsers() {
+  return apiPost('/api/wecom/sync', {});
+}
+
+function updateWecomUser(payload) {
+  return apiPut('/api/wecom/users', payload);
+}
+
+function fetchSettings() {
+  return apiGet('/api/settings');
+}
+
+function updateSettings(payload) {
+  return apiPut('/api/settings', payload);
+}
+
+function runReminder() {
+  return apiPost('/api/reminder/run', {});
+}
+
+function fetchLogs() {
+  return apiGet('/api/logs');
+}
+
+function deleteLog(name) {
+  return apiDelete(`/api/logs?name=${encodeURIComponent(name)}`);
+}
