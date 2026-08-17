@@ -15,6 +15,11 @@
  *   #departmentError
  *   #btnDepartmentCancel
  *   #btnDepartmentSave
+ *   #departmentMembersModal
+ *   #departmentMembersTitle
+ *   #departmentMembersHint
+ *   #departmentMembersList
+ *   #btnDepartmentMembersClose
  */
 (function () {
   const departmentsRoot = document.getElementById('departmentsRoot');
@@ -24,6 +29,10 @@
   const departmentName = document.getElementById('departmentName');
   const departmentError = document.getElementById('departmentError');
   const departmentModalTitle = document.getElementById('departmentModalTitle');
+  const departmentMembersModal = document.getElementById('departmentMembersModal');
+  const departmentMembersTitle = document.getElementById('departmentMembersTitle');
+  const departmentMembersHint = document.getElementById('departmentMembersHint');
+  const departmentMembersList = document.getElementById('departmentMembersList');
 
   let loadedOnce = false;
 
@@ -36,6 +45,13 @@
   if (departmentModal) {
     departmentModal.addEventListener('click', (e) => {
       if (e.target === departmentModal) closeEditor();
+    });
+  }
+  const btnMembersClose = document.getElementById('btnDepartmentMembersClose');
+  if (btnMembersClose) btnMembersClose.addEventListener('click', closeMembers);
+  if (departmentMembersModal) {
+    departmentMembersModal.addEventListener('click', (e) => {
+      if (e.target === departmentMembersModal) closeMembers();
     });
   }
 
@@ -62,6 +78,46 @@
 
   function closeEditor() {
     if (departmentModal) departmentModal.hidden = true;
+  }
+
+  function openMembers(dept) {
+    if (!departmentMembersModal || !departmentMembersList) return;
+    const members = Array.isArray(dept.members) ? dept.members : [];
+    const name = dept.name || '部门';
+    if (departmentMembersTitle) departmentMembersTitle.textContent = name + ' · 人员';
+    if (departmentMembersHint) {
+      departmentMembersHint.textContent =
+        members.length === 0 ? '该部门暂无成员' : `共 ${members.length} 人`;
+    }
+    if (!members.length) {
+      departmentMembersList.innerHTML = '<p class="muted">暂无成员。可在「成员管理」中分配部门。</p>';
+    } else {
+      departmentMembersList.innerHTML =
+        '<ul class="dept-members-ul">' +
+        members
+          .map((m) => {
+            const display = escapeHtml(m.name || m.userid || '—');
+            const uid = escapeHtml(m.userid || '—');
+            const mobile = (m.mobile || '').trim();
+            const mobileHtml = mobile
+              ? `<span class="dept-member-mobile">${escapeHtml(mobile)}</span>`
+              : '<span class="dept-member-mobile muted">无手机号</span>';
+            return `<li class="dept-member-row">
+              <span class="dept-member-name">${display}</span>
+              <span class="dept-member-meta">
+                <span class="dept-member-userid">${uid}</span>
+                ${mobileHtml}
+              </span>
+            </li>`;
+          })
+          .join('') +
+        '</ul>';
+    }
+    departmentMembersModal.hidden = false;
+  }
+
+  function closeMembers() {
+    if (departmentMembersModal) departmentMembersModal.hidden = true;
   }
 
   async function saveEditor() {
@@ -99,10 +155,11 @@
           <article class="account-card" data-id="${d.id}">
             <div class="card-top">
               <span class="card-meta">部门</span>
-              <span class="status-badge status-default">${count} 人</span>
+              <button type="button" class="status-badge status-default dept-count-btn" data-members="${d.id}" title="查看人员">${count} 人</button>
             </div>
             <h2 class="card-title">${escapeHtml(d.name || '—')}</h2>
             <div class="account-actions">
+              <button type="button" class="btn btn-sm" data-members="${d.id}">查看人员</button>
               <button type="button" class="btn btn-sm" data-edit="${d.id}">编辑</button>
               <button type="button" class="btn btn-sm btn-danger" data-del="${d.id}">删除</button>
             </div>
@@ -110,6 +167,13 @@
       })
       .join('');
 
+    departmentsRoot.querySelectorAll('[data-members]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.getAttribute('data-members'));
+        const dept = (window.__departmentsCache || []).find((x) => x.id === id);
+        if (dept) openMembers(dept);
+      });
+    });
     departmentsRoot.querySelectorAll('[data-edit]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const id = Number(btn.getAttribute('data-edit'));

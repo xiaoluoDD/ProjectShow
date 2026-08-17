@@ -857,6 +857,57 @@ body.kiosk-mode .dash-table thead th {
   align-items: center;
 }
 
+.dept-count-btn {
+  cursor: pointer;
+  border: none;
+  font: inherit;
+}
+
+.dept-count-btn:hover {
+  filter: brightness(0.95);
+}
+
+.dept-members-list {
+  margin: 8px 0 4px;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.dept-members-ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.dept-member-row {
+  padding: 10px 0;
+  border-bottom: 1px solid #eef1f4;
+}
+
+.dept-member-row:last-child {
+  border-bottom: none;
+}
+
+.dept-member-name {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.dept-member-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.dept-member-userid {
+  font-family: ui-monospace, Consolas, monospace;
+}
+
 .login-history-list {
   margin: 8px 0 4px;
   max-height: 320px;
