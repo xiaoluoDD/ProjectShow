@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.2.18</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.18" />
+  <title>项目管理看板 v1.2.19</title>
+  <link rel="stylesheet" href="css/app.css?v=1.2.19" />
 </head>
 <body>
   <header class="app-header">
@@ -133,16 +133,9 @@
         <div class="filter-actions">
           <button type="button" class="btn btn-primary" id="btnExportJson">导出 JSON 快照</button>
           <button type="button" class="btn" id="btnDownloadDb">下载数据库</button>
+          <button type="button" class="btn" id="btnOpenChangelog">变更记录</button>
         </div>
         <p class="hint-bar" id="exportSummary">尚未导出</p>
-
-        <div class="tools-changelog">
-          <div class="accounts-toolbar">
-            <p class="hint-bar" id="changelogSummaryBar">版本变更记录（云端 changelog）</p>
-            <button type="button" class="btn" id="btnRefreshChangelog">刷新变更记录</button>
-          </div>
-          <div id="changelogRoot" class="changelog-root"></div>
-        </div>
       </div>
 
       <div id="toolsPanelLogs" hidden>
@@ -252,6 +245,19 @@
     </div>
   </div>
 
+  <!-- 版本变更记录弹窗 -->
+  <div class="modal-mask" id="changelogModal" hidden>
+    <div class="modal-card modal-card-wide" role="dialog" aria-modal="true" aria-labelledby="changelogModalTitle">
+      <h2 id="changelogModalTitle">版本变更记录</h2>
+      <p class="modal-hint" id="changelogSummaryBar">从云端 GET /api/changelog 读取</p>
+      <div id="changelogRoot" class="changelog-root modal-scroll"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnRefreshChangelog">刷新</button>
+        <button type="button" class="btn btn-primary" id="btnChangelogClose">关闭</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 成员编辑弹窗 -->
   <div class="modal-mask" id="memberModal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true">
@@ -320,18 +326,18 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.18"></script>
-  <script src="js/status.js?v=1.2.18"></script>
-  <script src="js/utils.js?v=1.2.18"></script>
-  <script src="js/api.js?v=1.2.18"></script>
-  <script src="js/auth.js?v=1.2.18"></script>
-  <script src="js/dashboard.js?v=1.2.18"></script>
-  <script src="js/list.js?v=1.2.18"></script>
-  <script src="js/project-form.js?v=1.2.18"></script>
-  <script src="js/accounts.js?v=1.2.18"></script>
-  <script src="js/departments.js?v=1.2.18"></script>
-  <script src="js/members.js?v=1.2.18"></script>
-  <script src="js/admin-tools.js?v=1.2.18"></script>
-  <script src="js/app.js?v=1.2.18"></script>
+  <script src="js/config.js?v=1.2.19"></script>
+  <script src="js/status.js?v=1.2.19"></script>
+  <script src="js/utils.js?v=1.2.19"></script>
+  <script src="js/api.js?v=1.2.19"></script>
+  <script src="js/auth.js?v=1.2.19"></script>
+  <script src="js/dashboard.js?v=1.2.19"></script>
+  <script src="js/list.js?v=1.2.19"></script>
+  <script src="js/project-form.js?v=1.2.19"></script>
+  <script src="js/accounts.js?v=1.2.19"></script>
+  <script src="js/departments.js?v=1.2.19"></script>
+  <script src="js/members.js?v=1.2.19"></script>
+  <script src="js/admin-tools.js?v=1.2.19"></script>
+  <script src="js/app.js?v=1.2.19"></script>
 </body>
 </html>

@@ -19,10 +19,13 @@
  *   #settingsError
  *   #btnExportJson
  *   #btnDownloadDb
+ *   #btnOpenChangelog
  *   #exportSummary
+ *   #changelogModal
  *   #changelogRoot
  *   #changelogSummaryBar
  *   #btnRefreshChangelog
+ *   #btnChangelogClose
  *   #logsRoot
  *   #logsSummaryBar
  *   #btnRefreshLogs
@@ -47,6 +50,7 @@
   const settingsError = document.getElementById('settingsError');
 
   const exportSummary = document.getElementById('exportSummary');
+  const changelogModal = document.getElementById('changelogModal');
   const changelogRoot = document.getElementById('changelogRoot');
   const changelogSummaryBar = document.getElementById('changelogSummaryBar');
   const logsRoot = document.getElementById('logsRoot');
@@ -87,7 +91,6 @@
       }
       if (panel) panel.hidden = !on;
     });
-    if (name === 'data') loadChangelog(false);
     if (name === 'logs') loadLogs(false);
   }
 
@@ -103,9 +106,18 @@
   if (btnExportJson) btnExportJson.addEventListener('click', exportJsonSnapshot);
   const btnDownloadDb = document.getElementById('btnDownloadDb');
   if (btnDownloadDb) btnDownloadDb.addEventListener('click', downloadDatabase);
+  const btnOpenChangelog = document.getElementById('btnOpenChangelog');
+  if (btnOpenChangelog) btnOpenChangelog.addEventListener('click', openChangelog);
   const btnRefreshChangelog = document.getElementById('btnRefreshChangelog');
   if (btnRefreshChangelog) {
     btnRefreshChangelog.addEventListener('click', () => loadChangelog(true));
+  }
+  const btnChangelogClose = document.getElementById('btnChangelogClose');
+  if (btnChangelogClose) btnChangelogClose.addEventListener('click', closeChangelog);
+  if (changelogModal) {
+    changelogModal.addEventListener('click', (e) => {
+      if (e.target === changelogModal) closeChangelog();
+    });
   }
   const btnRefreshLogs = document.getElementById('btnRefreshLogs');
   if (btnRefreshLogs) btnRefreshLogs.addEventListener('click', () => loadLogs(true));
@@ -268,6 +280,16 @@
     return v.startsWith('v') || v.startsWith('V') ? v : `v${v}`;
   }
 
+  function openChangelog() {
+    if (!changelogModal) return;
+    changelogModal.hidden = false;
+    loadChangelog(false);
+  }
+
+  function closeChangelog() {
+    if (changelogModal) changelogModal.hidden = true;
+  }
+
   function renderChangelog(entries) {
     if (!changelogRoot) return;
     if (!entries.length) {
@@ -307,8 +329,8 @@
         '';
       if (changelogSummaryBar) {
         changelogSummaryBar.textContent = appVer
-          ? `版本变更记录 · 当前网页 ${appVer} · 共 ${entries.length} 条`
-          : `版本变更记录 · 共 ${entries.length} 条`;
+          ? `当前网页 ${appVer} · 共 ${entries.length} 条`
+          : `共 ${entries.length} 条`;
       }
       renderChangelog(entries);
     } catch (err) {
@@ -415,16 +437,12 @@
     if (!canManage()) {
       setMessage(false, '需要管理员权限才能使用运维工具');
       if (exportSummary) exportSummary.textContent = '无权限';
-      if (changelogSummaryBar) changelogSummaryBar.textContent = '无权限';
       if (logsSummaryBar) logsSummaryBar.textContent = '无权限';
-      if (changelogRoot) {
-        changelogRoot.innerHTML =
-          '<div class="state-box error"><p>当前未登录管理员账户，无法查看变更记录。</p></div>';
-      }
       if (logsRoot) {
         logsRoot.innerHTML =
           '<div class="state-box error"><p>当前未登录管理员账户，无法使用运维工具。</p></div>';
       }
+      closeChangelog();
       switchTab('settings');
       return;
     }

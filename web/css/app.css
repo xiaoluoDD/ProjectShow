@@ -996,14 +996,23 @@ body.kiosk-mode .dash-table thead th {
   border-top: 1px solid #e8eef3;
 }
 
+.modal-card-wide {
+  width: min(640px, 94vw);
+  max-height: min(80vh, 720px);
+  display: flex;
+  flex-direction: column;
+}
+
 .changelog-root {
-  margin-top: 8px;
+  margin: 8px 0 4px;
+  max-height: min(52vh, 420px);
+  overflow: auto;
 }
 
 .changelog-entry {
   margin: 0 0 14px;
   padding: 12px 12px 10px;
-  background: #fff;
+  background: #f8fafc;
   border: 1px solid #e8eef3;
   border-radius: 10px;
 }
