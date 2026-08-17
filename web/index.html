@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.2.17</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.17" />
+  <title>项目管理看板 v1.2.18</title>
+  <link rel="stylesheet" href="css/app.css?v=1.2.18" />
 </head>
 <body>
   <header class="app-header">
@@ -135,6 +135,14 @@
           <button type="button" class="btn" id="btnDownloadDb">下载数据库</button>
         </div>
         <p class="hint-bar" id="exportSummary">尚未导出</p>
+
+        <div class="tools-changelog">
+          <div class="accounts-toolbar">
+            <p class="hint-bar" id="changelogSummaryBar">版本变更记录（云端 changelog）</p>
+            <button type="button" class="btn" id="btnRefreshChangelog">刷新变更记录</button>
+          </div>
+          <div id="changelogRoot" class="changelog-root"></div>
+        </div>
       </div>
 
       <div id="toolsPanelLogs" hidden>
@@ -312,18 +320,18 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.17"></script>
-  <script src="js/status.js?v=1.2.17"></script>
-  <script src="js/utils.js?v=1.2.17"></script>
-  <script src="js/api.js?v=1.2.17"></script>
-  <script src="js/auth.js?v=1.2.17"></script>
-  <script src="js/dashboard.js?v=1.2.17"></script>
-  <script src="js/list.js?v=1.2.17"></script>
-  <script src="js/project-form.js?v=1.2.17"></script>
-  <script src="js/accounts.js?v=1.2.17"></script>
-  <script src="js/departments.js?v=1.2.17"></script>
-  <script src="js/members.js?v=1.2.17"></script>
-  <script src="js/admin-tools.js?v=1.2.17"></script>
-  <script src="js/app.js?v=1.2.17"></script>
+  <script src="js/config.js?v=1.2.18"></script>
+  <script src="js/status.js?v=1.2.18"></script>
+  <script src="js/utils.js?v=1.2.18"></script>
+  <script src="js/api.js?v=1.2.18"></script>
+  <script src="js/auth.js?v=1.2.18"></script>
+  <script src="js/dashboard.js?v=1.2.18"></script>
+  <script src="js/list.js?v=1.2.18"></script>
+  <script src="js/project-form.js?v=1.2.18"></script>
+  <script src="js/accounts.js?v=1.2.18"></script>
+  <script src="js/departments.js?v=1.2.18"></script>
+  <script src="js/members.js?v=1.2.18"></script>
+  <script src="js/admin-tools.js?v=1.2.18"></script>
+  <script src="js/app.js?v=1.2.18"></script>
 </body>
 </html>

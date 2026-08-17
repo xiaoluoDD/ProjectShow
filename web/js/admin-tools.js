@@ -3,7 +3,7 @@
  *
  * 依赖 api.js 函数：
  *   fetchSettings, updateSettings, runReminder
- *   fetchLogs, deleteLog
+ *   fetchChangelog, fetchLogs, deleteLog
  *   （以及全局 apiBase / authHeaders，用于 blob 下载）
  *
  * 所需 DOM id：
@@ -20,6 +20,9 @@
  *   #btnExportJson
  *   #btnDownloadDb
  *   #exportSummary
+ *   #changelogRoot
+ *   #changelogSummaryBar
+ *   #btnRefreshChangelog
  *   #logsRoot
  *   #logsSummaryBar
  *   #btnRefreshLogs
@@ -44,6 +47,8 @@
   const settingsError = document.getElementById('settingsError');
 
   const exportSummary = document.getElementById('exportSummary');
+  const changelogRoot = document.getElementById('changelogRoot');
+  const changelogSummaryBar = document.getElementById('changelogSummaryBar');
   const logsRoot = document.getElementById('logsRoot');
   const logsSummaryBar = document.getElementById('logsSummaryBar');
 
@@ -82,6 +87,7 @@
       }
       if (panel) panel.hidden = !on;
     });
+    if (name === 'data') loadChangelog(false);
     if (name === 'logs') loadLogs(false);
   }
 
@@ -97,6 +103,10 @@
   if (btnExportJson) btnExportJson.addEventListener('click', exportJsonSnapshot);
   const btnDownloadDb = document.getElementById('btnDownloadDb');
   if (btnDownloadDb) btnDownloadDb.addEventListener('click', downloadDatabase);
+  const btnRefreshChangelog = document.getElementById('btnRefreshChangelog');
+  if (btnRefreshChangelog) {
+    btnRefreshChangelog.addEventListener('click', () => loadChangelog(true));
+  }
   const btnRefreshLogs = document.getElementById('btnRefreshLogs');
   if (btnRefreshLogs) btnRefreshLogs.addEventListener('click', () => loadLogs(true));
 
@@ -252,6 +262,61 @@
     return `${(num / (1024 * 1024)).toFixed(1)} MB`;
   }
 
+  function formatVersionLabel(version) {
+    const v = String(version || '').trim();
+    if (!v) return '—';
+    return v.startsWith('v') || v.startsWith('V') ? v : `v${v}`;
+  }
+
+  function renderChangelog(entries) {
+    if (!changelogRoot) return;
+    if (!entries.length) {
+      changelogRoot.innerHTML = '<div class="state-box"><p>暂无变更记录</p></div>';
+      return;
+    }
+    changelogRoot.innerHTML = entries
+      .map((entry) => {
+        const date = escapeHtml(entry.date || '—');
+        const ver = escapeHtml(formatVersionLabel(entry.version));
+        const changes = Array.isArray(entry.changes) ? entry.changes : [];
+        const items = changes.length
+          ? `<ul class="changelog-changes">${changes
+              .map((c) => `<li>${escapeHtml(c)}</li>`)
+              .join('')}</ul>`
+          : '<p class="muted">（无条目）</p>';
+        return `<article class="changelog-entry">
+          <div class="changelog-head">${date}<span class="changelog-version">${ver}</span></div>
+          ${items}
+        </article>`;
+      })
+      .join('');
+  }
+
+  async function loadChangelog(force) {
+    if (!changelogRoot) return;
+    if (!force && changelogRoot.dataset.loaded === '1') return;
+    showLoading(changelogRoot, '正在加载变更记录…');
+    if (changelogSummaryBar) changelogSummaryBar.textContent = '加载中…';
+    try {
+      const data = await fetchChangelog();
+      const entries = data.entries || [];
+      changelogRoot.dataset.loaded = '1';
+      const appVer =
+        (window.APP_CONFIG && window.APP_CONFIG.appVersion) ||
+        (typeof getAppVersion === 'function' ? getAppVersion() : '') ||
+        '';
+      if (changelogSummaryBar) {
+        changelogSummaryBar.textContent = appVer
+          ? `版本变更记录 · 当前网页 ${appVer} · 共 ${entries.length} 条`
+          : `版本变更记录 · 共 ${entries.length} 条`;
+      }
+      renderChangelog(entries);
+    } catch (err) {
+      showError(changelogRoot, err.message || '加载失败');
+      if (changelogSummaryBar) changelogSummaryBar.textContent = '变更记录加载失败';
+    }
+  }
+
   async function downloadLogFile(name) {
     const url = `${apiBase()}/api/logs/download?name=${encodeURIComponent(name)}`;
     const res = await fetch(url, { method: 'GET', headers: authHeaders() });
@@ -350,7 +415,12 @@
     if (!canManage()) {
       setMessage(false, '需要管理员权限才能使用运维工具');
       if (exportSummary) exportSummary.textContent = '无权限';
+      if (changelogSummaryBar) changelogSummaryBar.textContent = '无权限';
       if (logsSummaryBar) logsSummaryBar.textContent = '无权限';
+      if (changelogRoot) {
+        changelogRoot.innerHTML =
+          '<div class="state-box error"><p>当前未登录管理员账户，无法查看变更记录。</p></div>';
+      }
       if (logsRoot) {
         logsRoot.innerHTML =
           '<div class="state-box error"><p>当前未登录管理员账户，无法使用运维工具。</p></div>';
@@ -364,6 +434,7 @@
     }
     try {
       if (force && logsRoot) delete logsRoot.dataset.loaded;
+      if (force && changelogRoot) delete changelogRoot.dataset.loaded;
       await loadSettings();
       renderExportSummary();
       loadedOnce = true;

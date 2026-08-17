@@ -194,6 +194,10 @@ function runReminder() {
   return apiPost('/api/reminder/run', {});
 }
 
+function fetchChangelog() {
+  return apiGet('/api/changelog');
+}
+
 function fetchLogs() {
   return apiGet('/api/logs');
 }
