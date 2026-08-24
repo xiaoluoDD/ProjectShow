@@ -1,6 +1,30 @@
 (function () {
   applyAppVersionBadge();
 
+  const isPreviewPage = window.location.pathname.indexOf('mobile-preview') >= 0;
+  if (isPreviewPage) {
+    document.body.classList.add('preview-mode');
+    const previewBadge = document.createElement('div');
+    previewBadge.id = 'previewBadge';
+    previewBadge.textContent = '预览环境';
+    previewBadge.style.position = 'fixed';
+    previewBadge.style.top = '12px';
+    previewBadge.style.right = '12px';
+    previewBadge.style.zIndex = '9999';
+    previewBadge.style.padding = '8px 12px';
+    previewBadge.style.borderRadius = '999px';
+    previewBadge.style.background = '#d93025';
+    previewBadge.style.color = '#fff';
+    previewBadge.style.fontSize = '14px';
+    previewBadge.style.fontWeight = '700';
+    previewBadge.style.letterSpacing = '0';
+    previewBadge.style.boxShadow = '0 2px 6px rgba(0,0,0,0.18)';
+    previewBadge.style.pointerEvents = 'none';
+    previewBadge.title = '当前页面是预览版，不是正式版';
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.appendChild(previewBadge);
+    });
+  }
   const viewSwitch = document.getElementById('viewSwitch');
   const optAccounts = document.getElementById('optAccounts');
   const optDepartments = document.getElementById('optDepartments');
