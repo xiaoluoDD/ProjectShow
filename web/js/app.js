@@ -405,6 +405,27 @@
     };
   }
 
+  function normalizeWarehouseItem(it) {
+    const barcode = String(it && it.barcode ? it.barcode : '').trim() || `ORT${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    return {
+      order_number: String((it && it.order_number) || ''),
+      department: String((it && it.department) || ''),
+      applicant: String((it && it.applicant) || ''),
+      project_number: String((it && it.project_number) || ''),
+      product_code: String((it && it.product_code) || ''),
+      product_name: String((it && it.product_name) || ''),
+      specification: String((it && it.specification) || ''),
+      manufacturer: String((it && it.manufacturer) || ''),
+      quantity: Number((it && it.quantity) || 0) || 0,
+      stocked_quantity: Number((it && it.stocked_quantity) || 0) || 0,
+      unit: String((it && it.unit) || '个'),
+      stock_in_date: String((it && it.stock_in_date) || new Date().toISOString().replace('T', ' ').slice(0, 19)),
+      location: String((it && it.location) || ''),
+      barcode,
+      daily_number: Number((it && it.daily_number) || 0) || 0,
+    };
+  }
+
   async function addWarehouseRow() {
     warehouseItems.push(normalizeWarehouseItem(makeWarehouseRowFromPrompt()));
     await syncWarehouseItems();
@@ -448,114 +469,22 @@
   async function importWarehouseFile() {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.json,.csv';
+    input.accept = '.xlsx,.csv,.json';
     input.onchange = async () => {
       const file = input.files && input.files[0];
       if (!file) return;
-      const text = await file.text();
-      let items = [];
-      if (file.name.toLowerCase().endsWith('.json')) {
-        const parsed = JSON.parse(text);
-        items = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.items) ? parsed.items : []);
-      } else {
-        items = parseWarehouseCSV(text);
-      }
-      items = items.map(normalizeWarehouseItem).filter(Boolean);
-      const resp = await fetch('/api/warehouse/purchase-orders/import', {
+      const form = new FormData();
+      form.append('file', file);
+      const resp = await fetch('/api/warehouse/purchase-orders/import-file', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items }),
+        body: form,
       });
       const data = await resp.json();
       if (!resp.ok || !data.ok) throw new Error(data.error || '导入失败');
-      alert(`导入成功：${data.count ?? items.length} 条`);
+      alert(`导入成功：${data.count ?? 0} 条`);
       await loadWarehousePreview();
     };
     input.click();
-  }
-
-  function parseWarehouseCSV(text) {
-    const lines = String(text || '').split(/\r?\n/).filter(Boolean);
-    if (!lines.length) return [];
-    const header = splitWarehouseCSVLine(lines[0]).map((s) => s.trim());
-    const keys = header.map((h) => normalizeWarehouseHeader(h));
-    const rows = [];
-    for (let i = 1; i < lines.length; i += 1) {
-      const cols = splitWarehouseCSVLine(lines[i]);
-      const row = {};
-      keys.forEach((key, idx) => {
-        row[key] = cols[idx] ?? '';
-      });
-      rows.push(row);
-    }
-    return rows;
-  }
-
-  function splitWarehouseCSVLine(line) {
-    const out = [];
-    let cur = '';
-    let quoted = false;
-    for (let i = 0; i < line.length; i += 1) {
-      const ch = line[i];
-      if (ch === '"') {
-        if (quoted && line[i + 1] === '"') {
-          cur += '"';
-          i += 1;
-        } else {
-          quoted = !quoted;
-        }
-      } else if (ch === ',' && !quoted) {
-        out.push(cur);
-        cur = '';
-      } else {
-        cur += ch;
-      }
-    }
-    out.push(cur);
-    return out;
-  }
-
-  function normalizeWarehouseHeader(h) {
-    const map = {
-      订单号: 'order_number',
-      部门: 'department',
-      申请人: 'applicant',
-      项目管理号: 'project_number',
-      品番: 'product_code',
-      名称: 'product_name',
-      规格型号: 'specification',
-      厂家品牌: 'manufacturer',
-      数量: 'quantity',
-      入库数量: 'stocked_quantity',
-      单位: 'unit',
-      入库日期: 'stock_in_date',
-      放置位置: 'location',
-      条形码: 'barcode',
-      当日编号: 'daily_number',
-    };
-    return map[h] || h;
-  }
-
-  function normalizeWarehouseItem(it) {
-    if (!it) return null;
-    const barcode = String(it.barcode || '').trim() || `ORT${Date.now()}${Math.floor(Math.random() * 1000)}`;
-    return {
-      order_number: String(it.order_number || ''),
-      department: String(it.department || ''),
-      applicant: String(it.applicant || ''),
-      project_number: String(it.project_number || ''),
-      product_code: String(it.product_code || ''),
-      product_name: String(it.product_name || ''),
-      specification: String(it.specification || ''),
-      manufacturer: String(it.manufacturer || ''),
-      quantity: Number(it.quantity || 0) || 0,
-      stocked_quantity: Number(it.stocked_quantity || 0) || 0,
-      unit: String(it.unit || '个'),
-      stock_in_date: String(it.stock_in_date || new Date().toISOString().replace('T', ' ').slice(0, 19)),
-      location: String(it.location || ''),
-      barcode,
-      daily_number: Number(it.daily_number || 0) || 0,
-    };
   }
 
   async function showWarehouseHistory() {
