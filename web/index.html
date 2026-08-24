@@ -12,6 +12,7 @@
     <select class="view-switch" id="viewSwitch" aria-label="界面切换">
       <option value="dashboard">总览看板</option>
       <option value="projects">项目界面</option>
+      <option value="warehouse">仓库管理</option>
       <option value="departments" id="optDepartments" hidden>部门管理</option>
       <option value="members" id="optMembers" hidden>成员管理</option>
       <option value="accounts" id="optAccounts" hidden>账户管理</option>
@@ -71,6 +72,15 @@
 
       <p class="hint-bar" id="summaryBar">加载中…</p>
       <div id="listRoot"></div>
+    </section>
+
+    <!-- 仓库管理 -->
+    <section id="warehouseView" hidden>
+      <div class="accounts-toolbar">
+        <p class="hint-bar" id="warehouseSummaryBar">仓库管理模块开发中，后续接入入库、出库、库存、盘点、库位等功能</p>
+        <button type="button" class="btn btn-primary" id="btnOpenWarehouse">进入仓库管理</button>
+      </div>
+      <div id="warehouseRoot"></div>
     </section>
 
     <!-- 账户管理 -->

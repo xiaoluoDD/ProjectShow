@@ -8,6 +8,7 @@
   const optTools = document.getElementById('optTools');
   const btnFilter = document.getElementById('btnFilter');
   const btnAddProject = document.getElementById('btnAddProject');
+  const btnOpenWarehouse = document.getElementById('btnOpenWarehouse');
   const btnKiosk = document.getElementById('btnKiosk');
   const btnKioskExit = document.getElementById('btnKioskExit');
   const btnRefresh = document.getElementById('btnRefresh');
@@ -17,6 +18,7 @@
   const authUserBar = document.getElementById('authUserBar');
   const dashboardView = document.getElementById('dashboardView');
   const projectsView = document.getElementById('projectsView');
+  const warehouseView = document.getElementById('warehouseView');
   const accountsView = document.getElementById('accountsView');
   const departmentsView = document.getElementById('departmentsView');
   const membersView = document.getElementById('membersView');
@@ -43,6 +45,7 @@
     const q = new URLSearchParams(window.location.search).get('view');
     if (
       q === 'projects' ||
+      q === 'warehouse' ||
       q === 'dashboard' ||
       q === 'accounts' ||
       q === 'departments' ||
@@ -107,7 +110,7 @@
 
   function setView(view, pushUrl) {
     let next = view;
-    const allowed = ['projects', 'dashboard', 'accounts', 'departments', 'members', 'tools'];
+    const allowed = ['projects', 'warehouse', 'dashboard', 'accounts', 'departments', 'members', 'tools'];
     if (allowed.indexOf(next) < 0) next = 'dashboard';
 
     const canManage = window.Auth && window.Auth.canManageAccounts();
@@ -119,6 +122,7 @@
     viewSwitch.value = next;
     const isDash = next === 'dashboard';
     const isProjects = next === 'projects';
+    const isWarehouse = next === 'warehouse';
     const isAccounts = next === 'accounts';
     const isDepartments = next === 'departments';
     const isMembers = next === 'members';
@@ -126,6 +130,7 @@
 
     dashboardView.hidden = !isDash;
     projectsView.hidden = !isProjects;
+    if (warehouseView) warehouseView.hidden = !isWarehouse;
     accountsView.hidden = !isAccounts;
     if (departmentsView) departmentsView.hidden = !isDepartments;
     if (membersView) membersView.hidden = !isMembers;
@@ -151,6 +156,15 @@
         }
       }
       scheduleIdleKiosk();
+    } else if (isWarehouse) {
+      const bar = document.getElementById('warehouseSummaryBar');
+      const root = document.getElementById('warehouseRoot');
+      if (bar) bar.textContent = '仓库管理模块开发中，后续接入入库、出库、库存、盘点、库位等功能';
+      if (root && !root.dataset.rendered) {
+        root.innerHTML =
+          '<div class="state-box"><p>这里将承载仓库管理功能：入库、出库、库存、盘点、库位、采购和导入导出。</p></div>';
+        root.dataset.rendered = '1';
+      }
     } else {
       clearIdleKioskTimer();
       if (isProjects) {
@@ -253,6 +267,8 @@
     } else if (v === 'projects') {
       if (window.ProjectListApp) window.ProjectListApp.load(true);
       else setView('projects', false);
+    } else if (v === 'warehouse') {
+      setView('warehouse', false);
     } else if (v === 'accounts') {
       if (window.AccountsApp) window.AccountsApp.load(true);
       else setView('accounts', false);
@@ -290,6 +306,12 @@
       alert(
         '新建项目脚本未加载。请确认已同步 js/project-form.js，并强制刷新页面（Ctrl+F5）。'
       );
+    });
+  }
+
+  if (btnOpenWarehouse) {
+    btnOpenWarehouse.addEventListener('click', () => {
+      setView('warehouse', true);
     });
   }
 
