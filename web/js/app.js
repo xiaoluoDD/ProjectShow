@@ -480,7 +480,7 @@
         body: form,
       });
       const data = await resp.json();
-      if (!resp.ok || !data.ok) throw new Error(data.error || '导入失败');
+      if (!resp.ok || !data.ok) throw new Error(data.error || '导入失败，请到「运维工具 → 日志」查看 http 日志');
       alert(`导入成功：${data.count ?? 0} 条`);
       await loadWarehousePreview();
     };
