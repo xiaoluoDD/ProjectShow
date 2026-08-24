@@ -1280,10 +1280,11 @@ body.kiosk-mode .dash-table thead th {
 }
 
 .warehouse-table tbody td {
-  padding: 10px 8px;
+  padding: 8px 6px;
   border-bottom: 1px solid #edf1f5;
   white-space: nowrap;
   text-align: center;
+  vertical-align: middle;
 }
 
 .warehouse-table tbody tr:nth-child(even) {
@@ -1297,6 +1298,41 @@ body.kiosk-mode .dash-table thead th {
 .warehouse-table input[type="checkbox"] {
   width: 16px;
   height: 16px;
+}
+
+.warehouse-cell-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 84px;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  padding: 0 8px;
+  font: inherit;
+  color: #111827;
+  outline: none;
+}
+
+.warehouse-cell-input:focus {
+  border-color: #93c5fd;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+}
+
+.warehouse-cell-static {
+  display: inline-block;
+  min-width: 84px;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #111827;
+}
+
+.warehouse-cell-code {
+  font-family: ui-monospace, Consolas, monospace;
+  color: #475569;
 }
 
 .warehouse-table button:disabled {

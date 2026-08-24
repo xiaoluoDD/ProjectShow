@@ -295,20 +295,20 @@
     body.innerHTML = items.map((it, idx) => `
       <tr data-idx="${idx}">
         <td><input type="checkbox" data-role="select" /></td>
-        <td><input type="text" data-field="order_number" value="${escapeHtml(it.order_number || '')}" /></td>
-        <td><input type="text" data-field="department" value="${escapeHtml(it.department || '')}" /></td>
-        <td><input type="text" data-field="applicant" value="${escapeHtml(it.applicant || '')}" /></td>
-        <td><input type="text" data-field="project_number" value="${escapeHtml(it.project_number || '')}" /></td>
-        <td><input type="text" data-field="product_code" value="${escapeHtml(it.product_code || '')}" /></td>
-        <td><input type="text" data-field="product_name" value="${escapeHtml(it.product_name || '')}" /></td>
-        <td><input type="text" data-field="specification" value="${escapeHtml(it.specification || '')}" /></td>
-        <td><input type="text" data-field="manufacturer" value="${escapeHtml(it.manufacturer || '')}" /></td>
-        <td><input type="number" min="0" step="1" data-field="quantity" value="${escapeHtml(String(it.quantity ?? 0))}" /></td>
-        <td><input type="number" min="0" step="1" data-field="stocked_quantity" value="${escapeHtml(String(it.stocked_quantity ?? 0))}" /></td>
-        <td><input type="text" data-field="unit" value="${escapeHtml(it.unit || '个')}" /></td>
-        <td><input type="text" data-field="stock_in_date" value="${escapeHtml(it.stock_in_date || '')}" /></td>
-        <td><input type="text" data-field="location" value="${escapeHtml(it.location || '')}" /></td>
-        <td><input type="text" data-field="barcode" value="${escapeHtml(it.barcode || '')}" /></td>
+        <td>${editableCell('order_number', it.order_number || '', idx)}</td>
+        <td>${editableCell('department', it.department || '', idx)}</td>
+        <td>${editableCell('applicant', it.applicant || '', idx)}</td>
+        <td>${editableCell('project_number', it.project_number || '', idx)}</td>
+        <td>${editableCell('product_code', it.product_code || '', idx)}</td>
+        <td>${editableCell('product_name', it.product_name || '', idx)}</td>
+        <td>${editableCell('specification', it.specification || '', idx)}</td>
+        <td>${editableCell('manufacturer', it.manufacturer || '', idx)}</td>
+        <td>${editableCell('quantity', String(it.quantity ?? 0), idx, 'number')}</td>
+        <td><span class="warehouse-cell-static">${escapeHtml(String(it.stocked_quantity ?? 0))}</span></td>
+        <td>${editableCell('unit', it.unit || '个', idx)}</td>
+        <td><span class="warehouse-cell-static">${escapeHtml(it.stock_in_date || '')}</span></td>
+        <td>${editableCell('location', it.location || '', idx)}</td>
+        <td><span class="warehouse-cell-static warehouse-cell-code">${escapeHtml(it.barcode || '')}</span></td>
       </tr>
     `).join('');
     body.querySelectorAll('input[data-role="select"]').forEach((cb) => {
@@ -320,6 +320,10 @@
     });
     updateWarehouseSelectedCount();
     setWarehouseSaveState('就绪');
+  }
+
+  function editableCell(field, value, idx, type = 'text') {
+    return `<input class="warehouse-cell-input" type="${type}" data-field="${field}" data-row="${idx}" value="${escapeHtml(value)}" />`;
   }
 
   function getSelectedWarehouseRows() {
