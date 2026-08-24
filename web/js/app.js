@@ -314,16 +314,27 @@
     body.querySelectorAll('input[data-role="select"]').forEach((cb) => {
       cb.addEventListener('change', updateWarehouseSelectedCount);
     });
-    body.querySelectorAll('input[data-field]').forEach((input) => {
+    body.querySelectorAll('[data-field]').forEach((input) => {
       input.addEventListener('input', onWarehouseCellEdit);
       input.addEventListener('change', onWarehouseCellEdit);
+      if (input.tagName === 'TEXTAREA') autoResizeWarehouseTextarea(input);
     });
     updateWarehouseSelectedCount();
     setWarehouseSaveState('就绪');
   }
 
   function editableCell(field, value, idx, type = 'text') {
-    return `<input class="warehouse-cell-input" type="${type}" data-field="${field}" data-row="${idx}" value="${escapeHtml(value)}" />`;
+    const safeValue = escapeHtml(value);
+    if (type === 'number') {
+      return `<input class="warehouse-cell-input warehouse-cell-number" type="number" data-field="${field}" data-row="${idx}" value="${safeValue}" />`;
+    }
+    return `<textarea class="warehouse-cell-input warehouse-cell-textarea" rows="1" data-field="${field}" data-row="${idx}">${safeValue}</textarea>`;
+  }
+
+  function autoResizeWarehouseTextarea(el) {
+    if (!el || el.tagName !== 'TEXTAREA') return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.max(el.scrollHeight, 30)}px`;
   }
 
   function getSelectedWarehouseRows() {
@@ -372,6 +383,7 @@
     } else {
       item[field] = input.value;
     }
+    if (input.tagName === 'TEXTAREA') autoResizeWarehouseTextarea(input);
     normalizeWarehouseLine(item, idx);
     scheduleWarehouseSync();
   }

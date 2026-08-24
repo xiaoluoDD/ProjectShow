@@ -1266,6 +1266,7 @@ body.kiosk-mode .dash-table thead th {
   min-width: 1400px;
   border-collapse: collapse;
   font-size: 13px;
+  table-layout: fixed;
 }
 
 .warehouse-table thead th {
@@ -1282,9 +1283,10 @@ body.kiosk-mode .dash-table thead th {
 .warehouse-table tbody td {
   padding: 8px 6px;
   border-bottom: 1px solid #edf1f5;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
   text-align: center;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 .warehouse-table tbody tr:nth-child(even) {
@@ -1303,15 +1305,18 @@ body.kiosk-mode .dash-table thead th {
 .warehouse-cell-input {
   width: 100%;
   box-sizing: border-box;
-  min-width: 84px;
-  height: 30px;
+  min-width: 0;
+  min-height: 30px;
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
-  padding: 0 8px;
+  padding: 5px 8px;
   font: inherit;
   color: #111827;
   outline: none;
+  resize: none;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .warehouse-cell-input:focus {
@@ -1320,14 +1325,26 @@ body.kiosk-mode .dash-table thead th {
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
 }
 
+.warehouse-cell-number {
+  min-height: 30px;
+  text-align: center;
+}
+
+.warehouse-cell-textarea {
+  overflow: hidden;
+  line-height: 1.35;
+}
+
 .warehouse-cell-static {
   display: inline-block;
   min-width: 84px;
-  max-width: 260px;
+  max-width: 100%;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-overflow: clip;
+  white-space: normal;
+  word-break: break-word;
   color: #111827;
+  line-height: 1.35;
 }
 
 .warehouse-cell-code {
