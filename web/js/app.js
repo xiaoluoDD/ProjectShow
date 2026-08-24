@@ -212,8 +212,8 @@
             </div>
 
             <div class="warehouse-meta-row">
-              <span>已选择：0 项</span>
-              <span>当前显示：21 行</span>
+              <span id="warehouseSelectedCount">已选择：0 项</span>
+              <span id="warehouseRowCount">当前显示：0 行</span>
             </div>
 
             <div class="warehouse-table-wrap">
@@ -237,33 +237,13 @@
                     <th>条形码</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr><td><input type="checkbox" /></td><td></td><td></td><td></td><td></td><td></td><td>111</td><td>55</td><td></td><td>0</td><td>0</td><td></td><td>2026-06-26T17:02:25.000</td><td></td><td>ORT202606...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td></td><td></td><td></td><td></td><td></td><td>542</td><td>42</td><td></td><td>0</td><td>0</td><td></td><td>2026-06-26T17:02:25.000</td><td></td><td>ORT202606...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040205 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>01</td><td>双导杆气缸</td><td>MLGPM40-25Z-B-P3DWASC</td><td>SMC</td><td>20</td><td>0</td><td>个</td><td>2026-04-10T10:46:46.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (3/12)</td><td>设计</td><td>蒙春锦</td><td>GW26008</td><td>04</td><td>检测开关</td><td>WLCA2-LD-M1GJ-N</td><td>欧姆龙</td><td>1</td><td>0</td><td>个</td><td>2026-04-14T17:16:34.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (3/12)</td><td>设计</td><td>蒙春锦</td><td>GW26008</td><td>04</td><td>近接开关</td><td>E2EQ-X10D1G-M1GJ-T 0.3M</td><td>欧姆龙</td><td>8</td><td>0</td><td>个</td><td>2026-04-14T17:16:34.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (4/12)</td><td>设计</td><td>蒙春锦</td><td>GW26008</td><td>04</td><td>调速阀</td><td>AS3201F-03-10W2</td><td>SMC</td><td>10</td><td>0</td><td>个</td><td>2026-04-14T17:16:34.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (4/12)</td><td>设计</td><td>蒙春锦</td><td>GW26008</td><td>04</td><td>调速阀</td><td>AS2201F-02-10W2</td><td>SMC</td><td>58</td><td>0</td><td>个</td><td>2026-04-14T17:16:34.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (4/12)</td><td>设计</td><td>蒙春锦</td><td>GW26008</td><td>04</td><td>残压排放阀</td><td>VHA200-02</td><td>SMC</td><td>10</td><td>0</td><td>个</td><td>2026-04-14T17:16:34.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040205 (5/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>07</td><td>中封阀</td><td>W4GB239-00-M-3</td><td>CKD</td><td>4</td><td>2</td><td>个</td><td>2026-04-10T10:46:48.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25105</td><td>01</td><td>换枪盒工具侧（需反装图纸签字）</td><td>2T19-OPC00</td><td>NITTA CORPORATION</td><td>4</td><td>0</td><td>个</td><td>2026-04-10T10:46:47.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>01</td><td>REMOTE SENSOR（夹具侧）</td><td>RPT15-TF3004D-TYT08(用于夹具侧)</td><td>B&amp;PLUS</td><td>12</td><td>0</td><td>个</td><td>2026-04-10T10:46:47.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>01</td><td>感应器</td><td>E2EQ-X10D1G-M1GJ-T 0.3M</td><td>OMRON</td><td>6</td><td>0</td><td>个</td><td>2026-04-10T10:46:46.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>01</td><td>夹紧气缸</td><td>CKGA80-125Y-P3DWASC</td><td>SMC</td><td>4</td><td>0</td><td>个</td><td>2026-04-10T10:46:46.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>01</td><td>夹紧气缸</td><td>CKG1A63-125YAZ-P3DWSC</td><td>SMC</td><td>4</td><td>0</td><td>个</td><td>2026-04-10T10:46:46.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>01</td><td>夹紧气缸</td><td>CAC4-A-63-125-T2YDU-D-Y</td><td>CKD</td><td>4</td><td>0</td><td>个</td><td>2026-04-10T10:46:46.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040105 (1/14)</td><td>设计</td><td>何伟棋</td><td>GW25104</td><td>01</td><td>夹紧气缸</td><td>CAC4-A-63-75-T2YDU-D-Y</td><td>CKD</td><td>4</td><td>0</td><td>个</td><td>2026-04-10T10:46:46.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040302 (2/2)</td><td>设计</td><td>马代豪</td><td>GW26009</td><td></td><td>平键A型</td><td>L72xB12xH8</td><td>市购</td><td>22</td><td>0</td><td>个</td><td>2026-04-09T09:08:24.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040302 (2/2)</td><td>设计</td><td>马代豪</td><td>GW26009</td><td></td><td>平键A型</td><td>L32xB12xH8</td><td>市购</td><td>4</td><td>0</td><td>个</td><td>2026-04-09T09:08:24.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040302 (2/2)</td><td>设计</td><td>马代豪</td><td>GW26009</td><td></td><td>平键A型</td><td>L120xB20xH15</td><td>市购</td><td>4</td><td>0</td><td>个</td><td>2026-04-09T09:08:24.000</td><td></td><td>ORT202604...</td></tr>
-                  <tr><td><input type="checkbox" /></td><td>26040302 (2/2)</td><td>设计</td><td>马代豪</td><td>GW26009</td><td></td><td>拖链</td><td>VBY71-5575-R200-N30</td><td>怡和达</td><td>2</td><td>0</td><td>个</td><td>2026-04-09T09:08:24.000</td><td></td><td>ORT202604...</td></tr>
-                </tbody>
+                <tbody id="warehouseTableBody"></tbody>
               </table>
             </div>
           </section>`;
         root.dataset.rendered = '1';
       }
+      loadWarehousePreview();
     } else {
       clearIdleKioskTimer();
       if (isProjects) {
@@ -278,6 +258,55 @@
         if (window.AdminToolsApp) window.AdminToolsApp.load(true);
       }
     }
+  }
+
+  async function loadWarehousePreview() {
+    const root = document.getElementById('warehouseRoot');
+    const body = document.getElementById('warehouseTableBody');
+    const rowCount = document.getElementById('warehouseRowCount');
+    if (!root || !body) return;
+
+    body.innerHTML = '<tr><td colspan="15">加载中…</td></tr>';
+    try {
+      const resp = await fetch('/api/warehouse/purchase-orders');
+      const data = await resp.json();
+      const items = Array.isArray(data.items) ? data.items : [];
+      if (rowCount) rowCount.textContent = `当前显示：${items.length} 行`;
+      if (!items.length) {
+        body.innerHTML = '<tr><td colspan="15">暂无待入库数据</td></tr>';
+        return;
+      }
+      body.innerHTML = items.map((it) => `
+        <tr>
+          <td><input type="checkbox" /></td>
+          <td>${escapeHtml(it.order_number || '')}</td>
+          <td>${escapeHtml(it.department || '')}</td>
+          <td>${escapeHtml(it.applicant || '')}</td>
+          <td>${escapeHtml(it.project_number || '')}</td>
+          <td>${escapeHtml(it.product_code || '')}</td>
+          <td>${escapeHtml(it.product_name || '')}</td>
+          <td>${escapeHtml(it.specification || '')}</td>
+          <td>${escapeHtml(it.manufacturer || '')}</td>
+          <td>${escapeHtml(String(it.quantity ?? 0))}</td>
+          <td>${escapeHtml(String(it.stocked_quantity ?? 0))}</td>
+          <td>${escapeHtml(it.unit || '')}</td>
+          <td>${escapeHtml(it.stock_in_date || '')}</td>
+          <td>${escapeHtml(it.location || '')}</td>
+          <td>${escapeHtml(it.barcode || '')}</td>
+        </tr>
+      `).join('');
+    } catch (err) {
+      body.innerHTML = `<tr><td colspan="15">加载失败：${escapeHtml(err.message || '未知错误')}</td></tr>`;
+    }
+  }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function openLogin() {
