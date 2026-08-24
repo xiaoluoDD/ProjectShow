@@ -1183,3 +1183,123 @@ body.kiosk-mode .dash-table thead th {
   font-size: 12px;
   color: #90a0b0;
 }
+
+/* —— 仓库待入库预览 —— */
+.warehouse-preview-shell {
+  background: #fff;
+  border: 1px solid #e2e6ea;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+}
+
+.warehouse-preview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.warehouse-preview-head h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: #1e293b;
+}
+
+.warehouse-preview-head p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.warehouse-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.preview-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.preview-chip.warning {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.warehouse-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.warehouse-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.warehouse-table-wrap {
+  border: 1px solid #e2e6ea;
+  border-radius: 12px;
+  overflow: auto;
+  background: #fff;
+}
+
+.warehouse-table {
+  width: 100%;
+  min-width: 1400px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.warehouse-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f6f8fb;
+  color: #334155;
+  text-align: center;
+  padding: 10px 8px;
+  border-bottom: 1px solid #dbe2ea;
+  white-space: nowrap;
+}
+
+.warehouse-table tbody td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #edf1f5;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.warehouse-table tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.warehouse-table tbody tr:hover {
+  background: #f3f8ff;
+}
+
+.warehouse-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.warehouse-table button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
