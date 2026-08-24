@@ -244,6 +244,7 @@
           </section>`;
         root.dataset.rendered = '1';
       }
+      bindWarehouseActions();
       loadWarehousePreview();
     } else {
       clearIdleKioskTimer();
@@ -608,6 +609,30 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  function bindWarehouseActions() {
+    const root = document.getElementById('warehouseRoot');
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+
+    const btnWarehouseImport = document.getElementById('btnWarehouseImport');
+    const btnWarehouseAddRow = document.getElementById('btnWarehouseAddRow');
+    const btnWarehouseDeleteRows = document.getElementById('btnWarehouseDeleteRows');
+    const btnWarehouseSelectAll = document.getElementById('btnWarehouseSelectAll');
+    const btnWarehouseDeselectAll = document.getElementById('btnWarehouseDeselectAll');
+    const btnWarehouseStockIn = document.getElementById('btnWarehouseStockIn');
+    const btnWarehouseRegenerate = document.getElementById('btnWarehouseRegenerate');
+    const btnWarehouseHistory = document.getElementById('btnWarehouseHistory');
+
+    if (btnWarehouseImport) btnWarehouseImport.addEventListener('click', () => importWarehouseFile());
+    if (btnWarehouseAddRow) btnWarehouseAddRow.addEventListener('click', () => addWarehouseRow().catch((err) => alert(err.message || '添加失败')));
+    if (btnWarehouseDeleteRows) btnWarehouseDeleteRows.addEventListener('click', () => deleteWarehouseRows().catch((err) => alert(err.message || '删除失败')));
+    if (btnWarehouseSelectAll) btnWarehouseSelectAll.addEventListener('click', () => setWarehouseCheckboxes(true));
+    if (btnWarehouseDeselectAll) btnWarehouseDeselectAll.addEventListener('click', () => setWarehouseCheckboxes(false));
+    if (btnWarehouseStockIn) btnWarehouseStockIn.addEventListener('click', () => warehouseStockInSelected().catch((err) => alert(err.message || '入库失败')));
+    if (btnWarehouseRegenerate) btnWarehouseRegenerate.addEventListener('click', () => regenerateWarehouseBarcodes().catch((err) => alert(err.message || '重生成失败')));
+    if (btnWarehouseHistory) btnWarehouseHistory.addEventListener('click', () => showWarehouseHistory().catch((err) => alert(err.message || '历史记录加载失败')));
   }
 
   function openLogin() {
