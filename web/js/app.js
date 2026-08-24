@@ -57,6 +57,7 @@
   const passwordError = document.getElementById('passwordError');
   const projectsHint = document.getElementById('projectsHint');
   let warehouseItems = [];
+  let warehouseSaveTimer = null;
 
   const MANAGE_VIEWS = ['accounts', 'departments', 'members', 'tools'];
 
@@ -215,6 +216,7 @@
             <div class="warehouse-meta-row">
               <span id="warehouseSelectedCount">已选择：0 项</span>
               <span id="warehouseRowCount">当前显示：0 行</span>
+              <span id="warehouseSaveState">自动保存：未触发</span>
             </div>
 
             <div class="warehouse-table-wrap">
@@ -292,27 +294,32 @@
     }
     body.innerHTML = items.map((it, idx) => `
       <tr data-idx="${idx}">
-        <td><input type="checkbox" /></td>
-        <td>${escapeHtml(it.order_number || '')}</td>
-        <td>${escapeHtml(it.department || '')}</td>
-        <td>${escapeHtml(it.applicant || '')}</td>
-        <td>${escapeHtml(it.project_number || '')}</td>
-        <td>${escapeHtml(it.product_code || '')}</td>
-        <td>${escapeHtml(it.product_name || '')}</td>
-        <td>${escapeHtml(it.specification || '')}</td>
-        <td>${escapeHtml(it.manufacturer || '')}</td>
-        <td>${escapeHtml(String(it.quantity ?? 0))}</td>
-        <td>${escapeHtml(String(it.stocked_quantity ?? 0))}</td>
-        <td>${escapeHtml(it.unit || '')}</td>
-        <td>${escapeHtml(it.stock_in_date || '')}</td>
-        <td>${escapeHtml(it.location || '')}</td>
-        <td>${escapeHtml(it.barcode || '')}</td>
+        <td><input type="checkbox" data-role="select" /></td>
+        <td><input type="text" data-field="order_number" value="${escapeHtml(it.order_number || '')}" /></td>
+        <td><input type="text" data-field="department" value="${escapeHtml(it.department || '')}" /></td>
+        <td><input type="text" data-field="applicant" value="${escapeHtml(it.applicant || '')}" /></td>
+        <td><input type="text" data-field="project_number" value="${escapeHtml(it.project_number || '')}" /></td>
+        <td><input type="text" data-field="product_code" value="${escapeHtml(it.product_code || '')}" /></td>
+        <td><input type="text" data-field="product_name" value="${escapeHtml(it.product_name || '')}" /></td>
+        <td><input type="text" data-field="specification" value="${escapeHtml(it.specification || '')}" /></td>
+        <td><input type="text" data-field="manufacturer" value="${escapeHtml(it.manufacturer || '')}" /></td>
+        <td><input type="number" min="0" step="1" data-field="quantity" value="${escapeHtml(String(it.quantity ?? 0))}" /></td>
+        <td><input type="number" min="0" step="1" data-field="stocked_quantity" value="${escapeHtml(String(it.stocked_quantity ?? 0))}" /></td>
+        <td><input type="text" data-field="unit" value="${escapeHtml(it.unit || '个')}" /></td>
+        <td><input type="text" data-field="stock_in_date" value="${escapeHtml(it.stock_in_date || '')}" /></td>
+        <td><input type="text" data-field="location" value="${escapeHtml(it.location || '')}" /></td>
+        <td><input type="text" data-field="barcode" value="${escapeHtml(it.barcode || '')}" /></td>
       </tr>
     `).join('');
-    body.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+    body.querySelectorAll('input[data-role="select"]').forEach((cb) => {
       cb.addEventListener('change', updateWarehouseSelectedCount);
     });
+    body.querySelectorAll('input[data-field]').forEach((input) => {
+      input.addEventListener('input', onWarehouseCellEdit);
+      input.addEventListener('change', onWarehouseCellEdit);
+    });
     updateWarehouseSelectedCount();
+    setWarehouseSaveState('就绪');
   }
 
   function getSelectedWarehouseRows() {
@@ -331,7 +338,7 @@
   function setWarehouseCheckboxes(checked) {
     const body = document.getElementById('warehouseTableBody');
     if (!body) return;
-    body.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+    body.querySelectorAll('input[data-role="select"]').forEach((cb) => {
       cb.checked = checked;
     });
     updateWarehouseSelectedCount();
@@ -341,6 +348,47 @@
     const selected = getSelectedWarehouseRows().length;
     const el = document.getElementById('warehouseSelectedCount');
     if (el) el.textContent = `已选择：${selected} 项`;
+  }
+
+  function setWarehouseSaveState(text) {
+    const el = document.getElementById('warehouseSaveState');
+    if (el) el.textContent = `自动保存：${text}`;
+  }
+
+  function onWarehouseCellEdit(event) {
+    const input = event.target;
+    const tr = input.closest('tr');
+    if (!tr) return;
+    const idx = Number(tr.dataset.idx);
+    const field = input.dataset.field;
+    if (!Number.isInteger(idx) || idx < 0 || !field || !warehouseItems[idx]) return;
+    const item = warehouseItems[idx];
+    if (field === 'quantity' || field === 'stocked_quantity' || field === 'daily_number') {
+      item[field] = Number(input.value || 0) || 0;
+    } else {
+      item[field] = input.value;
+    }
+    normalizeWarehouseLine(item, idx);
+    scheduleWarehouseSync();
+  }
+
+  function normalizeWarehouseLine(item, idx) {
+    if (!item) return;
+    item.order_number = item.order_number || '';
+    item.department = item.department || '';
+    item.applicant = item.applicant || '';
+    item.project_number = item.project_number || '';
+    item.product_code = item.product_code || '';
+    item.product_name = item.product_name || '';
+    item.specification = item.specification || '';
+    item.manufacturer = item.manufacturer || '';
+    item.quantity = Number(item.quantity || 0) || 0;
+    item.stocked_quantity = Number(item.stocked_quantity || 0) || 0;
+    item.unit = item.unit || '个';
+    item.stock_in_date = item.stock_in_date || new Date().toISOString().replace('T', ' ').slice(0, 19);
+    item.location = item.location || '';
+    item.barcode = item.barcode || `ORT${Date.now()}${idx + 1}`;
+    item.daily_number = Number(item.daily_number || 0) || idx + 1;
   }
 
   async function syncWarehouseItems() {
@@ -354,6 +402,22 @@
       throw new Error(data.error || '保存失败');
     }
     await loadWarehousePreview();
+  }
+
+  function scheduleWarehouseSync() {
+    setWarehouseSaveState('保存中…');
+    if (warehouseSaveTimer) {
+      clearTimeout(warehouseSaveTimer);
+    }
+    warehouseSaveTimer = setTimeout(async () => {
+      try {
+        await syncWarehouseItems();
+        setWarehouseSaveState('已保存');
+      } catch (err) {
+        setWarehouseSaveState('失败');
+        alert(err.message || '保存失败');
+      }
+    }, 800);
   }
 
   async function warehouseStockInSelected() {
@@ -427,8 +491,10 @@
   }
 
   async function addWarehouseRow() {
-    warehouseItems.push(normalizeWarehouseItem(makeWarehouseRowFromPrompt()));
-    await syncWarehouseItems();
+    const item = normalizeWarehouseItem(makeWarehouseRowFromPrompt());
+    warehouseItems.push(item);
+    renderWarehouseTable(warehouseItems);
+    scheduleWarehouseSync();
   }
 
   async function deleteWarehouseRows() {
@@ -444,7 +510,8 @@
       return;
     }
     warehouseItems = warehouseItems.filter((_, idx) => !selectedIndexes.includes(idx));
-    await syncWarehouseItems();
+    renderWarehouseTable(warehouseItems);
+    scheduleWarehouseSync();
   }
 
   async function regenerateWarehouseBarcodes() {
@@ -463,7 +530,8 @@
       warehouseItems[idx].barcode = `ORT${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${String(idx + 1).padStart(4, '0')}`;
       warehouseItems[idx].daily_number = idx + 1;
     });
-    await syncWarehouseItems();
+    renderWarehouseTable(warehouseItems);
+    scheduleWarehouseSync();
   }
 
   async function importWarehouseFile() {
@@ -697,23 +765,6 @@
       setView('warehouse', true);
     });
   }
-  const btnWarehouseImport = document.getElementById('btnWarehouseImport');
-  const btnWarehouseAddRow = document.getElementById('btnWarehouseAddRow');
-  const btnWarehouseDeleteRows = document.getElementById('btnWarehouseDeleteRows');
-  const btnWarehouseSelectAll = document.getElementById('btnWarehouseSelectAll');
-  const btnWarehouseDeselectAll = document.getElementById('btnWarehouseDeselectAll');
-  const btnWarehouseStockIn = document.getElementById('btnWarehouseStockIn');
-  const btnWarehouseRegenerate = document.getElementById('btnWarehouseRegenerate');
-  const btnWarehouseHistory = document.getElementById('btnWarehouseHistory');
-
-  if (btnWarehouseImport) btnWarehouseImport.addEventListener('click', () => importWarehouseFile());
-  if (btnWarehouseAddRow) btnWarehouseAddRow.addEventListener('click', () => addWarehouseRow().catch((err) => alert(err.message || '添加失败')));
-  if (btnWarehouseDeleteRows) btnWarehouseDeleteRows.addEventListener('click', () => deleteWarehouseRows().catch((err) => alert(err.message || '删除失败')));
-  if (btnWarehouseSelectAll) btnWarehouseSelectAll.addEventListener('click', () => setWarehouseCheckboxes(true));
-  if (btnWarehouseDeselectAll) btnWarehouseDeselectAll.addEventListener('click', () => setWarehouseCheckboxes(false));
-  if (btnWarehouseStockIn) btnWarehouseStockIn.addEventListener('click', () => warehouseStockInSelected().catch((err) => alert(err.message || '入库失败')));
-  if (btnWarehouseRegenerate) btnWarehouseRegenerate.addEventListener('click', () => regenerateWarehouseBarcodes().catch((err) => alert(err.message || '重生成失败')));
-  if (btnWarehouseHistory) btnWarehouseHistory.addEventListener('click', () => showWarehouseHistory().catch((err) => alert(err.message || '历史记录加载失败')));
 
   document.getElementById('btnLoginCancel').addEventListener('click', closeLogin);
   document.getElementById('btnLoginSubmit').addEventListener('click', submitLogin);
