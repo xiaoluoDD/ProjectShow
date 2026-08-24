@@ -56,6 +56,7 @@
   const newPasswordConfirm = document.getElementById('newPasswordConfirm');
   const passwordError = document.getElementById('passwordError');
   const projectsHint = document.getElementById('projectsHint');
+  let warehouseItems = [];
 
   const MANAGE_VIEWS = ['accounts', 'departments', 'members', 'tools'];
 
@@ -199,15 +200,15 @@
             </div>
 
             <div class="warehouse-action-row">
-              <button type="button" class="btn btn-primary">导入采购单文件</button>
-              <button type="button" class="btn">添加行</button>
-              <button type="button" class="btn">删除选中行</button>
-              <button type="button" class="btn">全选</button>
-              <button type="button" class="btn">取消全选</button>
-              <button type="button" class="btn btn-primary">手动入库</button>
-              <button type="button" class="btn">重新生成条形码</button>
+              <button type="button" class="btn btn-primary" id="btnWarehouseImport">导入采购单文件</button>
+              <button type="button" class="btn" id="btnWarehouseAddRow">添加行</button>
+              <button type="button" class="btn" id="btnWarehouseDeleteRows">删除选中行</button>
+              <button type="button" class="btn" id="btnWarehouseSelectAll">全选</button>
+              <button type="button" class="btn" id="btnWarehouseDeselectAll">取消全选</button>
+              <button type="button" class="btn btn-primary" id="btnWarehouseStockIn">手动入库</button>
+              <button type="button" class="btn" id="btnWarehouseRegenerate">重新生成条形码</button>
               <button type="button" class="btn" disabled title="条码打印依赖本地打印机，预览版暂不开放">打印条码（暂不开放）</button>
-              <button type="button" class="btn">历史入库记录</button>
+              <button type="button" class="btn" id="btnWarehouseHistory">历史入库记录</button>
               <button type="button" class="btn">清除筛选</button>
             </div>
 
@@ -271,33 +272,333 @@
       const resp = await fetch('/api/warehouse/purchase-orders');
       const data = await resp.json();
       const items = Array.isArray(data.items) ? data.items : [];
-      if (rowCount) rowCount.textContent = `当前显示：${items.length} 行`;
-      if (!items.length) {
-        body.innerHTML = '<tr><td colspan="15">暂无待入库数据</td></tr>';
-        return;
-      }
-      body.innerHTML = items.map((it) => `
-        <tr>
-          <td><input type="checkbox" /></td>
-          <td>${escapeHtml(it.order_number || '')}</td>
-          <td>${escapeHtml(it.department || '')}</td>
-          <td>${escapeHtml(it.applicant || '')}</td>
-          <td>${escapeHtml(it.project_number || '')}</td>
-          <td>${escapeHtml(it.product_code || '')}</td>
-          <td>${escapeHtml(it.product_name || '')}</td>
-          <td>${escapeHtml(it.specification || '')}</td>
-          <td>${escapeHtml(it.manufacturer || '')}</td>
-          <td>${escapeHtml(String(it.quantity ?? 0))}</td>
-          <td>${escapeHtml(String(it.stocked_quantity ?? 0))}</td>
-          <td>${escapeHtml(it.unit || '')}</td>
-          <td>${escapeHtml(it.stock_in_date || '')}</td>
-          <td>${escapeHtml(it.location || '')}</td>
-          <td>${escapeHtml(it.barcode || '')}</td>
-        </tr>
-      `).join('');
+      warehouseItems = items;
+      renderWarehouseTable(items);
     } catch (err) {
       body.innerHTML = `<tr><td colspan="15">加载失败：${escapeHtml(err.message || '未知错误')}</td></tr>`;
     }
+  }
+
+  function renderWarehouseTable(items) {
+    const body = document.getElementById('warehouseTableBody');
+    const rowCount = document.getElementById('warehouseRowCount');
+    if (!body) return;
+    if (rowCount) rowCount.textContent = `当前显示：${items.length} 行`;
+    if (!items.length) {
+      body.innerHTML = '<tr><td colspan="15">暂无待入库数据</td></tr>';
+      updateWarehouseSelectedCount();
+      return;
+    }
+    body.innerHTML = items.map((it, idx) => `
+      <tr data-idx="${idx}">
+        <td><input type="checkbox" /></td>
+        <td>${escapeHtml(it.order_number || '')}</td>
+        <td>${escapeHtml(it.department || '')}</td>
+        <td>${escapeHtml(it.applicant || '')}</td>
+        <td>${escapeHtml(it.project_number || '')}</td>
+        <td>${escapeHtml(it.product_code || '')}</td>
+        <td>${escapeHtml(it.product_name || '')}</td>
+        <td>${escapeHtml(it.specification || '')}</td>
+        <td>${escapeHtml(it.manufacturer || '')}</td>
+        <td>${escapeHtml(String(it.quantity ?? 0))}</td>
+        <td>${escapeHtml(String(it.stocked_quantity ?? 0))}</td>
+        <td>${escapeHtml(it.unit || '')}</td>
+        <td>${escapeHtml(it.stock_in_date || '')}</td>
+        <td>${escapeHtml(it.location || '')}</td>
+        <td>${escapeHtml(it.barcode || '')}</td>
+      </tr>
+    `).join('');
+    body.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      cb.addEventListener('change', updateWarehouseSelectedCount);
+    });
+    updateWarehouseSelectedCount();
+  }
+
+  function getSelectedWarehouseRows() {
+    const body = document.getElementById('warehouseTableBody');
+    if (!body) return [];
+    const rows = [];
+    body.querySelectorAll('tr').forEach((tr, index) => {
+      const cb = tr.querySelector('input[type="checkbox"]');
+      if (cb && cb.checked && warehouseItems[index]) {
+        rows.push(warehouseItems[index]);
+      }
+    });
+    return rows;
+  }
+
+  function setWarehouseCheckboxes(checked) {
+    const body = document.getElementById('warehouseTableBody');
+    if (!body) return;
+    body.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      cb.checked = checked;
+    });
+    updateWarehouseSelectedCount();
+  }
+
+  function updateWarehouseSelectedCount() {
+    const selected = getSelectedWarehouseRows().length;
+    const el = document.getElementById('warehouseSelectedCount');
+    if (el) el.textContent = `已选择：${selected} 项`;
+  }
+
+  async function syncWarehouseItems() {
+    const resp = await fetch('/api/warehouse/purchase-orders/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: warehouseItems }),
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      throw new Error(data.error || '保存失败');
+    }
+    await loadWarehousePreview();
+  }
+
+  async function warehouseStockInSelected() {
+    const selected = getSelectedWarehouseRows();
+    if (!selected.length) {
+      alert('请先勾选要入库的行');
+      return;
+    }
+    const payload = {
+      operator_name: window.Auth && window.Auth.getUser ? (window.Auth.getUser()?.display_name || window.Auth.getUser()?.username || '') : '',
+      notes: '网页端手动入库',
+      items: selected.map((it) => ({
+        barcode: it.barcode || '',
+        quantity: Number(it.stocked_quantity || it.quantity || 0) || 0,
+        location: it.location || '',
+      })),
+    };
+    const resp = await fetch('/api/warehouse/purchase-orders/stock-in', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      throw new Error(data.error || '入库失败');
+    }
+    alert(`入库完成：成功 ${data.result?.success ?? 0} 条，失败 ${data.result?.failed ?? 0} 条`);
+    await loadWarehousePreview();
+  }
+
+  function makeWarehouseRowFromPrompt() {
+    const barcode = `ORT${Date.now()}`;
+    return {
+      order_number: '',
+      department: '',
+      applicant: '',
+      project_number: '',
+      product_code: '',
+      product_name: '新建物料',
+      specification: '',
+      manufacturer: '',
+      quantity: 1,
+      stocked_quantity: 0,
+      unit: '个',
+      stock_in_date: new Date().toISOString().replace('T', ' ').slice(0, 19),
+      location: '',
+      barcode,
+      daily_number: 0,
+    };
+  }
+
+  async function addWarehouseRow() {
+    warehouseItems.push(normalizeWarehouseItem(makeWarehouseRowFromPrompt()));
+    await syncWarehouseItems();
+  }
+
+  async function deleteWarehouseRows() {
+    const selectedIndexes = [];
+    const body = document.getElementById('warehouseTableBody');
+    if (!body) return;
+    body.querySelectorAll('tr').forEach((tr, idx) => {
+      const cb = tr.querySelector('input[type="checkbox"]');
+      if (cb && cb.checked) selectedIndexes.push(idx);
+    });
+    if (!selectedIndexes.length) {
+      alert('请先勾选要删除的行');
+      return;
+    }
+    warehouseItems = warehouseItems.filter((_, idx) => !selectedIndexes.includes(idx));
+    await syncWarehouseItems();
+  }
+
+  async function regenerateWarehouseBarcodes() {
+    const selectedIndexes = [];
+    const body = document.getElementById('warehouseTableBody');
+    if (!body) return;
+    body.querySelectorAll('tr').forEach((tr, idx) => {
+      const cb = tr.querySelector('input[type="checkbox"]');
+      if (cb && cb.checked) selectedIndexes.push(idx);
+    });
+    if (!selectedIndexes.length) {
+      alert('请先勾选要重新生成条形码的行');
+      return;
+    }
+    selectedIndexes.forEach((idx) => {
+      warehouseItems[idx].barcode = `ORT${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${String(idx + 1).padStart(4, '0')}`;
+      warehouseItems[idx].daily_number = idx + 1;
+    });
+    await syncWarehouseItems();
+  }
+
+  async function importWarehouseFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.csv';
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const text = await file.text();
+      let items = [];
+      if (file.name.toLowerCase().endsWith('.json')) {
+        const parsed = JSON.parse(text);
+        items = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.items) ? parsed.items : []);
+      } else {
+        items = parseWarehouseCSV(text);
+      }
+      items = items.map(normalizeWarehouseItem).filter(Boolean);
+      const resp = await fetch('/api/warehouse/purchase-orders/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || '导入失败');
+      alert(`导入成功：${data.count ?? items.length} 条`);
+      await loadWarehousePreview();
+    };
+    input.click();
+  }
+
+  function parseWarehouseCSV(text) {
+    const lines = String(text || '').split(/\r?\n/).filter(Boolean);
+    if (!lines.length) return [];
+    const header = splitWarehouseCSVLine(lines[0]).map((s) => s.trim());
+    const keys = header.map((h) => normalizeWarehouseHeader(h));
+    const rows = [];
+    for (let i = 1; i < lines.length; i += 1) {
+      const cols = splitWarehouseCSVLine(lines[i]);
+      const row = {};
+      keys.forEach((key, idx) => {
+        row[key] = cols[idx] ?? '';
+      });
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  function splitWarehouseCSVLine(line) {
+    const out = [];
+    let cur = '';
+    let quoted = false;
+    for (let i = 0; i < line.length; i += 1) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (quoted && line[i + 1] === '"') {
+          cur += '"';
+          i += 1;
+        } else {
+          quoted = !quoted;
+        }
+      } else if (ch === ',' && !quoted) {
+        out.push(cur);
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function normalizeWarehouseHeader(h) {
+    const map = {
+      订单号: 'order_number',
+      部门: 'department',
+      申请人: 'applicant',
+      项目管理号: 'project_number',
+      品番: 'product_code',
+      名称: 'product_name',
+      规格型号: 'specification',
+      厂家品牌: 'manufacturer',
+      数量: 'quantity',
+      入库数量: 'stocked_quantity',
+      单位: 'unit',
+      入库日期: 'stock_in_date',
+      放置位置: 'location',
+      条形码: 'barcode',
+      当日编号: 'daily_number',
+    };
+    return map[h] || h;
+  }
+
+  function normalizeWarehouseItem(it) {
+    if (!it) return null;
+    const barcode = String(it.barcode || '').trim() || `ORT${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    return {
+      order_number: String(it.order_number || ''),
+      department: String(it.department || ''),
+      applicant: String(it.applicant || ''),
+      project_number: String(it.project_number || ''),
+      product_code: String(it.product_code || ''),
+      product_name: String(it.product_name || ''),
+      specification: String(it.specification || ''),
+      manufacturer: String(it.manufacturer || ''),
+      quantity: Number(it.quantity || 0) || 0,
+      stocked_quantity: Number(it.stocked_quantity || 0) || 0,
+      unit: String(it.unit || '个'),
+      stock_in_date: String(it.stock_in_date || new Date().toISOString().replace('T', ' ').slice(0, 19)),
+      location: String(it.location || ''),
+      barcode,
+      daily_number: Number(it.daily_number || 0) || 0,
+    };
+  }
+
+  async function showWarehouseHistory() {
+    const resp = await fetch('/api/warehouse/stock-in-history');
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) throw new Error(data.error || '历史记录加载失败');
+    const items = Array.isArray(data.items) ? data.items : [];
+    const html = items.length
+      ? `<div class="warehouse-history-list">${items.map((it) => `
+          <div class="warehouse-history-row">
+            <div><strong>${escapeHtml(it.product_name || '')}</strong> <span>${escapeHtml(it.barcode || '')}</span></div>
+            <div>${escapeHtml(it.department || '')} · ${escapeHtml(it.applicant || '')} · ${escapeHtml(String(it.quantity ?? 0))}${escapeHtml(it.unit || '')}</div>
+            <div>${escapeHtml(it.stock_in_date || '')} · ${escapeHtml(it.location || '')} · ${escapeHtml(it.notes || '')}</div>
+          </div>
+        `).join('')}</div>`
+      : '<p>暂无历史入库记录</p>';
+    showWarehouseModal('历史入库记录', html);
+  }
+
+  function showWarehouseModal(title, bodyHtml) {
+    let modal = document.getElementById('warehouseModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'warehouseModal';
+      modal.className = 'modal-mask';
+      modal.innerHTML = `
+        <div class="modal-card modal-card-wide" role="dialog" aria-modal="true">
+          <h2 id="warehouseModalTitle"></h2>
+          <div id="warehouseModalBody"></div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-primary" id="warehouseModalClose">关闭</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.hidden = true;
+      });
+      modal.querySelector('#warehouseModalClose').addEventListener('click', () => {
+        modal.hidden = true;
+      });
+    }
+    modal.querySelector('#warehouseModalTitle').textContent = title;
+    modal.querySelector('#warehouseModalBody').innerHTML = bodyHtml;
+    modal.hidden = false;
   }
 
   function escapeHtml(text) {
@@ -442,6 +743,23 @@
       setView('warehouse', true);
     });
   }
+  const btnWarehouseImport = document.getElementById('btnWarehouseImport');
+  const btnWarehouseAddRow = document.getElementById('btnWarehouseAddRow');
+  const btnWarehouseDeleteRows = document.getElementById('btnWarehouseDeleteRows');
+  const btnWarehouseSelectAll = document.getElementById('btnWarehouseSelectAll');
+  const btnWarehouseDeselectAll = document.getElementById('btnWarehouseDeselectAll');
+  const btnWarehouseStockIn = document.getElementById('btnWarehouseStockIn');
+  const btnWarehouseRegenerate = document.getElementById('btnWarehouseRegenerate');
+  const btnWarehouseHistory = document.getElementById('btnWarehouseHistory');
+
+  if (btnWarehouseImport) btnWarehouseImport.addEventListener('click', () => importWarehouseFile());
+  if (btnWarehouseAddRow) btnWarehouseAddRow.addEventListener('click', () => addWarehouseRow().catch((err) => alert(err.message || '添加失败')));
+  if (btnWarehouseDeleteRows) btnWarehouseDeleteRows.addEventListener('click', () => deleteWarehouseRows().catch((err) => alert(err.message || '删除失败')));
+  if (btnWarehouseSelectAll) btnWarehouseSelectAll.addEventListener('click', () => setWarehouseCheckboxes(true));
+  if (btnWarehouseDeselectAll) btnWarehouseDeselectAll.addEventListener('click', () => setWarehouseCheckboxes(false));
+  if (btnWarehouseStockIn) btnWarehouseStockIn.addEventListener('click', () => warehouseStockInSelected().catch((err) => alert(err.message || '入库失败')));
+  if (btnWarehouseRegenerate) btnWarehouseRegenerate.addEventListener('click', () => regenerateWarehouseBarcodes().catch((err) => alert(err.message || '重生成失败')));
+  if (btnWarehouseHistory) btnWarehouseHistory.addEventListener('click', () => showWarehouseHistory().catch((err) => alert(err.message || '历史记录加载失败')));
 
   document.getElementById('btnLoginCancel').addEventListener('click', closeLogin);
   document.getElementById('btnLoginSubmit').addEventListener('click', submitLogin);
