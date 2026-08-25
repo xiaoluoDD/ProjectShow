@@ -1035,8 +1035,9 @@
   }
 
   // 从子任务等页面跳转回来时自动弹出登录
+  const isPreviewPage = window.location && window.location.pathname.indexOf('/mobile-preview/') >= 0;
   const loginFlag = new URLSearchParams(window.location.search).get('login');
-  if (loginFlag === '1' && !(window.Auth && window.Auth.isLoggedIn())) {
+  if ((isPreviewPage || loginFlag === '1') && !(window.Auth && window.Auth.isLoggedIn())) {
     openLogin();
   }
 })();

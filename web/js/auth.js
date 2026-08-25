@@ -1,6 +1,11 @@
 (function () {
-  const TOKEN_KEY = 'projectshow_auth_token';
-  const USER_KEY = 'projectshow_auth_user';
+  function isPreviewMode() {
+    return window.location && window.location.pathname.indexOf('/mobile-preview/') >= 0;
+  }
+
+  const STORAGE_SUFFIX = isPreviewMode() ? '_preview' : '';
+  const TOKEN_KEY = `projectshow_auth_token${STORAGE_SUFFIX}`;
+  const USER_KEY = `projectshow_auth_user${STORAGE_SUFFIX}`;
 
   let currentUser = null;
 
@@ -113,6 +118,9 @@
   }
 
   // 先挂载 Auth，再异步校验；避免首请求拿不到 Authorization
+  if (isPreviewMode()) {
+    persist('', null);
+  }
   currentUser = readStoredUser();
   window.Auth = {
     getUser,
