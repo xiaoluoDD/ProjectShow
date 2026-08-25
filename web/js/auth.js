@@ -6,6 +6,12 @@
   const STORAGE_SUFFIX = isPreviewMode() ? '_preview' : '';
   const TOKEN_KEY = `projectshow_auth_token${STORAGE_SUFFIX}`;
   const USER_KEY = `projectshow_auth_user${STORAGE_SUFFIX}`;
+  const ALL_STORAGE_KEYS = [
+    'projectshow_auth_token',
+    'projectshow_auth_user',
+    'projectshow_auth_token_preview',
+    'projectshow_auth_user_preview',
+  ];
 
   let currentUser = null;
 
@@ -32,6 +38,14 @@
       else localStorage.removeItem(TOKEN_KEY);
       if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
       else localStorage.removeItem(USER_KEY);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function clearAllAuthStorage() {
+    try {
+      ALL_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     } catch (e) {
       /* ignore */
     }
@@ -119,7 +133,7 @@
 
   // 先挂载 Auth，再异步校验；避免首请求拿不到 Authorization
   if (isPreviewMode()) {
-    persist('', null);
+    clearAllAuthStorage();
   }
   currentUser = readStoredUser();
   window.Auth = {
