@@ -545,9 +545,9 @@
     scheduleIdleKiosk();
   }
 
-  // 从子任务等页面跳转回来时自动弹出登录
+  // 每次打开网页都要求重新登录；带 login=1 的跳转同样自动弹窗。
   const loginFlag = new URLSearchParams(window.location.search).get('login');
-  if (loginFlag === '1' && !(window.Auth && window.Auth.isLoggedIn())) {
+  if (!(window.Auth && window.Auth.isLoggedIn()) || loginFlag === '1') {
     openLogin();
   }
 })();

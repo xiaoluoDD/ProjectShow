@@ -1,6 +1,7 @@
 (function () {
   const TOKEN_KEY = 'projectshow_auth_token';
   const USER_KEY = 'projectshow_auth_user';
+  const AUTH_STORAGE_KEYS = [TOKEN_KEY, USER_KEY];
 
   let currentUser = null;
 
@@ -27,6 +28,15 @@
       else localStorage.removeItem(TOKEN_KEY);
       if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
       else localStorage.removeItem(USER_KEY);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  // 每次打开网页都要求重新登录，避免浏览器复用上次的登录状态。
+  function clearStoredAuth() {
+    try {
+      AUTH_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     } catch (e) {
       /* ignore */
     }
@@ -112,8 +122,9 @@
     notifyChanged();
   }
 
-  // 先挂载 Auth，再异步校验；避免首请求拿不到 Authorization
-  currentUser = readStoredUser();
+  // 页面启动时清空本地登录凭据；登录成功后本次页面会话仍可正常使用。
+  clearStoredAuth();
+  currentUser = null;
   window.Auth = {
     getUser,
     isLoggedIn,
