@@ -545,9 +545,9 @@
     scheduleIdleKiosk();
   }
 
-  // 每次打开网页都要求重新登录；带 login=1 的跳转同样自动弹窗。
+  // 每次打开网页只清空登录状态，不主动弹出登录框；需要时由用户点击「登录」。
   const loginFlag = new URLSearchParams(window.location.search).get('login');
-  if (!(window.Auth && window.Auth.isLoggedIn()) || loginFlag === '1') {
+  if (loginFlag === '1' && !(window.Auth && window.Auth.isLoggedIn())) {
     openLogin();
   }
 })();
