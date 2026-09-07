@@ -545,7 +545,8 @@
     scheduleIdleKiosk();
   }
 
-  // 每次打开网页只清空登录状态，不主动弹出登录框；需要时由用户点击「登录」。
+  // 新开标签页/重新打开网页会清空登录状态（见 auth.js），但不主动弹出登录框；
+  // 只有从「标记完结」等操作跳转回来（带 ?login=1）才自动弹出。
   const loginFlag = new URLSearchParams(window.location.search).get('login');
   if (loginFlag === '1' && !(window.Auth && window.Auth.isLoggedIn())) {
     openLogin();

@@ -1,6 +1,12 @@
 (function () {
-  const TOKEN_KEY = 'projectshow_auth_token';
-  const USER_KEY = 'projectshow_auth_user';
+  const KEYS = window.AUTH_KEYS || {
+    token: 'projectshow_auth_token',
+    user: 'projectshow_auth_user',
+    session: 'projectshow_session_active',
+  };
+  const TOKEN_KEY = KEYS.token;
+  const USER_KEY = KEYS.user;
+  const SESSION_FLAG_KEY = KEYS.session;
   const AUTH_STORAGE_KEYS = [TOKEN_KEY, USER_KEY];
 
   let currentUser = null;
@@ -33,12 +39,28 @@
     }
   }
 
-  // 每次打开网页都要求重新登录，避免浏览器复用上次的登录状态。
+  // 预览版 / 正式版分别使用独立 key（见 config.js 的 AUTH_KEYS），这里只清
+  // 当前环境自己的登录态，不会影响另一个环境。
   function clearStoredAuth() {
     try {
       AUTH_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     } catch (e) {
       /* ignore */
+    }
+  }
+
+  // 是否本次浏览器标签页第一次打开本站：新开标签页 / 关闭重开都算“重新打开网
+  // 页”，要求重新登录；但同一次打开内从首页跳到项目详情、子任务页（本站是多
+  // 页面应用，每次跳转都会整页刷新）属于同一次使用，不应把刚登录的状态清掉，
+  // 否则会出现“标记完结时莫名被要求重新登录，登录后一点子任务又被登出”的问题。
+  function isFreshBrowserSession() {
+    try {
+      if (sessionStorage.getItem(SESSION_FLAG_KEY)) return false;
+      sessionStorage.setItem(SESSION_FLAG_KEY, '1');
+      return true;
+    } catch (e) {
+      // sessionStorage 不可用时，保守起见不清登录态，避免影响正常使用
+      return false;
     }
   }
 
@@ -122,9 +144,15 @@
     notifyChanged();
   }
 
-  // 页面启动时清空本地登录凭据；登录成功后本次页面会话仍可正常使用。
-  clearStoredAuth();
-  currentUser = null;
+  // 每次真正“打开网页”（新开标签页 / 重新访问）才清空登录凭据，避免复用陈旧
+  // 登录状态；同一次打开内的页面跳转保留登录态。
+  if (isFreshBrowserSession()) {
+    clearStoredAuth();
+    currentUser = null;
+  } else {
+    currentUser = readStoredUser();
+  }
+
   window.Auth = {
     getUser,
     isLoggedIn,

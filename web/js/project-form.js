@@ -50,7 +50,8 @@
   function canEdit() {
     if (window.Auth && window.Auth.canEditProjects()) return true;
     try {
-      const raw = localStorage.getItem('projectshow_auth_user');
+      const key = (window.AUTH_KEYS && window.AUTH_KEYS.user) || 'projectshow_auth_user';
+      const raw = localStorage.getItem(key);
       if (!raw) return false;
       const user = JSON.parse(raw);
       return !!(user && user.can_edit_projects);

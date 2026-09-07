@@ -5,15 +5,18 @@ function apiBase() {
 
 function authHeaders(extra) {
   const headers = Object.assign({ Accept: 'application/json' }, extra || {});
-  // 直接读 localStorage，避免 Auth 尚未挂载时丢 Token
   let token = '';
-  try {
-    token = localStorage.getItem('projectshow_auth_token') || '';
-  } catch (e) {
-    token = '';
-  }
-  if (!token && window.Auth && typeof window.Auth.getToken === 'function') {
+  if (window.Auth && typeof window.Auth.getToken === 'function') {
     token = window.Auth.getToken() || '';
+  } else {
+    // Auth 脚本尚未挂载时的兜底：按当前页面环境（预览版/正式版）读取对应 key，
+    // 避免预览页面误读到正式版的 key（反之亦然）。
+    try {
+      const key = (window.AUTH_KEYS && window.AUTH_KEYS.token) || 'projectshow_auth_token';
+      token = localStorage.getItem(key) || '';
+    } catch (e) {
+      token = '';
+    }
   }
   if (token) headers.Authorization = `Bearer ${token}`;
   return headers;

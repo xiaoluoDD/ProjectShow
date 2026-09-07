@@ -60,7 +60,7 @@
     // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
     if (!document.querySelector('script[data-subtask-form]')) {
       const s = document.createElement('script');
-      s.src = 'js/subtask-form.js?v=1.2.20';
+      s.src = 'js/subtask-form.js?v=1.2.21';
       s.setAttribute('data-subtask-form', '1');
       s.onload = () => {
         if (!tryOpen()) {
@@ -98,7 +98,8 @@
     if (window.Auth && window.Auth.canEditProjects()) return true;
     // 兜底：Auth 尚未刷新完成时，读本地缓存用户权限
     try {
-      const raw = localStorage.getItem('projectshow_auth_user');
+      const key = (window.AUTH_KEYS && window.AUTH_KEYS.user) || 'projectshow_auth_user';
+      const raw = localStorage.getItem(key);
       if (!raw) return false;
       const user = JSON.parse(raw);
       return !!(user && user.can_edit_projects);
