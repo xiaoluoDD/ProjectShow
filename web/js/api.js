@@ -131,6 +131,7 @@ function fetchDashboardPersonTasks(params) {
   if (params.name) q.set('name', params.name);
   if (params.status) q.set('status', params.status);
   if (params.year) q.set('year', params.year);
+  if (params.role) q.set('role', params.role);
   return apiGet(`/api/dashboard/person-tasks?${q.toString()}`);
 }
 

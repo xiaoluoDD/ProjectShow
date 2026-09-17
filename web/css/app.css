@@ -453,6 +453,12 @@ a {
   gap: 0;
 }
 
+.dash-cell-person-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
 @media (min-width: 960px) {
   .app-main {
     max-width: 1280px;
@@ -481,9 +487,20 @@ a {
     grid-row: 1;
   }
 
-  .dash-cell-person {
+  .dash-cell-person-stack {
     grid-column: 3;
     grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .dash-cell-person,
+  .dash-cell-sub-person {
+    flex: 1 1 0;
+    min-height: 0;
   }
 
   .dash-cell-work {
@@ -506,7 +523,8 @@ a {
     max-height: min(52vh, 520px);
   }
 
-  .dash-cell-person .table-wrap {
+  .dash-cell-person .table-wrap,
+  .dash-cell-sub-person .table-wrap {
     max-height: none;
   }
 
@@ -666,8 +684,12 @@ body.kiosk-mode .dash-table thead th {
   }
 
   body.kiosk-mode .dash-cell-work,
-  body.kiosk-mode .dash-cell-person {
+  body.kiosk-mode .dash-cell-person-stack {
     min-height: 0;
+  }
+
+  body.kiosk-mode .dash-cell-person-stack {
+    gap: 10px;
   }
 
   body.kiosk-mode .dash-card .table-wrap {

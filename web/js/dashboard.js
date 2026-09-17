@@ -195,7 +195,9 @@
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (!isKioskMode()) return;
-        dashboardRoot.querySelectorAll('.dash-cell-work .table-wrap, .dash-cell-person .table-wrap').forEach((wrap) => {
+        dashboardRoot.querySelectorAll(
+          '.dash-cell-work .table-wrap, .dash-cell-person .table-wrap, .dash-cell-sub-person .table-wrap'
+        ).forEach((wrap) => {
           // 重新渲染后节点是新的，允许重新绑定
           delete wrap.dataset.dragBound;
           startOneTableAutoScroll(wrap);
@@ -404,21 +406,44 @@
       })),
     }));
 
-    // 责任人表：按 status 聚合同一人多角色（与截图列一致：责任人/任务状态/记录数）
-    const personMerged = personGroups.map((g) => {
-      const bucket = {};
-      (g.rows || []).forEach((r) => {
-        bucket[r.status] = (bucket[r.status] || 0) + (r.count || 0);
-      });
-      return {
-        label: g.label,
-        userid: g.userid,
-        name: g.name,
-        rows: Object.keys(bucket).map((status) => ({ status, count: bucket[status] })),
-      };
-    });
+    // 相关责任人 = 项目负责人；子任务责任人 = 子任务 owner。按角色拆开，避免一人双角色时状态数被合并重复。
+    const PERSON_STATUS_ORDER = ['待启动', '进行中', '逾期', '已完结'];
+    function mergeByStatusForRole(groups, role) {
+      return groups
+        .map((g) => {
+          const bucket = {};
+          (g.rows || []).forEach((r) => {
+            if (r.role !== role) return;
+            bucket[r.status] = (bucket[r.status] || 0) + (r.count || 0);
+          });
+          const statuses = PERSON_STATUS_ORDER.filter((s) => bucket[s] != null);
+          Object.keys(bucket).forEach((s) => {
+            if (!statuses.includes(s)) statuses.push(s);
+          });
+          return {
+            label: g.label,
+            userid: g.userid,
+            name: g.name,
+            rows: statuses.map((status) => ({ status, count: bucket[status] })),
+          };
+        })
+        .filter((g) => g.rows.length > 0);
+    }
+
+    const managerMerged = mergeByStatusForRole(personGroups, 'project_manager');
+    const subOwnerMerged = mergeByStatusForRole(personGroups, 'subtask_owner');
 
     const year = dashYear.value;
+    function personTasksHref(group, status, role) {
+      const q = new URLSearchParams();
+      if (group.userid) q.set('userid', group.userid);
+      if (group.name) q.set('name', group.name);
+      if (status) q.set('status', status);
+      if (year) q.set('year', year);
+      if (role) q.set('role', role);
+      return `person-tasks.html?${q.toString()}`;
+    }
+
     const pieBlock = `
       <article class="dash-card dash-cell dash-cell-pie">
         <div class="dash-card-head">
@@ -441,23 +466,28 @@
       </article>`;
 
     const personBlock = `
-      <article class="dash-card dash-cell dash-cell-person">
-        <div class="dash-card-head">
-          <h2>相关责任人</h2>
-        </div>
-        ${groupedTableHtml(
-          ['责任人', '任务状态', '记录数'],
-          personMerged,
-          (group, status) => {
-            const q = new URLSearchParams();
-            if (group.userid) q.set('userid', group.userid);
-            if (group.name) q.set('name', group.name);
-            if (status) q.set('status', status);
-            if (year) q.set('year', year);
-            return `person-tasks.html?${q.toString()}`;
-          }
-        )}
-      </article>`;
+      <div class="dash-cell dash-cell-person-stack">
+        <article class="dash-card dash-cell-person">
+          <div class="dash-card-head">
+            <h2>相关责任人</h2>
+          </div>
+          ${groupedTableHtml(
+            ['责任人', '任务状态', '记录数'],
+            managerMerged,
+            (group, status) => personTasksHref(group, status, 'project_manager')
+          )}
+        </article>
+        <article class="dash-card dash-cell-sub-person">
+          <div class="dash-card-head">
+            <h2>子任务责任人</h2>
+          </div>
+          ${groupedTableHtml(
+            ['责任人', '任务状态', '记录数'],
+            subOwnerMerged,
+            (group, status) => personTasksHref(group, status, 'subtask_owner')
+          )}
+        </article>
+      </div>`;
 
     const workBlock = `
       <article class="dash-card dash-cell dash-cell-work">

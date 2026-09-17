@@ -7,6 +7,7 @@
   const name = (queryParam('name') || '').trim();
   const status = (queryParam('status') || '').trim();
   const year = (queryParam('year') || '').trim();
+  const role = (queryParam('role') || '').trim();
 
   if (!userid && !name) {
     showError(taskRoot, '缺少责任人参数');
@@ -15,7 +16,10 @@
   }
 
   const titleName = name || userid;
-  pageTitle.textContent = status ? `${titleName} · ${status}` : titleName;
+  const roleTitle =
+    role === 'subtask_owner' ? '子任务责任人' : role === 'project_manager' ? '相关责任人' : '';
+  const baseTitle = roleTitle ? `${titleName} · ${roleTitle}` : titleName;
+  pageTitle.textContent = status ? `${baseTitle} · ${status}` : baseTitle;
   document.title = `相关任务 — ${titleName}`;
 
   document.getElementById('btnRefresh').addEventListener('click', loadTasks);
@@ -51,7 +55,7 @@
       if (typeof fetchDashboardPersonTasks !== 'function') {
         throw new Error('接口脚本未更新，请强制刷新或重新同步 web（缺少 fetchDashboardPersonTasks）');
       }
-      const data = await fetchDashboardPersonTasks({ userid, name, status, year });
+      const data = await fetchDashboardPersonTasks({ userid, name, status, year, role });
       const tasks = data.tasks || [];
       summaryBar.textContent = `共 ${tasks.length} 条相关任务（只读）`;
       if (!tasks.length) {
