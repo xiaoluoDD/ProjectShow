@@ -1,6 +1,8 @@
 /**
  * 企微成员管理
  *
+ * 一人可同时属于多个企业微信部门：部门列表在成员卡片与编辑弹窗里都以多选/多个标签展示。
+ *
  * 依赖 api.js 函数：
  *   fetchWecomUsers, syncWecomUsers, updateWecomUser, fetchDepartments
  *
@@ -13,7 +15,7 @@
  *   #memberUserid
  *   #memberName
  *   #memberMobile
- *   #memberDepartment
+ *   #memberDepartmentList
  *   #memberError
  *   #btnMemberCancel
  *   #btnMemberSave
@@ -26,11 +28,14 @@
   const memberUserid = document.getElementById('memberUserid');
   const memberName = document.getElementById('memberName');
   const memberMobile = document.getElementById('memberMobile');
-  const memberDepartment = document.getElementById('memberDepartment');
+  const memberDepartmentList = document.getElementById('memberDepartmentList');
   const memberError = document.getElementById('memberError');
 
   let loadedOnce = false;
   let deptMap = {};
+  let deptList = [];
+  /** @type {Set<number>} 编辑弹窗里当前勾选的部门 id 集合 */
+  let selectedDeptIds = new Set();
 
   const btnSync = document.getElementById('btnSyncMembers');
   if (btnSync) btnSync.addEventListener('click', syncMembers);
@@ -54,12 +59,14 @@
     return s;
   }
 
-  function deptNameOf(user) {
-    // 部门统一以 department_id 关联到部门表为准（部门表本身由企业微信同步/手动创建维护），
-    // 不再回退显示企业微信原始部门文本，避免两套部门名称混杂展示。
+  function deptNamesOf(user) {
+    // 一人可能属于多个部门：优先用后端已拼好的 department_name（多个部门用「、」分隔）；
+    // 兜底用 department_ids + 本地 deptMap 自行拼接；都没有则展示"未分配"。
     if (user.department_name) return user.department_name;
-    const id = Number(user.department_id);
-    if (id > 0 && deptMap[id]) return deptMap[id];
+    const ids = Array.isArray(user.department_ids) ? user.department_ids : [];
+    if (ids.length) {
+      return ids.map((id) => deptMap[id] || `部门#${id}`).join('、');
+    }
     return '未分配';
   }
 
@@ -67,21 +74,37 @@
     const data = await fetchDepartments();
     const list = data.departments || [];
     deptMap = {};
+    deptList = list;
     list.forEach((d) => {
       deptMap[d.id] = d.name || '';
     });
-    if (memberDepartment) {
-      const current = memberDepartment.value;
-      const opts = ['<option value="0">未分配</option>'].concat(
-        list.map(
-          (d) =>
-            `<option value="${d.id}">${escapeHtml(d.name || String(d.id))}</option>`
-        )
-      );
-      memberDepartment.innerHTML = opts.join('');
-      if (current) memberDepartment.value = current;
-    }
     return list;
+  }
+
+  function renderMemberDepartmentChecklist() {
+    if (!memberDepartmentList) return;
+    if (!deptList.length) {
+      memberDepartmentList.innerHTML =
+        '<p class="muted member-empty">暂无部门，请先点击「同步可见成员」从企业微信导入部门</p>';
+      return;
+    }
+    memberDepartmentList.innerHTML = deptList
+      .map((d) => {
+        const id = Number(d.id);
+        const checked = selectedDeptIds.has(id) ? 'checked' : '';
+        return `<label class="member-check-row">
+          <input type="checkbox" data-dept-id="${id}" ${checked} />
+          <span>${escapeHtml(d.name || String(id))}</span>
+        </label>`;
+      })
+      .join('');
+    memberDepartmentList.querySelectorAll('input[type="checkbox"][data-dept-id]').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        const id = Number(cb.getAttribute('data-dept-id'));
+        if (cb.checked) selectedDeptIds.add(id);
+        else selectedDeptIds.delete(id);
+      });
+    });
   }
 
   function openEditor(user) {
@@ -94,7 +117,11 @@
     memberName.value = user.name || '';
     memberName.readOnly = true;
     memberMobile.value = user.mobile || '';
-    memberDepartment.value = String(user.department_id > 0 ? user.department_id : 0);
+    const ids = Array.isArray(user.department_ids) && user.department_ids.length
+      ? user.department_ids
+      : (Number(user.department_id) > 0 ? [Number(user.department_id)] : []);
+    selectedDeptIds = new Set(ids.map(Number));
+    renderMemberDepartmentChecklist();
     memberModal.hidden = false;
     memberMobile.focus();
   }
@@ -115,7 +142,7 @@
       await updateWecomUser({
         userid,
         mobile: memberMobile.value.trim(),
-        department_id: Number(memberDepartment.value) || 0,
+        department_ids: Array.from(selectedDeptIds),
       });
       closeEditor();
       await load(true);
@@ -164,7 +191,7 @@
             </div>
             <h2 class="card-title">${escapeHtml(u.name || u.userid || '—')}</h2>
             <div class="card-row"><span class="label">手机：</span>${escapeHtml(displayOrDash(u.mobile))}</div>
-            <div class="card-row"><span class="label">部门：</span>${escapeHtml(deptNameOf(u))}</div>
+            <div class="card-row"><span class="label">部门：</span>${escapeHtml(deptNamesOf(u))}</div>
             <div class="account-actions">
               <button type="button" class="btn btn-sm" data-edit="${uid}">编辑</button>
             </div>

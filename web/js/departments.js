@@ -1,13 +1,15 @@
 /**
  * 部门管理
  *
+ * 部门统一由企业微信通讯录同步生成（点击「成员管理」→「同步可见成员」），
+ * 本页不再支持手动新增部门；仅遗留的、同步前手动创建的旧部门仍可编辑名称/删除。
+ *
  * 依赖 api.js 函数：
- *   fetchDepartmentsWithMembers, createDepartment, updateDepartment, deleteDepartment
+ *   fetchDepartmentsWithMembers, updateDepartment, deleteDepartment
  *
  * 所需 DOM id：
  *   #departmentsRoot
  *   #departmentsSummaryBar
- *   #btnAddDepartment
  *   #departmentModal
  *   #departmentModalTitle
  *   #departmentEditId
@@ -36,8 +38,6 @@
 
   let loadedOnce = false;
 
-  const btnAdd = document.getElementById('btnAddDepartment');
-  if (btnAdd) btnAdd.addEventListener('click', () => openEditor(null));
   const btnCancel = document.getElementById('btnDepartmentCancel');
   if (btnCancel) btnCancel.addEventListener('click', closeEditor);
   const btnSave = document.getElementById('btnDepartmentSave');
@@ -64,22 +64,16 @@
   }
 
   function openEditor(dept) {
-    if (!departmentModal) return;
+    if (!departmentModal || !dept) return;
+    if (isFromWecom(dept)) {
+      alert('该部门来自企业微信通讯录同步，名称请在企业微信管理后台修改，下次同步成员时会自动更新。');
+      return;
+    }
     departmentError.hidden = true;
     departmentError.textContent = '';
-    if (dept) {
-      if (isFromWecom(dept)) {
-        alert('该部门来自企业微信通讯录同步，名称请在企业微信管理后台修改，下次同步成员时会自动更新。');
-        return;
-      }
-      departmentModalTitle.textContent = '编辑部门';
-      departmentEditId.value = String(dept.id);
-      departmentName.value = dept.name || '';
-    } else {
-      departmentModalTitle.textContent = '新增部门';
-      departmentEditId.value = '';
-      departmentName.value = '';
-    }
+    departmentModalTitle.textContent = '编辑部门（旧数据遗留，非企业微信同步）';
+    departmentEditId.value = String(dept.id);
+    departmentName.value = dept.name || '';
     departmentModal.hidden = false;
     departmentName.focus();
   }
@@ -132,17 +126,14 @@
     departmentError.hidden = true;
     const id = departmentEditId.value.trim();
     const name = departmentName.value.trim();
+    if (!id) return;
     if (!name) {
       departmentError.textContent = '部门名称不能为空';
       departmentError.hidden = false;
       return;
     }
     try {
-      if (id) {
-        await updateDepartment({ id: Number(id), name });
-      } else {
-        await createDepartment({ name });
-      }
+      await updateDepartment({ id: Number(id), name });
       closeEditor();
       await load(true);
     } catch (err) {

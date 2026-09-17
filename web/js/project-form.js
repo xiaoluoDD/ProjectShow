@@ -79,9 +79,21 @@
     return name || userid || '—';
   }
 
-  function userDeptId(user) {
+  // 一人可能同时属于多个部门（企业微信多部门归属），返回其所有部门 id；
+  // 没有 department_ids（旧数据兜底）时退回单个 department_id。
+  function userDeptIds(user) {
+    if (Array.isArray(user && user.department_ids) && user.department_ids.length) {
+      return user.department_ids.map(Number).filter((n) => Number.isFinite(n) && n > 0);
+    }
     const id = Number(user && user.department_id);
-    return Number.isFinite(id) ? id : 0;
+    return Number.isFinite(id) && id > 0 ? [id] : [];
+  }
+
+  // 判断成员是否属于指定部门；deptId=0（未分配）时匹配"不属于任何部门"的成员。
+  function userInDept(user, deptId) {
+    const ids = userDeptIds(user);
+    if (deptId === 0) return ids.length === 0;
+    return ids.indexOf(deptId) !== -1;
   }
 
   function showError(msg) {
@@ -122,7 +134,7 @@
     projectManager.disabled = false;
     const deptId = Number(deptRaw);
     allUsers.forEach((u) => {
-      if (userDeptId(u) !== deptId) return;
+      if (!userInDept(u, deptId)) return;
       const userid = (u.userid || '').trim();
       if (!userid) return;
       const opt = document.createElement('option');
@@ -174,7 +186,7 @@
     }
 
     const deptId = Number(deptRaw);
-    const inDept = allUsers.filter((u) => userDeptId(u) === deptId);
+    const inDept = allUsers.filter((u) => userInDept(u, deptId));
     if (!inDept.length) {
       projectMemberList.innerHTML =
         '<p class="muted member-empty">该部门暂无成员</p>';
@@ -379,11 +391,13 @@
     }
   }
 
+  // 用于"编辑项目时预选负责人所在部门"的下拉框：一人多部门时取第一个作为默认展示。
   function departmentIdForUser(userid) {
     if (!userid) return null;
     const u = allUsers.find((x) => (x.userid || '').trim() === userid);
     if (!u) return null;
-    return userDeptId(u);
+    const ids = userDeptIds(u);
+    return ids.length ? ids[0] : 0;
   }
 
   function buildPayload() {
