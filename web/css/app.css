@@ -480,13 +480,16 @@ a {
   .dash-cell-pie {
     grid-column: 1;
     grid-row: 1;
+    align-self: start;
   }
 
   .dash-cell-kpi {
     grid-column: 2;
     grid-row: 1;
+    align-self: start;
   }
 
+  /* 右侧上下两表共用可视高度，表内滚动，避免把整页和左侧卡片一起撑高 */
   .dash-cell-person-stack {
     grid-column: 3;
     grid-row: 1 / span 2;
@@ -494,13 +497,16 @@ a {
     flex-direction: column;
     gap: 12px;
     min-height: 0;
+    align-self: stretch;
     height: 100%;
+    max-height: min(calc(100vh - 140px), 820px);
   }
 
   .dash-cell-person,
   .dash-cell-sub-person {
     flex: 1 1 0;
     min-height: 0;
+    overflow: hidden;
   }
 
   .dash-cell-work {
@@ -516,6 +522,11 @@ a {
     height: 100%;
   }
 
+  .dash-cell-pie.dash-card,
+  .dash-cell-kpi.dash-card {
+    height: auto;
+  }
+
   .dash-card .table-wrap {
     flex: 1;
     min-height: 0;
@@ -529,7 +540,7 @@ a {
   }
 
   .dash-cell-kpi .kpi-grid {
-    flex: 1;
+    flex: 0 0 auto;
     align-content: start;
   }
 
@@ -654,7 +665,7 @@ body.kiosk-mode .dash-table thead th {
   body.kiosk-mode .dash-cell-pie,
   body.kiosk-mode .dash-cell-kpi {
     height: auto;
-    align-self: stretch;
+    align-self: start;
     overflow: visible;
   }
 
@@ -690,6 +701,8 @@ body.kiosk-mode .dash-table thead th {
 
   body.kiosk-mode .dash-cell-person-stack {
     gap: 10px;
+    max-height: none;
+    height: 100%;
   }
 
   body.kiosk-mode .dash-card .table-wrap {
