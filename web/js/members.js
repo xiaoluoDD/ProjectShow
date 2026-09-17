@@ -9,6 +9,7 @@
  * 所需 DOM id：
  *   #membersRoot
  *   #membersSummaryBar
+ *   #memberSearchInput
  *   #btnSyncMembers
  *   #memberModal
  *   #memberModalTitle
@@ -30,15 +31,23 @@
   const memberMobile = document.getElementById('memberMobile');
   const memberDepartmentList = document.getElementById('memberDepartmentList');
   const memberError = document.getElementById('memberError');
+  const memberSearchInput = document.getElementById('memberSearchInput');
 
   let loadedOnce = false;
   let deptMap = {};
   let deptList = [];
+  let searchKeyword = '';
   /** @type {Set<number>} 编辑弹窗里当前勾选的部门 id 集合 */
   let selectedDeptIds = new Set();
 
   const btnSync = document.getElementById('btnSyncMembers');
   if (btnSync) btnSync.addEventListener('click', syncMembers);
+  if (memberSearchInput) {
+    memberSearchInput.addEventListener('input', () => {
+      searchKeyword = memberSearchInput.value.trim().toLowerCase();
+      applyFilterAndRender();
+    });
+  }
   const btnCancel = document.getElementById('btnMemberCancel');
   if (btnCancel) btnCancel.addEventListener('click', closeEditor);
   const btnSave = document.getElementById('btnMemberSave');
@@ -175,9 +184,27 @@
     }
   }
 
+  // 搜索匹配：姓名 / userid / 手机号 / 部门 / 来源，任一命中即算匹配（大小写不敏感）。
+  function matchesSearch(u, keyword) {
+    if (!keyword) return true;
+    const haystacks = [u.userid, u.name, u.mobile, deptNamesOf(u), sourceLabel(u.sources)];
+    return haystacks.some((v) => String(v || '').toLowerCase().includes(keyword));
+  }
+
+  function applyFilterAndRender() {
+    const all = window.__membersCache || [];
+    const filtered = searchKeyword ? all.filter((u) => matchesSearch(u, searchKeyword)) : all;
+    membersSummaryBar.textContent = searchKeyword
+      ? `共 ${all.length} 名成员，匹配 ${filtered.length} 个`
+      : `共 ${all.length} 名成员`;
+    renderMembers(filtered);
+  }
+
   function renderMembers(users) {
     if (!users.length) {
-      membersRoot.innerHTML = '<div class="state-box"><p>暂无成员，可点击「同步成员」拉取</p></div>';
+      membersRoot.innerHTML = window.__membersCache && window.__membersCache.length
+        ? '<div class="state-box"><p>没有匹配的成员，换个关键字试试</p></div>'
+        : '<div class="state-box"><p>暂无成员，可点击「同步成员」拉取</p></div>';
       return;
     }
     membersRoot.innerHTML = users
@@ -216,7 +243,7 @@
       return;
     }
     if (loadedOnce && !force && window.__membersCache) {
-      renderMembers(window.__membersCache);
+      applyFilterAndRender();
       return;
     }
     showLoading(membersRoot, '正在加载成员…');
@@ -227,8 +254,7 @@
       const users = data.users || [];
       window.__membersCache = users;
       loadedOnce = true;
-      membersSummaryBar.textContent = `共 ${users.length} 名成员`;
-      renderMembers(users);
+      applyFilterAndRender();
     } catch (err) {
       showError(membersRoot, err.message || '加载失败');
       membersSummaryBar.textContent = '加载失败';

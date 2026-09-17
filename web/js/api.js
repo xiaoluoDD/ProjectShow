@@ -177,6 +177,10 @@ function deleteDepartment(id) {
   return apiDelete(`/api/departments?id=${encodeURIComponent(id)}`);
 }
 
+function cleanupManualDepartments() {
+  return apiPost('/api/departments/cleanup-manual', {});
+}
+
 function syncWecomUsers() {
   return apiPost('/api/wecom/sync', {});
 }

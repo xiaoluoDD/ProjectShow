@@ -2,10 +2,15 @@
   const listRoot = document.getElementById('listRoot');
   const summaryBar = document.getElementById('summaryBar');
   const filterPanel = document.getElementById('filterPanel');
+  const filterName = document.getElementById('filterName');
   const filterYear = document.getElementById('filterYear');
+  const filterYearSearch = document.getElementById('filterYearSearch');
   const filterWorkNo = document.getElementById('filterWorkNo');
+  const filterWorkNoSearch = document.getElementById('filterWorkNoSearch');
   const filterManager = document.getElementById('filterManager');
+  const filterManagerSearch = document.getElementById('filterManagerSearch');
   const filterStatus = document.getElementById('filterStatus');
+  const filterStatusSearch = document.getElementById('filterStatusSearch');
 
   let allProjects = [];
   let loadedOnce = false;
@@ -21,16 +26,27 @@
     filterPanel.classList.remove('open');
   });
   document.getElementById('btnClearFilter').addEventListener('click', () => {
+    filterName.value = '';
     filterYear.value = '';
+    filterYearSearch.value = '';
     filterWorkNo.value = '';
+    filterWorkNoSearch.value = '';
     filterManager.value = '';
+    filterManagerSearch.value = '';
     filterStatus.value = '';
+    filterStatusSearch.value = '';
     renderList();
   });
 
   [filterYear, filterWorkNo, filterManager, filterStatus].forEach((el) => {
     el.addEventListener('change', renderList);
   });
+  // 名称筛选 + 每个下拉框旁的输入框：支持直接打字实时查找，不用逐个翻下拉框选项。
+  [filterName, filterYearSearch, filterWorkNoSearch, filterManagerSearch, filterStatusSearch].forEach(
+    (el) => {
+      el.addEventListener('input', renderList);
+    }
+  );
 
   document.addEventListener('touchstart', (e) => {
     if (window.scrollY <= 0) {
@@ -80,15 +96,44 @@
   }
 
   function passesFilter(project) {
+    const name = filterName.value.trim().toLowerCase();
     const year = filterYear.value;
+    const yearSearch = filterYearSearch.value.trim().toLowerCase();
     const workNo = filterWorkNo.value;
+    const workNoSearch = filterWorkNoSearch.value.trim().toLowerCase();
     const manager = filterManager.value;
+    const managerSearch = filterManagerSearch.value.trim().toLowerCase();
     const status = filterStatus.value;
+    const statusSearch = filterStatusSearch.value.trim().toLowerCase();
 
-    if (year && (project.year || '').trim() !== year) return false;
-    if (workNo && (project.work_no || '').trim() !== workNo) return false;
-    if (manager && managerText(project) !== manager) return false;
-    if (status && (project.status || '').trim() !== status) return false;
+    if (name && !(project.name || '').toLowerCase().includes(name)) return false;
+
+    // 每个字段：只要旁边的输入框填了关键字，就按"包含"匹配直接查找，
+    // 优先于下拉框的精确选择；输入框为空时才回退到下拉框的精确匹配。
+    if (yearSearch) {
+      if (!(project.year || '').toLowerCase().includes(yearSearch)) return false;
+    } else if (year && (project.year || '').trim() !== year) {
+      return false;
+    }
+
+    if (workNoSearch) {
+      if (!(project.work_no || '').toLowerCase().includes(workNoSearch)) return false;
+    } else if (workNo && (project.work_no || '').trim() !== workNo) {
+      return false;
+    }
+
+    if (managerSearch) {
+      if (!managerText(project).toLowerCase().includes(managerSearch)) return false;
+    } else if (manager && managerText(project) !== manager) {
+      return false;
+    }
+
+    if (statusSearch) {
+      if (!(project.status || '').toLowerCase().includes(statusSearch)) return false;
+    } else if (status && (project.status || '').trim() !== status) {
+      return false;
+    }
+
     return true;
   }
 

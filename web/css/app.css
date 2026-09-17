@@ -824,6 +824,18 @@ body.kiosk-mode .dash-table thead th {
   flex: 1;
 }
 
+.member-search-input {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
 .projects-toolbar {
   display: flex;
   align-items: center;

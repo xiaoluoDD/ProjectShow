@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.2.24</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.24" />
+  <title>项目管理看板 v1.2.25</title>
+  <link rel="stylesheet" href="css/app.css?v=1.2.25" />
 </head>
 <body>
   <header class="app-header">
@@ -46,14 +46,20 @@
       <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷新</p>
 
       <section class="filter-panel" id="filterPanel">
+        <label for="filterName">项目名称</label>
+        <input id="filterName" type="text" autocomplete="off" placeholder="输入项目名称关键字查找" />
+
         <label for="filterYear">年度</label>
         <select id="filterYear"><option value="">全部</option></select>
+        <input id="filterYearSearch" type="text" autocomplete="off" placeholder="或直接输入年度查找" />
 
         <label for="filterWorkNo">工番号</label>
         <select id="filterWorkNo"><option value="">全部</option></select>
+        <input id="filterWorkNoSearch" type="text" autocomplete="off" placeholder="或直接输入工番号查找" />
 
         <label for="filterManager">项目负责人</label>
         <select id="filterManager"><option value="">全部</option></select>
+        <input id="filterManagerSearch" type="text" autocomplete="off" placeholder="或直接输入负责人姓名查找" />
 
         <label for="filterStatus">项目状态</label>
         <select id="filterStatus">
@@ -62,6 +68,7 @@
           <option value="进行中">进行中</option>
           <option value="已完结">已完结</option>
         </select>
+        <input id="filterStatusSearch" type="text" autocomplete="off" placeholder="或直接输入状态关键字查找" />
 
         <div class="filter-actions">
           <button type="button" class="btn" id="btnClearFilter">清空</button>
@@ -86,6 +93,7 @@
     <section id="departmentsView" hidden>
       <div class="accounts-toolbar">
         <p class="hint-bar" id="departmentsSummaryBar">部门自动跟随企业微信通讯录，点击「成员管理」同步即可更新</p>
+        <button type="button" class="btn btn-danger" id="btnCleanupManualDept">清理手动创建的旧部门</button>
       </div>
       <div id="departmentsRoot"></div>
     </section>
@@ -96,6 +104,13 @@
         <p class="hint-bar" id="membersSummaryBar">登录后可管理成员</p>
         <button type="button" class="btn btn-primary" id="btnSyncMembers">同步可见成员</button>
       </div>
+      <input
+        type="text"
+        id="memberSearchInput"
+        class="member-search-input"
+        autocomplete="off"
+        placeholder="搜索姓名 / UserID / 手机号 / 部门"
+      />
       <div id="membersRoot"></div>
     </section>
 
@@ -325,18 +340,18 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.24"></script>
-  <script src="js/status.js?v=1.2.24"></script>
-  <script src="js/utils.js?v=1.2.24"></script>
-  <script src="js/api.js?v=1.2.24"></script>
-  <script src="js/auth.js?v=1.2.24"></script>
-  <script src="js/dashboard.js?v=1.2.24"></script>
-  <script src="js/list.js?v=1.2.24"></script>
-  <script src="js/project-form.js?v=1.2.24"></script>
-  <script src="js/accounts.js?v=1.2.24"></script>
-  <script src="js/departments.js?v=1.2.24"></script>
-  <script src="js/members.js?v=1.2.24"></script>
-  <script src="js/admin-tools.js?v=1.2.24"></script>
-  <script src="js/app.js?v=1.2.24"></script>
+  <script src="js/config.js?v=1.2.25"></script>
+  <script src="js/status.js?v=1.2.25"></script>
+  <script src="js/utils.js?v=1.2.25"></script>
+  <script src="js/api.js?v=1.2.25"></script>
+  <script src="js/auth.js?v=1.2.25"></script>
+  <script src="js/dashboard.js?v=1.2.25"></script>
+  <script src="js/list.js?v=1.2.25"></script>
+  <script src="js/project-form.js?v=1.2.25"></script>
+  <script src="js/accounts.js?v=1.2.25"></script>
+  <script src="js/departments.js?v=1.2.25"></script>
+  <script src="js/members.js?v=1.2.25"></script>
+  <script src="js/admin-tools.js?v=1.2.25"></script>
+  <script src="js/app.js?v=1.2.25"></script>
 </body>
 </html>

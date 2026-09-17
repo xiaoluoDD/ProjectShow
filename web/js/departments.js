@@ -42,6 +42,8 @@
   if (btnCancel) btnCancel.addEventListener('click', closeEditor);
   const btnSave = document.getElementById('btnDepartmentSave');
   if (btnSave) btnSave.addEventListener('click', saveEditor);
+  const btnCleanupManual = document.getElementById('btnCleanupManualDept');
+  if (btnCleanupManual) btnCleanupManual.addEventListener('click', cleanupManual);
   if (departmentModal) {
     departmentModal.addEventListener('click', (e) => {
       if (e.target === departmentModal) closeEditor();
@@ -61,6 +63,17 @@
 
   function isFromWecom(dept) {
     return Number(dept && dept.wecom_dept_id) > 0;
+  }
+
+  // 统计各部门成员的去重人数（一人挂多个部门时只计一次）。
+  function countUniqueMembers(departments) {
+    const seen = new Set();
+    departments.forEach((d) => {
+      (Array.isArray(d.members) ? d.members : []).forEach((m) => {
+        if (m && m.userid) seen.add(m.userid);
+      });
+    });
+    return seen.size;
   }
 
   function openEditor(dept) {
@@ -120,6 +133,35 @@
 
   function closeMembers() {
     if (departmentMembersModal) departmentMembersModal.hidden = true;
+  }
+
+  async function cleanupManual() {
+    if (!canManage()) {
+      alert('无权限清理部门');
+      return;
+    }
+    const manualCount = (window.__departmentsCache || []).filter((d) => !isFromWecom(d)).length;
+    if (manualCount === 0) {
+      alert('当前没有手动创建的旧部门，无需清理。');
+      return;
+    }
+    if (
+      !confirm(
+        `将删除 ${manualCount} 个手动创建的旧部门（企业微信同步的部门不受影响）。\n这些部门下的成员会解除关联，可通过「同步可见成员」重新自动归入企业微信部门。\n确定继续？`
+      )
+    ) {
+      return;
+    }
+    if (btnCleanupManual) btnCleanupManual.disabled = true;
+    try {
+      const data = await cleanupManualDepartments();
+      alert(data.msg || '清理完成');
+      await load(true);
+    } catch (err) {
+      alert(err.message || '清理失败');
+    } finally {
+      if (btnCleanupManual) btnCleanupManual.disabled = false;
+    }
   }
 
   async function saveEditor() {
@@ -225,11 +267,9 @@
       const departments = data.departments || [];
       window.__departmentsCache = departments;
       loadedOnce = true;
-      const totalMembers = departments.reduce(
-        (sum, d) => sum + (d.member_count ?? (Array.isArray(d.members) ? d.members.length : 0)),
-        0
-      );
-      departmentsSummaryBar.textContent = `共 ${departments.length} 个部门，成员合计 ${totalMembers} 人`;
+      // 一人可同时属于多个部门，"成员合计"按去重后的人数统计，避免重复计算。
+      const totalMembers = countUniqueMembers(departments);
+      departmentsSummaryBar.textContent = `共 ${departments.length} 个部门，成员合计 ${totalMembers} 人（去重）`;
       renderDepartments(departments);
     } catch (err) {
       showError(departmentsRoot, err.message || '加载失败');
