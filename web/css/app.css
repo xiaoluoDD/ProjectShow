@@ -469,23 +469,24 @@ a {
     flex: 0 0 200px;
   }
 
-  /* 两行都按内容高度，避免 1fr 把中间撑出大块空白 */
   .dash-layout {
     display: grid;
     grid-template-columns: minmax(280px, 1.15fr) minmax(240px, 0.95fr) minmax(280px, 1.15fr);
-    grid-template-rows: auto auto;
+    grid-template-rows: auto minmax(280px, 1fr);
     gap: 12px;
-    align-items: start;
+    align-items: stretch;
   }
 
   .dash-cell-pie {
     grid-column: 1;
     grid-row: 1;
+    align-self: start;
   }
 
   .dash-cell-kpi {
     grid-column: 2;
     grid-row: 1;
+    align-self: start;
   }
 
   .dash-cell-work {
@@ -493,24 +494,26 @@ a {
     grid-row: 2;
   }
 
-  /* 右侧两表分别对齐上排 / 下排，与左侧齐高，不再单独撑高整页 */
+  /* 右侧责任人区：普通 flex 纵向堆叠（不用 subgrid！），作为一个整体跨两行，
+     和左侧「饼图+概览」「项目进度」两行总高对齐，内部上下两表各占一半、各自可滚动。
+     用 subgrid 会让两张表分别被迫套用 row1/row2 各自的高度（互不相关），
+     并把未裁剪内容直接计入 row1 的高度计算，导致上排被撑爆、出现大片空白且表格不再需要滚动。 */
   .dash-cell-person-stack {
     grid-column: 3;
     grid-row: 1 / span 2;
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     min-height: 0;
-    align-self: stretch;
-    height: auto;
-    max-height: none;
+    height: 100%;
   }
 
   .dash-cell-person,
   .dash-cell-sub-person {
+    flex: 1 1 0;
     min-height: 0;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .dash-card {
@@ -518,46 +521,25 @@ a {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    height: auto;
-  }
-
-  .dash-cell-person.dash-card,
-  .dash-cell-sub-person.dash-card {
-    width: 100%;
-    align-self: start;
-    height: auto;
+    height: 100%;
   }
 
   .dash-card .table-wrap {
-    flex: 1 1 auto;
+    flex: 1;
     min-height: 0;
     overflow: auto;
-    max-height: min(42vh, 420px);
+    max-height: min(52vh, 520px);
   }
 
+  /* 普通页面（可整页滚动）：给右侧两表各自一个上限，避免无限撑高页面 */
   .dash-cell-person .table-wrap,
   .dash-cell-sub-person .table-wrap {
-    max-height: min(34vh, 320px);
+    max-height: min(32vh, 320px);
   }
 
   .dash-cell-kpi .kpi-grid {
-    flex: 0 0 auto;
+    flex: 1;
     align-content: start;
-  }
-
-  /* 不支持 subgrid 时退回纵向分栏，各自限高滚动 */
-  @supports not (grid-template-rows: subgrid) {
-    .dash-cell-person-stack {
-      display: flex;
-      flex-direction: column;
-      align-self: start;
-      height: auto;
-    }
-
-    .dash-cell-person,
-    .dash-cell-sub-person {
-      flex: 0 1 auto;
-    }
   }
 
   /* 项目列表宽屏双列卡片 */
