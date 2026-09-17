@@ -59,11 +59,19 @@
     return !!(window.Auth && window.Auth.isLoggedIn() && window.Auth.canEditProjects());
   }
 
+  function isFromWecom(dept) {
+    return Number(dept && dept.wecom_dept_id) > 0;
+  }
+
   function openEditor(dept) {
     if (!departmentModal) return;
     departmentError.hidden = true;
     departmentError.textContent = '';
     if (dept) {
+      if (isFromWecom(dept)) {
+        alert('该部门来自企业微信通讯录同步，名称请在企业微信管理后台修改，下次同步成员时会自动更新。');
+        return;
+      }
       departmentModalTitle.textContent = '编辑部门';
       departmentEditId.value = String(dept.id);
       departmentName.value = dept.name || '';
@@ -151,16 +159,23 @@
     departmentsRoot.innerHTML = departments
       .map((d) => {
         const count = d.member_count ?? (Array.isArray(d.members) ? d.members.length : 0);
+        const fromWecom = isFromWecom(d);
+        const sourceBadge = fromWecom
+          ? '<span class="card-meta">企业微信同步</span>'
+          : '<span class="card-meta">手动创建</span>';
+        const editBtn = fromWecom
+          ? `<button type="button" class="btn btn-sm" disabled title="来自企业微信同步，名称请在企业微信管理后台修改">编辑</button>`
+          : `<button type="button" class="btn btn-sm" data-edit="${d.id}">编辑</button>`;
         return `
           <article class="account-card" data-id="${d.id}">
             <div class="card-top">
-              <span class="card-meta">部门</span>
+              ${sourceBadge}
               <button type="button" class="status-badge status-default dept-count-btn" data-members="${d.id}" title="查看人员">${count} 人</button>
             </div>
             <h2 class="card-title">${escapeHtml(d.name || '—')}</h2>
             <div class="account-actions">
               <button type="button" class="btn btn-sm" data-members="${d.id}">查看人员</button>
-              <button type="button" class="btn btn-sm" data-edit="${d.id}">编辑</button>
+              ${editBtn}
               <button type="button" class="btn btn-sm btn-danger" data-del="${d.id}">删除</button>
             </div>
           </article>`;
@@ -187,7 +202,10 @@
         if (!id) return;
         const dept = (window.__departmentsCache || []).find((x) => x.id === id);
         const name = dept ? dept.name : String(id);
-        if (!confirm(`确定删除部门「${name}」？\n该部门下成员将解除关联。`)) return;
+        const hint = dept && isFromWecom(dept)
+          ? '\n该部门来自企业微信同步，若企业微信通讯录中仍存在，下次同步成员时会重新自动创建。'
+          : '';
+        if (!confirm(`确定删除部门「${name}」？\n该部门下成员将解除关联。${hint}`)) return;
         try {
           await deleteDepartment(id);
           await load(true);

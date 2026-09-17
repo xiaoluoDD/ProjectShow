@@ -55,10 +55,12 @@
   }
 
   function deptNameOf(user) {
+    // 部门统一以 department_id 关联到部门表为准（部门表本身由企业微信同步/手动创建维护），
+    // 不再回退显示企业微信原始部门文本，避免两套部门名称混杂展示。
     if (user.department_name) return user.department_name;
     const id = Number(user.department_id);
     if (id > 0 && deptMap[id]) return deptMap[id];
-    return (user.departments || '').trim() || '—';
+    return '未分配';
   }
 
   async function ensureDepartments() {
