@@ -26,7 +26,7 @@
   dashYear.addEventListener('change', () => load(true));
 
   function roleLabel(role) {
-    if (role === 'subtask_owner') return '子任务负责人';
+    if (role === 'subtask_member' || role === 'subtask_owner') return '子任务成员';
     if (role === 'project_manager') return '项目负责人';
     return role || '—';
   }
@@ -406,7 +406,7 @@
       })),
     }));
 
-    // 相关责任人 = 项目负责人；子任务责任人 = 子任务 owner。按角色拆开，避免一人双角色时状态数被合并重复。
+    // 相关责任人 = 项目负责人；子任务责任人 = 子任务成员（不是 owner，owner 固定等于项目负责人）。
     const PERSON_STATUS_ORDER = ['待启动', '进行中', '逾期', '已完结'];
     function mergeByStatusForRole(groups, role) {
       return groups
@@ -431,7 +431,7 @@
     }
 
     const managerMerged = mergeByStatusForRole(personGroups, 'project_manager');
-    const subOwnerMerged = mergeByStatusForRole(personGroups, 'subtask_owner');
+    const subMemberMerged = mergeByStatusForRole(personGroups, 'subtask_member');
 
     const year = dashYear.value;
     function personTasksHref(group, status, role) {
@@ -483,8 +483,8 @@
           </div>
           ${groupedTableHtml(
             ['责任人', '任务状态', '记录数'],
-            subOwnerMerged,
-            (group, status) => personTasksHref(group, status, 'subtask_owner')
+            subMemberMerged,
+            (group, status) => personTasksHref(group, status, 'subtask_member')
           )}
         </article>
       </div>`;

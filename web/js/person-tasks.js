@@ -17,7 +17,11 @@
 
   const titleName = name || userid;
   const roleTitle =
-    role === 'subtask_owner' ? '子任务责任人' : role === 'project_manager' ? '相关责任人' : '';
+    role === 'subtask_member' || role === 'subtask_owner'
+      ? '子任务责任人'
+      : role === 'project_manager'
+        ? '相关责任人'
+        : '';
   const baseTitle = roleTitle ? `${titleName} · ${roleTitle}` : titleName;
   pageTitle.textContent = status ? `${baseTitle} · ${status}` : baseTitle;
   document.title = `相关任务 — ${titleName}`;
@@ -25,7 +29,7 @@
   document.getElementById('btnRefresh').addEventListener('click', loadTasks);
 
   function roleLabel(role) {
-    if (role === 'subtask_owner') return '子任务负责人';
+    if (role === 'subtask_member' || role === 'subtask_owner') return '子任务成员';
     if (role === 'project_manager') return '项目负责人';
     return role || '—';
   }
