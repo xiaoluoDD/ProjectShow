@@ -483,10 +483,11 @@ a {
     align-self: start;
   }
 
+  /* 项目概览卡片不设 align-self:start，让它跟饼图卡片一样撑满第一行高度，
+     避免内容较少时下方露出灰色背景空白 */
   .dash-cell-kpi {
     grid-column: 2;
     grid-row: 1;
-    align-self: start;
   }
 
   .dash-cell-work {
@@ -660,15 +661,17 @@ body.kiosk-mode .dash-table thead th {
     gap: 10px;
   }
 
-  body.kiosk-mode .dash-cell-pie,
-  body.kiosk-mode .dash-cell-kpi {
+  body.kiosk-mode .dash-cell-pie {
     height: auto;
     align-self: start;
     overflow: visible;
+    min-width: 0;
   }
 
-  body.kiosk-mode .dash-cell-pie {
-    min-width: 0;
+  /* 项目概览卡片保持默认 stretch，撑满第一行（与饼图卡片同高），
+     避免全屏模式下内容较少时下方露出空白 */
+  body.kiosk-mode .dash-cell-kpi {
+    overflow: visible;
   }
 
   body.kiosk-mode .dash-cell-pie.dash-card {
