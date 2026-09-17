@@ -469,44 +469,23 @@ a {
     flex: 0 0 200px;
   }
 
+  /* 两行都按内容高度，避免 1fr 把中间撑出大块空白 */
   .dash-layout {
     display: grid;
     grid-template-columns: minmax(280px, 1.15fr) minmax(240px, 0.95fr) minmax(280px, 1.15fr);
-    grid-template-rows: auto minmax(280px, 1fr);
+    grid-template-rows: auto auto;
     gap: 12px;
-    align-items: stretch;
+    align-items: start;
   }
 
   .dash-cell-pie {
     grid-column: 1;
     grid-row: 1;
-    align-self: start;
   }
 
   .dash-cell-kpi {
     grid-column: 2;
     grid-row: 1;
-    align-self: start;
-  }
-
-  /* 右侧上下两表共用可视高度，表内滚动，避免把整页和左侧卡片一起撑高 */
-  .dash-cell-person-stack {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-height: 0;
-    align-self: stretch;
-    height: 100%;
-    max-height: min(calc(100vh - 140px), 820px);
-  }
-
-  .dash-cell-person,
-  .dash-cell-sub-person {
-    flex: 1 1 0;
-    min-height: 0;
-    overflow: hidden;
   }
 
   .dash-cell-work {
@@ -514,34 +493,71 @@ a {
     grid-row: 2;
   }
 
+  /* 右侧两表分别对齐上排 / 下排，与左侧齐高，不再单独撑高整页 */
+  .dash-cell-person-stack {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    min-height: 0;
+    align-self: stretch;
+    height: auto;
+    max-height: none;
+  }
+
+  .dash-cell-person,
+  .dash-cell-sub-person {
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .dash-card {
     margin-bottom: 0;
     display: flex;
     flex-direction: column;
     min-height: 0;
-    height: 100%;
+    height: auto;
   }
 
-  .dash-cell-pie.dash-card,
-  .dash-cell-kpi.dash-card {
+  .dash-cell-person.dash-card,
+  .dash-cell-sub-person.dash-card {
+    width: 100%;
+    align-self: start;
     height: auto;
   }
 
   .dash-card .table-wrap {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    max-height: min(52vh, 520px);
+    max-height: min(42vh, 420px);
   }
 
   .dash-cell-person .table-wrap,
   .dash-cell-sub-person .table-wrap {
-    max-height: none;
+    max-height: min(34vh, 320px);
   }
 
   .dash-cell-kpi .kpi-grid {
     flex: 0 0 auto;
     align-content: start;
+  }
+
+  /* 不支持 subgrid 时退回纵向分栏，各自限高滚动 */
+  @supports not (grid-template-rows: subgrid) {
+    .dash-cell-person-stack {
+      display: flex;
+      flex-direction: column;
+      align-self: start;
+      height: auto;
+    }
+
+    .dash-cell-person,
+    .dash-cell-sub-person {
+      flex: 0 1 auto;
+    }
   }
 
   /* 项目列表宽屏双列卡片 */
@@ -702,7 +718,20 @@ body.kiosk-mode .dash-table thead th {
   body.kiosk-mode .dash-cell-person-stack {
     gap: 10px;
     max-height: none;
+    height: auto;
+    align-self: stretch;
+  }
+
+  body.kiosk-mode .dash-cell-person.dash-card,
+  body.kiosk-mode .dash-cell-sub-person.dash-card {
     height: 100%;
+    align-self: stretch;
+  }
+
+  body.kiosk-mode .dash-cell-person .table-wrap,
+  body.kiosk-mode .dash-cell-sub-person .table-wrap,
+  body.kiosk-mode .dash-cell-work .table-wrap {
+    max-height: none;
   }
 
   body.kiosk-mode .dash-card .table-wrap {
@@ -795,7 +824,7 @@ body.kiosk-mode .dash-table thead th {
 .dash-table th,
 .dash-table td {
   border-bottom: 1px solid #eef1f4;
-  padding: 10px 8px;
+  padding: 8px 8px;
   text-align: left;
   vertical-align: middle;
 }
