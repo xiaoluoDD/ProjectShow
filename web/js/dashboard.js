@@ -141,34 +141,49 @@
     }, true);
   }
 
+  // 把 tbody 里的行复制一份接在后面，制造“无缝循环”所需的双份内容：
+  // 滚过第一份的高度（unitHeight）时悄悄把 scrollTop 退回等量距离，
+  // 因为紧接着的第二份内容和第一份一模一样，退回瞬间画面不会有跳变感。
+  function buildSeamlessLoop(wrap) {
+    const table = wrap.querySelector('table');
+    const tbody = table && table.querySelector('tbody');
+    if (!tbody || !tbody.children.length || tbody.dataset.loopBuilt === '1') {
+      return 0;
+    }
+    const unitHeight = tbody.getBoundingClientRect().height;
+    if (!(unitHeight > 0)) return 0;
+    const frag = document.createDocumentFragment();
+    Array.from(tbody.children).forEach((tr) => frag.appendChild(tr.cloneNode(true)));
+    tbody.appendChild(frag);
+    tbody.dataset.loopBuilt = '1';
+    return unitHeight;
+  }
+
   function startOneTableAutoScroll(wrap) {
     if (!wrap) return;
     const max0 = wrap.scrollHeight - wrap.clientHeight;
     if (max0 <= 2) return;
 
+    const unitHeight = buildSeamlessLoop(wrap);
+
     const state = { manualUntil: 0 };
     bindManualTableScroll(wrap, state);
 
-    const pauseMs = 2200;
-    let dir = 1;
-    let pauseUntil = 0;
-
     const id = setInterval(() => {
-      if (!isKioskMode() || !wrap.isConnected) return;
+      if (!wrap.isConnected) return;
+      // 无缝衔接：滚过一份内容的高度就退回一份高度，画面不变，接着继续往下滚
+      if (unitHeight > 1 && wrap.scrollTop >= unitHeight) {
+        wrap.scrollTop -= unitHeight;
+      }
+      if (!isKioskMode()) return;
       const now = performance.now();
       if (now < state.manualUntil) return;
-      if (now < pauseUntil) return;
       const max = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
       if (max <= 0) return;
-      wrap.scrollTop += dir * 0.9;
-      if (dir > 0 && wrap.scrollTop >= max - 0.5) {
-        wrap.scrollTop = max;
-        dir = -1;
-        pauseUntil = now + pauseMs;
-      } else if (dir < 0 && wrap.scrollTop <= 0.5) {
-        wrap.scrollTop = 0;
-        dir = 1;
-        pauseUntil = now + pauseMs;
+      wrap.scrollTop += 0.9;
+      // 兜底：理论上不会真的滚到底（无缝回退会提前接手），意外情况直接绕回开头
+      if (wrap.scrollTop >= max) {
+        wrap.scrollTop = unitHeight > 1 ? unitHeight - 1 : 0;
       }
     }, 32);
     tableScrollTimers.push({ id, wrap, state });
