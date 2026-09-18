@@ -564,17 +564,20 @@ a {
     flex: 0 0 200px;
   }
 
-  /* 三列用 flex + align-items:stretch：谁高其他列自动跟着一样高，
-     不强制锁页面高度/隐藏溢出——页面该滚动时仍正常滚动，只是列与列之间高度对齐。 */
+  /* 三列用单行 Grid + align-items:stretch：只有一行，谁高其他列自动跟着一样高
+     （比嵌套两层 flex-basis:0 拉伸更可靠，是等高卡片布局的标准写法）。
+     不强制锁页面高度/隐藏溢出——页面该滚动时仍正常滚动。 */
   #dashboardRoot.dash-layout {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(260px, 1.1fr) minmax(280px, 1fr) minmax(260px, 1.1fr);
     align-items: stretch;
     gap: 12px;
   }
 
   .dash-cell-left-stack {
-    flex: 1.1 1 0;
     min-width: 0;
+    min-height: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -587,13 +590,15 @@ a {
   }
 
   .dash-cell-punctuality {
-    flex: 1 1 0;
     min-width: 0;
+    min-height: 0;
+    height: 100%;
   }
 
   .dash-cell-person-stack {
-    flex: 1.1 1 0;
     min-width: 0;
+    min-height: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -612,6 +617,7 @@ a {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    height: 100%;
   }
 
   .dash-card .table-wrap {
