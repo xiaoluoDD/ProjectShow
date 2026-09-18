@@ -196,7 +196,7 @@
       requestAnimationFrame(() => {
         if (!isKioskMode()) return;
         dashboardRoot.querySelectorAll(
-          '.dash-cell-work .table-wrap, .dash-cell-person .table-wrap, .dash-cell-sub-person .table-wrap'
+          '.dash-cell-work .table-wrap, .dash-cell-person .table-wrap, .dash-cell-sub-person .table-wrap, .dash-cell-punctuality .table-wrap'
         ).forEach((wrap) => {
           // 重新渲染后节点是新的，允许重新绑定
           delete wrap.dataset.dragBound;
@@ -307,7 +307,7 @@
       </div>`;
   }
 
-  // 部门准时率：已完结看实际≤计划；逾期未完结计不准时；未到期不计入。
+  // 部门准时率：总数/未到期/准时；准时率分母不含未到期。
   function punctualityHtml(rows) {
     const list = Array.isArray(rows) ? rows : [];
     if (!list.length) {
@@ -318,17 +318,18 @@
               <thead>
                 <tr>
                   <th>部门</th>
-                  <th class="col-num">子任务数</th>
-                  <th class="col-num">准时数</th>
+                  <th class="col-num">总数</th>
+                  <th class="col-num">未到期</th>
+                  <th class="col-num">准时</th>
                   <th class="col-num">准时率</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="punctuality-empty-row">
-                  <td colspan="4">
+                  <td colspan="5">
                     <div class="punctuality-empty">
                       <p>暂无纳入统计的子任务</p>
-                      <p class="punctuality-empty-hint">已完结或已过计划完成日的子任务才会计入；归属到成员所属部门</p>
+                      <p class="punctuality-empty-hint">需有计划完成日；准时率不含未到期任务</p>
                     </div>
                   </td>
                 </tr>
@@ -347,6 +348,7 @@
           <tr>
             <td class="col-group">${escapeHtml(row.department_name || '—')}</td>
             <td class="col-num">${row.total || 0}</td>
+            <td class="col-num">${row.not_due || 0}</td>
             <td class="col-num">${row.on_time || 0}</td>
             <td class="col-rate">
               <div class="rate-cell ${rateClass}">
@@ -365,8 +367,9 @@
             <thead>
               <tr>
                 <th>部门</th>
-                <th class="col-num">子任务数</th>
-                <th class="col-num">准时数</th>
+                <th class="col-num">总数</th>
+                <th class="col-num">未到期</th>
+                <th class="col-num">准时</th>
                 <th class="col-num">准时率</th>
               </tr>
             </thead>
