@@ -483,6 +483,64 @@ a {
   width: 72px;
 }
 
+.punctuality-table .col-rate {
+  min-width: 88px;
+}
+
+.rate-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.rate-text {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.rate-cell.rate-good .rate-text {
+  color: #43a047;
+}
+
+.rate-cell.rate-mid .rate-text {
+  color: #f9a825;
+}
+
+.rate-cell.rate-bad .rate-text {
+  color: #e53935;
+}
+
+.rate-bar {
+  display: block;
+  width: 100%;
+  max-width: 96px;
+  height: 6px;
+  border-radius: 3px;
+  background: #eef1f4;
+  overflow: hidden;
+}
+
+.rate-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: #90a4ae;
+}
+
+.rate-cell.rate-good .rate-bar i {
+  background: #43a047;
+}
+
+.rate-cell.rate-mid .rate-bar i {
+  background: #f9a825;
+}
+
+.rate-cell.rate-bad .rate-bar i {
+  background: #e53935;
+}
+
 /* 手机：保持单列；宽屏：对齐 Qt 总览三栏布局 */
 .dash-layout {
   display: flex;
