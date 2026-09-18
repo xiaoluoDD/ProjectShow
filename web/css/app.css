@@ -557,61 +557,94 @@ a {
 @media (min-width: 960px) {
   .app-main {
     max-width: 1440px;
-    padding: 16px 24px 16px;
+    padding: 16px 24px 24px;
+  }
+
+  /* 看板页：整页定高，三列一起铺满；卡片内部滚动，避免中间列下方留灰、右侧把整页撑高 */
+  body:has(#dashboardView:not([hidden])) {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  body:has(#dashboardView:not([hidden])) .app-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    margin: 0 auto;
+    padding: 12px 24px 12px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .dash-toolbar select {
     flex: 0 0 200px;
   }
 
-  /* 普通宽屏：看板铺满剩余视口，表格在卡片内滚动（不再用 max-height 截断导致底部留白） */
   #dashboardView:not([hidden]) {
+    flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 110px);
-    min-height: calc(100dvh - 110px);
+    overflow: hidden;
+  }
+
+  #dashboardView:not([hidden]) .dash-toolbar,
+  #dashboardView:not([hidden]) #dashSummaryBar {
+    flex: 0 0 auto;
   }
 
   #dashboardRoot.dash-layout {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
+    height: 100%;
     display: grid;
-    grid-template-columns: minmax(280px, 1.1fr) minmax(260px, 1fr) minmax(280px, 1.1fr);
+    grid-template-columns: minmax(260px, 1.1fr) minmax(280px, 1fr) minmax(260px, 1.1fr);
     grid-template-rows: auto minmax(0, 1fr);
     gap: 12px;
     align-items: stretch;
+    overflow: hidden;
   }
 
   .dash-cell-pie {
     grid-column: 1;
     grid-row: 1;
+    min-width: 0;
+    overflow: hidden;
   }
 
-  /* 中间列跨两行，避免准时率只占上半、下方空一大块 */
+  /* 中间准时率：占满整列高度，与左右总高对齐 */
   .dash-cell-punctuality {
     grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-row: 1 / -1;
+    min-width: 0;
     min-height: 0;
+    align-self: stretch;
+    overflow: hidden;
   }
 
   .dash-cell-work {
     grid-column: 1;
     grid-row: 2;
+    min-width: 0;
     min-height: 0;
+    overflow: hidden;
   }
 
-  /* 右侧责任人区：普通 flex 纵向堆叠（不用 subgrid！），作为一个整体跨两行，
-     和左侧「饼图+概览」「项目进度」两行总高对齐，内部上下两表各占一半、各自可滚动。
-     用 subgrid 会让两张表分别被迫套用 row1/row2 各自的高度（互不相关），
-     并把未裁剪内容直接计入 row1 的高度计算，导致上排被撑爆、出现大片空白且表格不再需要滚动。 */
   .dash-cell-person-stack {
     grid-column: 3;
-    grid-row: 1 / span 2;
+    grid-row: 1 / -1;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
     min-height: 0;
-    height: 100%;
+    align-self: stretch;
+    overflow: hidden;
   }
 
   .dash-cell-person,
@@ -620,6 +653,7 @@ a {
     min-height: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .dash-card {
@@ -628,10 +662,11 @@ a {
     flex-direction: column;
     min-height: 0;
     height: 100%;
+    overflow: hidden;
   }
 
   .dash-card .table-wrap {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
     max-height: none;
@@ -643,14 +678,15 @@ a {
   }
 
   .dash-cell-punctuality .punctuality-placeholder {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .dash-cell-punctuality .table-wrap {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     max-height: none;
   }
@@ -832,8 +868,10 @@ body.kiosk-mode .dash-table thead th {
   body.kiosk-mode .dash-cell-person-stack {
     gap: 10px;
     max-height: none;
-    height: auto;
+    height: 100%;
+    min-height: 0;
     align-self: stretch;
+    overflow: hidden;
   }
 
   body.kiosk-mode .dash-cell-person.dash-card,
