@@ -480,7 +480,7 @@ a {
 }
 
 .punctuality-table .col-num {
-  width: 52px;
+  width: 72px;
 }
 
 .punctuality-table .col-rate {
@@ -556,59 +556,50 @@ a {
 
 @media (min-width: 960px) {
   .app-main {
-    max-width: 1440px;
-    padding: 16px 24px 24px;
+    max-width: 1280px;
+    padding: 16px 24px 32px;
   }
 
   .dash-toolbar select {
     flex: 0 0 200px;
   }
 
-  /* 三列用单行 Grid + align-items:stretch：只有一行，谁高其他列自动跟着一样高
-     （比嵌套两层 flex-basis:0 拉伸更可靠，是等高卡片布局的标准写法）。
-     不强制锁页面高度/隐藏溢出——页面该滚动时仍正常滚动。 */
-  #dashboardRoot.dash-layout {
+  .dash-layout {
     display: grid;
-    grid-template-columns: minmax(260px, 1.1fr) minmax(280px, 1fr) minmax(260px, 1.1fr);
+    grid-template-columns: minmax(280px, 1.15fr) minmax(240px, 0.95fr) minmax(280px, 1.15fr);
+    grid-template-rows: auto minmax(280px, 1fr);
+    gap: 12px;
     align-items: stretch;
-    gap: 12px;
   }
 
-  .dash-cell-left-stack {
-    min-width: 0;
-    min-height: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  .dash-cell-pie {
+    grid-column: 1;
+    grid-row: 1;
   }
 
-  /* 饼图卡内容量基本固定（图表+图例+4个KPI格），不参与拉伸/等分，
-     按自身内容出高度即可；剩余空间全部给「项目进度」表格，表格内部自己滚动。
-     之前按 1:1 强制等分，饼图内容装不下又没裁剪，直接溢出到卡片外——这里改正。 */
-  .dash-cell-left-stack .dash-cell-pie {
-    flex: 0 1 auto;
-    min-height: 0;
-  }
-
-  .dash-cell-left-stack .dash-cell-work {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-
+  /* 原「项目概览」位置：部门准时率占位 */
   .dash-cell-punctuality {
-    min-width: 0;
-    min-height: 0;
-    height: 100%;
+    grid-column: 2;
+    grid-row: 1;
   }
 
+  .dash-cell-work {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+  }
+
+  /* 右侧责任人区：普通 flex 纵向堆叠（不用 subgrid！），作为一个整体跨两行，
+     和左侧「饼图+概览」「项目进度」两行总高对齐，内部上下两表各占一半、各自可滚动。
+     用 subgrid 会让两张表分别被迫套用 row1/row2 各自的高度（互不相关），
+     并把未裁剪内容直接计入 row1 的高度计算，导致上排被撑爆、出现大片空白且表格不再需要滚动。 */
   .dash-cell-person-stack {
-    min-width: 0;
-    min-height: 0;
-    height: 100%;
+    grid-column: 3;
+    grid-row: 1 / span 2;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-height: 0;
+    height: 100%;
   }
 
   .dash-cell-person,
@@ -625,16 +616,19 @@ a {
     flex-direction: column;
     min-height: 0;
     height: 100%;
-    /* 防御性裁剪：任何一层高度计算万一出错，内容也只会被卡片圆角边界裁掉，
-       不会再出现「内容跑到卡片外面、和别的卡片错位重叠」的问题。 */
-    overflow: hidden;
   }
 
   .dash-card .table-wrap {
-    flex: 1 1 auto;
+    flex: 1;
     min-height: 0;
     overflow: auto;
-    max-height: min(46vh, 460px);
+    max-height: min(52vh, 520px);
+  }
+
+  /* 普通页面（可整页滚动）：给右侧两表各自一个上限，避免无限撑高页面 */
+  .dash-cell-person .table-wrap,
+  .dash-cell-sub-person .table-wrap {
+    max-height: min(32vh, 320px);
   }
 
   .dash-cell-pie .kpi-grid {
@@ -642,16 +636,8 @@ a {
     align-content: start;
   }
 
-  .dash-cell-punctuality .punctuality-placeholder {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
   .dash-cell-punctuality .table-wrap {
-    flex: 1 1 auto;
-    min-height: 0;
+    max-height: min(32vh, 280px);
   }
 
   /* 项目列表宽屏双列卡片 */
@@ -765,32 +751,23 @@ body.kiosk-mode .dash-table thead th {
 }
 
 @media (min-width: 960px) {
-  /* 全屏展示复用同一套 flex 三列结构（左：饼图+进度堆叠 / 中：准时率 / 右：责任人堆叠），
-     align-items:stretch 让三列自动同高；这里只再收紧间距、字号，铺满整屏。 */
+  /* 上排按内容高度收缩，下排吃剩余空间给两个可滚动表格 */
   body.kiosk-mode #dashboardRoot.dash-layout {
+    grid-template-rows: auto minmax(0, 1fr);
     height: 100%;
     gap: 10px;
   }
 
-  body.kiosk-mode .dash-cell-left-stack {
-    gap: 10px;
-    min-height: 0;
-  }
-
   body.kiosk-mode .dash-cell-pie {
     height: auto;
+    align-self: stretch;
     overflow: visible;
     min-width: 0;
-    min-height: 0;
   }
 
   body.kiosk-mode .dash-cell-punctuality {
     overflow: hidden;
     min-height: 0;
-  }
-
-  body.kiosk-mode .dash-cell-punctuality .table-wrap {
-    max-height: none;
   }
 
   body.kiosk-mode .dash-cell-pie.dash-card {
@@ -835,10 +812,8 @@ body.kiosk-mode .dash-table thead th {
   body.kiosk-mode .dash-cell-person-stack {
     gap: 10px;
     max-height: none;
-    height: 100%;
-    min-height: 0;
+    height: auto;
     align-self: stretch;
-    overflow: hidden;
   }
 
   body.kiosk-mode .dash-cell-person.dash-card,
@@ -849,8 +824,7 @@ body.kiosk-mode .dash-table thead th {
 
   body.kiosk-mode .dash-cell-person .table-wrap,
   body.kiosk-mode .dash-cell-sub-person .table-wrap,
-  body.kiosk-mode .dash-cell-work .table-wrap,
-  body.kiosk-mode .dash-cell-punctuality .table-wrap {
+  body.kiosk-mode .dash-cell-work .table-wrap {
     max-height: none;
   }
 
