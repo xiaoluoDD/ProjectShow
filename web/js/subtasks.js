@@ -60,7 +60,7 @@
     // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
     if (!document.querySelector('script[data-subtask-form]')) {
       const s = document.createElement('script');
-      s.src = 'js/subtask-form.js?v=1.2.27';
+      s.src = 'js/subtask-form.js?v=1.2.28';
       s.setAttribute('data-subtask-form', '1');
       s.onload = () => {
         if (!tryOpen()) {
@@ -87,16 +87,6 @@
   document.getElementById('btnRefresh').addEventListener('click', () => loadSubtasks(true));
   if (btnAddSubtask) {
     btnAddSubtask.addEventListener('click', openAddSubtask);
-  }
-
-  const btnExportGantt = document.getElementById('btnExportGantt');
-  if (btnExportGantt) {
-    btnExportGantt.addEventListener('click', () => {
-      const q = new URLSearchParams();
-      q.set('project_id', String(projectId));
-      if (from) q.set('from', from);
-      window.location.href = `gantt.html?${q.toString()}`;
-    });
   }
 
   function todayIso() {

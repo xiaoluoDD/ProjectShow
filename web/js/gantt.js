@@ -24,6 +24,9 @@
   if (from === 'dashboard') {
     backLink.href = 'index.html?view=dashboard';
     backLink.textContent = '‹ 返回总览';
+  } else if (from === 'project') {
+    backLink.href = `project.html?id=${encodeURIComponent(projectId)}`;
+    backLink.textContent = '‹ 返回项目详情';
   } else {
     backLink.href = `subtasks.html?project_id=${encodeURIComponent(projectId)}`;
     backLink.textContent = '‹ 返回子任务';

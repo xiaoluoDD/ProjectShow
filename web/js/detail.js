@@ -2,6 +2,7 @@
   const detailRoot = document.getElementById('detailRoot');
   const actionBar = document.getElementById('actionBar');
   const btnSubtasks = document.getElementById('btnSubtasks');
+  const btnExportGantt = document.getElementById('btnExportGantt');
   const btnEdit = document.getElementById('btnEdit');
   const btnComplete = document.getElementById('btnComplete');
   const btnDeleteProject = document.getElementById('btnDeleteProject');
@@ -37,6 +38,12 @@
   let saving = false;
 
   btnSubtasks.href = `subtasks.html?project_id=${encodeURIComponent(id)}`;
+  if (btnExportGantt) {
+    const q = new URLSearchParams();
+    q.set('project_id', String(id));
+    q.set('from', 'project');
+    btnExportGantt.href = `gantt.html?${q.toString()}`;
+  }
 
   function todayIso() {
     const d = new Date();
