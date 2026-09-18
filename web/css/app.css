@@ -1161,6 +1161,152 @@ body.kiosk-mode .dash-table thead th {
   padding-right: 2px;
 }
 
+/* —— 批量新增子任务（电脑端表格） —— */
+@media (max-width: 959px) {
+  .batch-only-desktop {
+    display: none !important;
+  }
+}
+
+.modal-card-batch {
+  width: min(1100px, 96vw);
+  max-width: none;
+  max-height: min(92vh, 860px);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 12px;
+}
+
+.batch-table-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid #e2e6ea;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.batch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.batch-table th,
+.batch-table td {
+  border-bottom: 1px solid #eef1f4;
+  padding: 6px 6px;
+  vertical-align: middle;
+}
+
+.batch-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fafbfc;
+  color: #607080;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.batch-table .col-idx {
+  width: 36px;
+  text-align: center;
+  color: #90a4ae;
+}
+
+.batch-table .col-content {
+  width: 28%;
+}
+
+.batch-table .col-member {
+  width: 18%;
+}
+
+.batch-table .col-date {
+  width: 120px;
+}
+
+.batch-table .col-remark {
+  width: 16%;
+}
+
+.batch-table .col-act {
+  width: 40px;
+  text-align: center;
+}
+
+.batch-table input[type='text'],
+.batch-table input[type='date'] {
+  width: 100%;
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.batch-member-wrap {
+  position: relative;
+}
+
+.batch-member-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 2px);
+  z-index: 5;
+  max-height: 220px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.batch-member-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 8px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.batch-member-option:hover,
+.batch-member-option:focus {
+  background: #f1f5f8;
+}
+
+.batch-member-empty {
+  padding: 10px;
+  color: #90a4ae;
+  font-size: 12px;
+}
+
+.batch-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+.batch-toolbar .modal-hint {
+  margin: 0;
+}
+
+.batch-remove-row {
+  min-width: 28px;
+  padding: 2px 8px;
+  color: #c62828;
+}
+
 .modal-card h2 {
   margin: 0 0 14px;
   font-size: 17px;

@@ -110,6 +110,10 @@ function createSubtask(payload) {
   return apiPost('/api/project-subtasks', payload);
 }
 
+function createSubtasksBatch(payload) {
+  return apiPost('/api/project-subtasks/batch', payload);
+}
+
 function updateSubtask(payload) {
   return apiPut('/api/project-subtasks', payload);
 }
