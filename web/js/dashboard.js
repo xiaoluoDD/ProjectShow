@@ -147,8 +147,11 @@
   function buildSeamlessLoop(wrap) {
     const table = wrap.querySelector('table');
     const tbody = table && table.querySelector('tbody');
-    if (!tbody || !tbody.children.length || tbody.dataset.loopBuilt === '1') {
-      return 0;
+    if (!tbody || !tbody.children.length) return 0;
+    // 已建过循环：总高 = 两份内容，取一半作 unitHeight（resize 重绑时会走到这里）
+    if (tbody.dataset.loopBuilt === '1') {
+      const full = tbody.getBoundingClientRect().height;
+      return full > 0 ? full / 2 : 0;
     }
     const unitHeight = tbody.getBoundingClientRect().height;
     if (!(unitHeight > 0)) return 0;
@@ -196,7 +199,7 @@
       requestAnimationFrame(() => {
         if (!isKioskMode()) return;
         dashboardRoot.querySelectorAll(
-          '.dash-cell-work .table-wrap, .dash-cell-person .table-wrap, .dash-cell-sub-person .table-wrap'
+          '.dash-cell-work .table-wrap, .dash-cell-person .table-wrap, .dash-cell-sub-person .table-wrap, .dash-cell-punctuality .table-wrap'
         ).forEach((wrap) => {
           // 重新渲染后节点是新的，允许重新绑定
           delete wrap.dataset.dragBound;
@@ -497,7 +500,11 @@
   let punctualityResizeTimer = null;
   window.addEventListener('resize', () => {
     clearTimeout(punctualityResizeTimer);
-    punctualityResizeTimer = setTimeout(syncPunctualityHeight, 150);
+    punctualityResizeTimer = setTimeout(() => {
+      syncPunctualityHeight();
+      // 全屏下高度变化后重新评估是否需要无缝滚动（含部门准时率）
+      if (isKioskMode()) setupTableAutoScroll();
+    }, 150);
   });
 
   function render(summary, opts) {
@@ -636,8 +643,9 @@
     if (savedScrolls) restoreTableScrolls(savedScrolls);
 
     dashSummaryBar.textContent = `已加载 ${summary.project_count || 0} 个项目`;
-    setupTableAutoScroll();
+    // 先锁准时率高度，再启动无缝滚动（否则刚渲染时内容未裁剪，可能误判不需要滚动）
     syncPunctualityHeight();
+    setupTableAutoScroll();
   }
 
   async function load(force) {
