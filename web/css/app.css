@@ -636,8 +636,10 @@ a {
     align-content: start;
   }
 
+  /* 部门准时率只占第 1 行（和饼图卡同高），本身高度已被行高限住，
+     不需要再额外设小上限——否则内容够不到卡片底部，留出一截空白。 */
   .dash-cell-punctuality .table-wrap {
-    max-height: min(32vh, 280px);
+    max-height: none;
   }
 
   /* 项目列表宽屏双列卡片 */
