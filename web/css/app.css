@@ -1169,7 +1169,7 @@ body.kiosk-mode .dash-table thead th {
 }
 
 .modal-card-batch {
-  width: min(1100px, 96vw);
+  width: min(1280px, 98vw);
   max-width: none;
   max-height: min(92vh, 860px);
   display: flex;
@@ -1217,19 +1217,19 @@ body.kiosk-mode .dash-table thead th {
 }
 
 .batch-table .col-content {
-  width: 28%;
+  width: 22%;
 }
 
 .batch-table .col-member {
-  width: 18%;
+  width: 14%;
 }
 
 .batch-table .col-date {
-  width: 120px;
+  width: 110px;
 }
 
 .batch-table .col-remark {
-  width: 16%;
+  width: 12%;
 }
 
 .batch-table .col-act {

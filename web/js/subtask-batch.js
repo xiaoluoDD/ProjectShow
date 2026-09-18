@@ -172,6 +172,8 @@
         tr.querySelector('.batch-content').value = '';
         tr.querySelector('.batch-planned-start').value = '';
         tr.querySelector('.batch-planned-end').value = '';
+        tr.querySelector('.batch-actual-start').value = '';
+        tr.querySelector('.batch-actual-end').value = '';
         tr.querySelector('.batch-remark').value = '';
         tr.querySelector('.batch-member-input').value = '';
       }
@@ -209,6 +211,8 @@
       </td>
       <td class="col-date"><input type="date" class="batch-planned-start" /></td>
       <td class="col-date"><input type="date" class="batch-planned-end" /></td>
+      <td class="col-date"><input type="date" class="batch-actual-start" /></td>
+      <td class="col-date"><input type="date" class="batch-actual-end" /></td>
       <td class="col-remark"><input type="text" class="batch-remark" autocomplete="off" placeholder="可选" /></td>
       <td class="col-act"><button type="button" class="btn btn-sm batch-remove-row" title="删除本行">×</button></td>
     `;
@@ -223,6 +227,8 @@
       if (prefill.content) contentInput.value = prefill.content;
       if (prefill.plannedStart) tr.querySelector('.batch-planned-start').value = prefill.plannedStart;
       if (prefill.plannedEnd) tr.querySelector('.batch-planned-end').value = prefill.plannedEnd;
+      if (prefill.actualStart) tr.querySelector('.batch-actual-start').value = prefill.actualStart;
+      if (prefill.actualEnd) tr.querySelector('.batch-actual-end').value = prefill.actualEnd;
       if (prefill.remark) tr.querySelector('.batch-remark').value = prefill.remark;
       if (row.memberUserid || row.memberName) {
         memberInput.value = row.memberName || row.memberUserid;
@@ -307,6 +313,8 @@
       const content = (tr.querySelector('.batch-content').value || '').trim();
       const plannedStart = (tr.querySelector('.batch-planned-start').value || '').trim();
       const plannedEnd = (tr.querySelector('.batch-planned-end').value || '').trim();
+      const actualStart = (tr.querySelector('.batch-actual-start').value || '').trim();
+      const actualEnd = (tr.querySelector('.batch-actual-end').value || '').trim();
       const remark = (tr.querySelector('.batch-remark').value || '').trim();
       const memberInputVal = (tr.querySelector('.batch-member-input').value || '').trim();
       let memberUserid = row.memberUserid;
@@ -326,7 +334,15 @@
           throw new Error(`第 ${i + 1} 行：成员「${memberInputVal}」无法匹配，请从下拉中选择`);
         }
       }
-      if (!content && !plannedStart && !plannedEnd && !remark && !memberUserid) {
+      if (
+        !content &&
+        !plannedStart &&
+        !plannedEnd &&
+        !actualStart &&
+        !actualEnd &&
+        !remark &&
+        !memberUserid
+      ) {
         continue;
       }
       if (!content) {
@@ -343,6 +359,8 @@
         status: '待启动',
         planned_start_date: plannedStart,
         planned_end_date: plannedEnd,
+        actual_start_date: actualStart,
+        actual_end_date: actualEnd,
         remark,
         members,
       });
