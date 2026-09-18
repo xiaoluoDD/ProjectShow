@@ -560,91 +560,43 @@ a {
     padding: 16px 24px 24px;
   }
 
-  /* 看板页：整页定高，三列一起铺满；卡片内部滚动，避免中间列下方留灰、右侧把整页撑高 */
-  body:has(#dashboardView:not([hidden])) {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  body:has(#dashboardView:not([hidden])) .app-main {
-    flex: 1 1 auto;
-    min-height: 0;
-    width: 100%;
-    margin: 0 auto;
-    padding: 12px 24px 12px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
   .dash-toolbar select {
     flex: 0 0 200px;
   }
 
-  #dashboardView:not([hidden]) {
-    flex: 1 1 auto;
-    min-height: 0;
+  /* 三列用 flex + align-items:stretch：谁高其他列自动跟着一样高，
+     不强制锁页面高度/隐藏溢出——页面该滚动时仍正常滚动，只是列与列之间高度对齐。 */
+  #dashboardRoot.dash-layout {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .dash-cell-left-stack {
+    flex: 1.1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-  }
-
-  #dashboardView:not([hidden]) .dash-toolbar,
-  #dashboardView:not([hidden]) #dashSummaryBar {
-    flex: 0 0 auto;
-  }
-
-  #dashboardRoot.dash-layout {
-    flex: 1 1 auto;
-    min-height: 0;
-    height: 100%;
-    display: grid;
-    grid-template-columns: minmax(260px, 1.1fr) minmax(280px, 1fr) minmax(260px, 1.1fr);
-    grid-template-rows: auto minmax(0, 1fr);
     gap: 12px;
-    align-items: stretch;
-    overflow: hidden;
   }
 
-  .dash-cell-pie {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-    overflow: hidden;
+  .dash-cell-left-stack .dash-cell-pie,
+  .dash-cell-left-stack .dash-cell-work {
+    flex: 1 1 0;
+    min-height: 0;
   }
 
-  /* 中间准时率：占满整列高度，与左右总高对齐 */
   .dash-cell-punctuality {
-    grid-column: 2;
-    grid-row: 1 / -1;
+    flex: 1 1 0;
     min-width: 0;
-    min-height: 0;
-    align-self: stretch;
-    overflow: hidden;
-  }
-
-  .dash-cell-work {
-    grid-column: 1;
-    grid-row: 2;
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
   }
 
   .dash-cell-person-stack {
-    grid-column: 3;
-    grid-row: 1 / -1;
+    flex: 1.1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    min-width: 0;
-    min-height: 0;
-    align-self: stretch;
-    overflow: hidden;
   }
 
   .dash-cell-person,
@@ -653,7 +605,6 @@ a {
     min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
 
   .dash-card {
@@ -661,15 +612,13 @@ a {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    height: 100%;
-    overflow: hidden;
   }
 
   .dash-card .table-wrap {
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    max-height: none;
+    max-height: min(46vh, 460px);
   }
 
   .dash-cell-pie .kpi-grid {
@@ -682,13 +631,11 @@ a {
     min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
 
   .dash-cell-punctuality .table-wrap {
     flex: 1 1 auto;
     min-height: 0;
-    max-height: none;
   }
 
   /* 项目列表宽屏双列卡片 */
@@ -802,24 +749,28 @@ body.kiosk-mode .dash-table thead th {
 }
 
 @media (min-width: 960px) {
-  /* 上排按内容高度收缩，下排吃剩余空间给两个可滚动表格 */
+  /* 全屏展示复用同一套 flex 三列结构（左：饼图+进度堆叠 / 中：准时率 / 右：责任人堆叠），
+     align-items:stretch 让三列自动同高；这里只再收紧间距、字号，铺满整屏。 */
   body.kiosk-mode #dashboardRoot.dash-layout {
-    grid-template-rows: auto minmax(0, 1fr);
     height: 100%;
     gap: 10px;
   }
 
+  body.kiosk-mode .dash-cell-left-stack {
+    gap: 10px;
+    min-height: 0;
+  }
+
   body.kiosk-mode .dash-cell-pie {
     height: auto;
-    align-self: stretch;
     overflow: visible;
     min-width: 0;
+    min-height: 0;
   }
 
   body.kiosk-mode .dash-cell-punctuality {
     overflow: hidden;
     min-height: 0;
-    align-self: stretch;
   }
 
   body.kiosk-mode .dash-cell-punctuality .table-wrap {

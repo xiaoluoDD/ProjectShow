@@ -582,7 +582,8 @@
     const savedScrolls = options.preserveScroll ? captureTableScrolls() : null;
     stopTableAutoScroll();
     dashboardRoot.className = 'dash-layout';
-    dashboardRoot.innerHTML = `${pieBlock}${punctualityBlock}${personBlock}${workBlock}`;
+    const leftBlock = `<div class="dash-cell dash-cell-left-stack">${pieBlock}${workBlock}</div>`;
+    dashboardRoot.innerHTML = `${leftBlock}${punctualityBlock}${personBlock}`;
     if (savedScrolls) restoreTableScrolls(savedScrolls);
 
     dashSummaryBar.textContent = `已加载 ${summary.project_count || 0} 个项目`;
