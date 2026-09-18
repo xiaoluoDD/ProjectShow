@@ -434,6 +434,10 @@ a {
   margin-bottom: 0;
 }
 
+.dash-cell-pie .kpi-grid {
+  margin-top: 4px;
+}
+
 .kpi-card {
   background: #f7f9fb;
   border-radius: 10px;
@@ -442,8 +446,41 @@ a {
   box-shadow: none;
 }
 
-.dash-cell-kpi .kpi-grid {
-  margin-bottom: 0;
+.dash-cell-pie .kpi-card {
+  padding: 10px 12px;
+}
+
+.punctuality-placeholder {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.punctuality-empty {
+  text-align: center;
+  padding: 28px 12px;
+  color: #78909c;
+}
+
+.punctuality-empty p {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: #607080;
+}
+
+.punctuality-empty-hint {
+  font-size: 12px !important;
+  color: #90a4ae !important;
+  line-height: 1.45;
+}
+
+.punctuality-empty-row td {
+  border-bottom: none;
+}
+
+.punctuality-table .col-num {
+  width: 72px;
 }
 
 /* 手机：保持单列；宽屏：对齐 Qt 总览三栏布局 */
@@ -480,12 +517,10 @@ a {
   .dash-cell-pie {
     grid-column: 1;
     grid-row: 1;
-    align-self: start;
   }
 
-  /* 项目概览卡片不设 align-self:start，让它跟饼图卡片一样撑满第一行高度，
-     避免内容较少时下方露出灰色背景空白 */
-  .dash-cell-kpi {
+  /* 原「项目概览」位置：部门准时率占位 */
+  .dash-cell-punctuality {
     grid-column: 2;
     grid-row: 1;
   }
@@ -538,9 +573,13 @@ a {
     max-height: min(32vh, 320px);
   }
 
-  .dash-cell-kpi .kpi-grid {
-    flex: 1;
+  .dash-cell-pie .kpi-grid {
+    flex: 0 0 auto;
     align-content: start;
+  }
+
+  .dash-cell-punctuality .table-wrap {
+    max-height: min(32vh, 280px);
   }
 
   /* 项目列表宽屏双列卡片 */
@@ -663,15 +702,14 @@ body.kiosk-mode .dash-table thead th {
 
   body.kiosk-mode .dash-cell-pie {
     height: auto;
-    align-self: start;
+    align-self: stretch;
     overflow: visible;
     min-width: 0;
   }
 
-  /* 项目概览卡片保持默认 stretch，撑满第一行（与饼图卡片同高），
-     避免全屏模式下内容较少时下方露出空白 */
-  body.kiosk-mode .dash-cell-kpi {
-    overflow: visible;
+  body.kiosk-mode .dash-cell-punctuality {
+    overflow: hidden;
+    min-height: 0;
   }
 
   body.kiosk-mode .dash-cell-pie.dash-card {
@@ -679,8 +717,21 @@ body.kiosk-mode .dash-table thead th {
   }
 
   body.kiosk-mode .dash-cell-pie .pie-wrap,
-  body.kiosk-mode .dash-cell-kpi .kpi-grid {
+  body.kiosk-mode .dash-cell-pie .kpi-grid {
     flex: 0 0 auto;
+  }
+
+  body.kiosk-mode .dash-cell-pie .kpi-card {
+    padding: 8px 10px;
+  }
+
+  body.kiosk-mode .dash-cell-pie .kpi-title {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  body.kiosk-mode .dash-cell-pie .kpi-value {
+    font-size: 22px;
   }
 
   body.kiosk-mode .pie-wrap {

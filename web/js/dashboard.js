@@ -307,6 +307,35 @@
       </div>`;
   }
 
+  // 部门准时率占位：先占位看布局，后端汇总接入后再填真实数据。
+  function punctualityPlaceholderHtml() {
+    return `
+      <div class="punctuality-placeholder">
+        <div class="table-wrap">
+          <table class="dash-table punctuality-table">
+            <thead>
+              <tr>
+                <th>部门</th>
+                <th class="col-num">子任务数</th>
+                <th class="col-num">准时数</th>
+                <th class="col-num">准时率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="punctuality-empty-row">
+                <td colspan="4">
+                  <div class="punctuality-empty">
+                    <p>部门子任务准时率（待接入）</p>
+                    <p class="punctuality-empty-hint">按子任务计划完成日 vs 实际完成日统计，归属到成员所属部门</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
   function groupedTableHtml(headers, groups, buildHref) {
     if (!groups.length) {
       return '<div class="state-box"><p>暂无数据</p></div>';
@@ -455,14 +484,15 @@
           { status: '待启动', count: 0 },
           { status: '已完结', count: 0 },
         ])}</div>
+        ${kpiHtml(projectSummary)}
       </article>`;
 
-    const kpiBlock = `
-      <article class="dash-card dash-cell dash-cell-kpi">
+    const punctualityBlock = `
+      <article class="dash-card dash-cell dash-cell-punctuality">
         <div class="dash-card-head">
-          <h2>项目概览</h2>
+          <h2>部门准时率</h2>
         </div>
-        ${kpiHtml(projectSummary)}
+        ${punctualityPlaceholderHtml()}
       </article>`;
 
     const personBlock = `
@@ -509,7 +539,7 @@
     const savedScrolls = options.preserveScroll ? captureTableScrolls() : null;
     stopTableAutoScroll();
     dashboardRoot.className = 'dash-layout';
-    dashboardRoot.innerHTML = `${pieBlock}${kpiBlock}${personBlock}${workBlock}`;
+    dashboardRoot.innerHTML = `${pieBlock}${punctualityBlock}${personBlock}${workBlock}`;
     if (savedScrolls) restoreTableScrolls(savedScrolls);
 
     dashSummaryBar.textContent = `已加载 ${summary.project_count || 0} 个项目`;
