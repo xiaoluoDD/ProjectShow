@@ -269,6 +269,8 @@
   }
   if (btnPrint) {
     btnPrint.addEventListener('click', () => {
+      // 提醒：部分浏览器默认不打印背景色，需打开「背景图形」
+      // CSS 已加 print-color-adjust + 边框/内阴影兜底，一般可直接出条。
       window.print();
     });
   }

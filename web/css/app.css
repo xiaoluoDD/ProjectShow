@@ -1580,18 +1580,25 @@ body.kiosk-mode .dash-table thead th {
   border-radius: 4px;
   box-sizing: border-box;
   min-width: 4px;
+  /* 打印/另存 PDF 时必须强制输出背景色，否则条带会消失 */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  color-adjust: exact;
 }
 
 .gantt-bar-plan {
   top: 8px;
   background: #42a5f5;
-  opacity: 0.92;
+  border: 1px solid #1e88e5;
+  /* 无背景图时，边框+阴影仍能在打印预览里看见条带 */
+  box-shadow: inset 0 0 0 20px #42a5f5;
 }
 
 .gantt-bar-actual {
   top: 26px;
   background: #66bb6a;
-  opacity: 0.9;
+  border: 1px solid #43a047;
+  box-shadow: inset 0 0 0 20px #66bb6a;
 }
 
 .gantt-bar-missing {
@@ -1612,11 +1619,15 @@ body.kiosk-mode .dash-table thead th {
 @media print {
   @page {
     size: A4 landscape;
-    margin: 10mm;
+    margin: 8mm;
   }
 
+  html,
   body {
     background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   .no-print,
@@ -1636,7 +1647,7 @@ body.kiosk-mode .dash-table thead th {
   .gantt-root {
     border: 0;
     border-radius: 0;
-    overflow: visible;
+    overflow: visible !important;
   }
 
   .gantt-print-head {
@@ -1647,8 +1658,39 @@ body.kiosk-mode .dash-table thead th {
     min-width: 0;
   }
 
+  .gantt-head-row {
+    position: static;
+  }
+
   .gantt-row,
   .gantt-head-row {
     break-inside: avoid;
+  }
+
+  .gantt-track {
+    min-height: 48px !important;
+    height: 48px !important;
+    overflow: visible !important;
+  }
+
+  .gantt-bar,
+  .gantt-bar-plan,
+  .gantt-bar-actual {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    opacity: 1 !important;
+  }
+
+  .gantt-bar-plan {
+    background: #42a5f5 !important;
+    border: 1px solid #1565c0 !important;
+    box-shadow: inset 0 0 0 20px #42a5f5 !important;
+  }
+
+  .gantt-bar-actual {
+    background: #66bb6a !important;
+    border: 1px solid #2e7d32 !important;
+    box-shadow: inset 0 0 0 20px #66bb6a !important;
   }
 }
