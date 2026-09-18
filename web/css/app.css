@@ -1390,3 +1390,265 @@ body.kiosk-mode .dash-table thead th {
   font-size: 12px;
   color: #90a0b0;
 }
+
+/* —— 项目甘特图 —— */
+.gantt-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #546e7a;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.gantt-toggle input {
+  width: auto;
+  margin: 0;
+}
+
+.gantt-main {
+  max-width: none;
+}
+
+.gantt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #546e7a;
+}
+
+.gantt-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gantt-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.gantt-swatch-plan {
+  background: #42a5f5;
+}
+
+.gantt-swatch-actual {
+  background: #66bb6a;
+}
+
+.gantt-root {
+  background: #fff;
+  border: 1px solid #e2e6ea;
+  border-radius: 12px;
+  overflow: auto;
+}
+
+.gantt-sheet {
+  min-width: 720px;
+}
+
+.gantt-print-head {
+  display: none;
+  padding: 8px 12px 4px;
+}
+
+.gantt-print-head h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.gantt-print-head p {
+  margin: 0 0 2px;
+  font-size: 12px;
+  color: #607080;
+}
+
+.gantt-head-row,
+.gantt-row {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(400px, 1fr);
+}
+
+.gantt-head-row {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #fafbfc;
+  border-bottom: 1px solid #e2e6ea;
+  min-height: 36px;
+}
+
+.gantt-corner {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #607080;
+  border-right: 1px solid #eef1f4;
+}
+
+.gantt-timeline-head {
+  position: relative;
+  min-height: 36px;
+}
+
+.gantt-row {
+  border-bottom: 1px solid #eef1f4;
+  min-height: 48px;
+}
+
+.gantt-row:nth-child(even) {
+  background: #fcfdfe;
+}
+
+.gantt-label {
+  padding: 8px 10px;
+  border-right: 1px solid #eef1f4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.gantt-task-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #263238;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gantt-task-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: #78909c;
+}
+
+.gantt-status {
+  flex-shrink: 0;
+}
+
+.gantt-track {
+  position: relative;
+  min-height: 48px;
+  padding: 6px 0;
+}
+
+.gantt-ticks {
+  position: relative;
+  height: 36px;
+}
+
+.gantt-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  color: #90a4ae;
+  border-left: 1px dashed #eceff1;
+  padding-left: 2px;
+}
+
+.gantt-tick-month {
+  color: #546e7a;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.gantt-tick-day {
+  line-height: 1.1;
+}
+
+.gantt-bar {
+  position: absolute;
+  height: 14px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  min-width: 4px;
+}
+
+.gantt-bar-plan {
+  top: 8px;
+  background: #42a5f5;
+  opacity: 0.92;
+}
+
+.gantt-bar-actual {
+  top: 26px;
+  background: #66bb6a;
+  opacity: 0.9;
+}
+
+.gantt-bar-missing {
+  position: absolute;
+  left: 8px;
+  top: 14px;
+  font-size: 11px;
+  color: #b0bec5;
+}
+
+.gantt-empty {
+  padding: 24px;
+  text-align: center;
+  color: #90a4ae;
+  grid-column: 1 / -1;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  .no-print,
+  .app-header,
+  .hint-bar,
+  .gantt-legend {
+    display: none !important;
+  }
+
+  .app-main,
+  .gantt-main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .gantt-root {
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .gantt-print-head {
+    display: block !important;
+  }
+
+  .gantt-sheet {
+    min-width: 0;
+  }
+
+  .gantt-row,
+  .gantt-head-row {
+    break-inside: avoid;
+  }
+}
