@@ -625,10 +625,11 @@ a {
     max-height: min(52vh, 520px);
   }
 
-  /* 普通页面（可整页滚动）：给右侧两表各自一个上限，避免无限撑高页面 */
+  /* 右侧两表各占 person-stack 一半高度（flex:1 已定好），不再额外设小上限，
+     否则表格填不满自己那一半、留出空白；内容更多时靠 overflow:auto 内部滚动。 */
   .dash-cell-person .table-wrap,
   .dash-cell-sub-person .table-wrap {
-    max-height: min(32vh, 320px);
+    max-height: none;
   }
 
   .dash-cell-pie .kpi-grid {
@@ -636,8 +637,9 @@ a {
     align-content: start;
   }
 
-  /* 部门准时率只占第 1 行（和饼图卡同高），本身高度已被行高限住，
-     不需要再额外设小上限——否则内容够不到卡片底部，留出一截空白。 */
+  /* 部门准时率的高度由 JS（syncPunctualityHeight）按「项目状态」卡的实际高度
+     动态设置 max-height（内联样式，优先级高于此处），使其严格等高，
+     多出的行用内部滚动条查看，不再把第一行撑高。这里只是渲染前的兜底默认值。 */
   .dash-cell-punctuality .table-wrap {
     max-height: none;
   }

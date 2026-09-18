@@ -450,6 +450,56 @@
     });
   }
 
+  // 让「部门准时率」卡片的表格高度严格等于「项目状态」卡片的高度：
+  // 宽屏下两者同处网格第一行，若不加处理，准时率表格内容一多就会把整行撑高，
+  // 连带把「项目状态」卡片拉出一截空白。做法：
+  //   1. 先把准时率表格临时收到很矮，让第一行的自动高度只由「项目状态」卡决定；
+  //   2. 强制回流后量出「项目状态」卡此时的真实高度；
+  //   3. 按这个高度换算出准时率表格应有的可视高度并设为 max-height，
+  //      多出的内容交给 .table-wrap 自带的 overflow:auto 内部滚动。
+  function syncPunctualityHeight() {
+    if (!dashboardRoot) return;
+    const pieCell = dashboardRoot.querySelector('.dash-cell-pie');
+    const punctCell = dashboardRoot.querySelector('.dash-cell-punctuality');
+    if (!pieCell || !punctCell) return;
+    const wrap = punctCell.querySelector('.table-wrap');
+    if (!wrap) return;
+    const head = punctCell.querySelector('.dash-card-head');
+
+    const isWide = window.matchMedia('(min-width: 960px)').matches;
+    if (!isWide) {
+      wrap.style.maxHeight = '';
+      return;
+    }
+
+    wrap.style.maxHeight = '1px';
+    // 读取 offsetHeight 强制同步回流，拿到未被撑高前的真实高度
+    void pieCell.offsetHeight;
+    const pieHeight = pieCell.getBoundingClientRect().height;
+    if (!pieHeight) {
+      wrap.style.maxHeight = '';
+      return;
+    }
+
+    const cardStyle = window.getComputedStyle(punctCell);
+    const paddingTop = parseFloat(cardStyle.paddingTop) || 0;
+    const paddingBottom = parseFloat(cardStyle.paddingBottom) || 0;
+    const headHeight = head ? head.getBoundingClientRect().height : 0;
+    const headMarginBottom = head
+      ? parseFloat(window.getComputedStyle(head).marginBottom) || 0
+      : 0;
+
+    const contentBoxHeight = pieHeight - paddingTop - paddingBottom;
+    const target = Math.max(80, contentBoxHeight - headHeight - headMarginBottom);
+    wrap.style.maxHeight = `${target}px`;
+  }
+
+  let punctualityResizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(punctualityResizeTimer);
+    punctualityResizeTimer = setTimeout(syncPunctualityHeight, 150);
+  });
+
   function render(summary, opts) {
     const options = opts || {};
     currentSummary = summary;
@@ -587,6 +637,7 @@
 
     dashSummaryBar.textContent = `已加载 ${summary.project_count || 0} 个项目`;
     setupTableAutoScroll();
+    syncPunctualityHeight();
   }
 
   async function load(force) {
