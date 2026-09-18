@@ -583,9 +583,16 @@ a {
     gap: 12px;
   }
 
-  .dash-cell-left-stack .dash-cell-pie,
+  /* 饼图卡内容量基本固定（图表+图例+4个KPI格），不参与拉伸/等分，
+     按自身内容出高度即可；剩余空间全部给「项目进度」表格，表格内部自己滚动。
+     之前按 1:1 强制等分，饼图内容装不下又没裁剪，直接溢出到卡片外——这里改正。 */
+  .dash-cell-left-stack .dash-cell-pie {
+    flex: 0 1 auto;
+    min-height: 0;
+  }
+
   .dash-cell-left-stack .dash-cell-work {
-    flex: 1 1 0;
+    flex: 1 1 auto;
     min-height: 0;
   }
 
@@ -618,6 +625,9 @@ a {
     flex-direction: column;
     min-height: 0;
     height: 100%;
+    /* 防御性裁剪：任何一层高度计算万一出错，内容也只会被卡片圆角边界裁掉，
+       不会再出现「内容跑到卡片外面、和别的卡片错位重叠」的问题。 */
+    overflow: hidden;
   }
 
   .dash-card .table-wrap {

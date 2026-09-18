@@ -5,7 +5,7 @@
 // （不同源时浏览器可能因 CORS 拦截，需 Nginx 同域或后端加 CORS。）
 window.APP_CONFIG = {
   apiBase: '',
-  appVersion: 'v1.2.34',
+  appVersion: 'v1.2.35',
 };
 
 // 登录态存储 key：预览版（URL 含 /mobile-preview/）与正式版分别使用带 _preview
