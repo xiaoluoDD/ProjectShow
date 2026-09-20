@@ -343,10 +343,43 @@
     return String(Math.max(1, daysBetween(s, e) + 1));
   }
 
-  // SpreadsheetML：Excel 可直接打开编辑；进度% 留空供手填。
+  function inRange(day, start, end) {
+    if (!day || (!start && !end)) return false;
+    const s = start || end;
+    const e = end || start;
+    const t0 = s < e ? s : e;
+    const t1 = s < e ? e : s;
+    return day >= t0 && day <= t1;
+  }
+
+  function excelCell(colIndex, value, styleId) {
+    const attrs = [`ss:Index="${colIndex}"`];
+    if (styleId) attrs.push(`ss:StyleID="${styleId}"`);
+    if (value === '' || value == null) {
+      return `<Cell ${attrs.join(' ')}/>`;
+    }
+    return `<Cell ${attrs.join(' ')}><Data ss:Type="String">${xmlEscape(value)}</Data></Cell>`;
+  }
+
+  function excelRow(cellsXml, height) {
+    const h = height ? ` ss:Height="${height}"` : '';
+    return `<Row${h}>${cellsXml}</Row>`;
+  }
+
+  // 导出「左侧信息 + 右侧按日色块」的甘特样式 Excel（可编辑，进度% 留空）。
   function buildExcelXml(groups) {
     const title = (project && project.name) || '项目甘特图';
     const workNo = (project && project.work_no) || '';
+    const allTasks = (groups || []).reduce((acc, g) => acc.concat(g.tasks), []);
+    const timeline = computeTimeline(allTasks);
+    // 导出用逐日格子；过长时仍按日（Excel 可横向滚动），上限约一年避免极端文件
+    const dayCount = Math.min(Math.max(1, timeline.totalDays), 370);
+    const days = [];
+    for (let i = 0; i < dayCount; i++) {
+      days.push(addDays(timeline.start, i));
+    }
+
+    const LEFT = 11; // A..K
     const headers = [
       '部门',
       '行类型',
@@ -361,57 +394,147 @@
       '进度%',
     ];
 
-    const rows = [];
-    rows.push([`${workNo ? workNo + ' ' : ''}${title}`.trim()]);
-    rows.push([
-      `负责人：${(project && (project.manager_name || project.manager_userid)) || '—'}`,
-      `导出时间：${fmtDate(new Date())}`,
-      '说明：进度% 请导出后手动填写',
-    ]);
-    rows.push(headers);
+    const WEEK = ['日', '一', '二', '三', '四', '五', '六'];
+    const sheetRows = [];
+
+    // 标题
+    sheetRows.push(
+      excelRow(
+        excelCell(1, `${workNo ? workNo + ' ' : ''}${title}`.trim(), 'Title') +
+          excelCell(2, '', 'Title') +
+          excelCell(LEFT + 1, '图例：', 'Meta') +
+          excelCell(LEFT + 2, '部门汇总', 'Group') +
+          excelCell(LEFT + 3, '计划', 'Plan') +
+          excelCell(LEFT + 4, '实际', 'Actual')
+      )
+    );
+    sheetRows.push(
+      excelRow(
+        excelCell(
+          1,
+          `负责人：${(project && (project.manager_name || project.manager_userid)) || '—'}  ·  导出：${fmtDate(new Date())}  ·  进度% 请手填  ·  色块为甘特条（可改）`,
+          'Meta'
+        )
+      )
+    );
+
+    // 月行
+    let monthCells = '';
+    for (let i = 0; i < LEFT; i++) {
+      monthCells += excelCell(i + 1, i === 0 ? '月份' : '', 'Head');
+    }
+    let mi = 0;
+    while (mi < days.length) {
+      const d0 = days[mi];
+      let mj = mi + 1;
+      while (
+        mj < days.length &&
+        days[mj].getFullYear() === d0.getFullYear() &&
+        days[mj].getMonth() === d0.getMonth()
+      ) {
+        mj++;
+      }
+      monthCells += excelCell(
+        LEFT + 1 + mi,
+        `${d0.getFullYear()}-${String(d0.getMonth() + 1).padStart(2, '0')}`,
+        'Head'
+      );
+      for (let k = mi + 1; k < mj; k++) {
+        monthCells += excelCell(LEFT + 1 + k, '', 'Head');
+      }
+      mi = mj;
+    }
+    sheetRows.push(excelRow(monthCells));
+
+    // 日号 + 星期
+    let dayCells = '';
+    let weekCells = '';
+    headers.forEach((h, i) => {
+      dayCells += excelCell(i + 1, h, 'Head');
+      weekCells += excelCell(i + 1, '', 'Head');
+    });
+    days.forEach((d, i) => {
+      dayCells += excelCell(LEFT + 1 + i, String(d.getDate()), 'HeadDay');
+      weekCells += excelCell(LEFT + 1 + i, WEEK[d.getDay()], 'HeadDay');
+    });
+    sheetRows.push(excelRow(dayCells));
+    sheetRows.push(excelRow(weekCells));
+
+    function leftCells(vals, styleId) {
+      let xml = '';
+      for (let i = 0; i < LEFT; i++) {
+        xml += excelCell(i + 1, vals[i] == null ? '' : vals[i], styleId || '');
+      }
+      return xml;
+    }
+
+    function paintDays(start, end, styleId) {
+      let xml = '';
+      days.forEach((d, i) => {
+        if (inRange(d, start, end)) {
+          xml += excelCell(LEFT + 1 + i, '', styleId);
+        } else {
+          xml += excelCell(LEFT + 1 + i, '', 'Grid');
+        }
+      });
+      return xml;
+    }
+
+    // 计划优先铺蓝，实际覆盖为绿（同一天有实际则显示实际）
+    function paintTaskDays(planStart, planEnd, actStart, actEnd) {
+      let xml = '';
+      days.forEach((d, i) => {
+        const onActual = showActual && inRange(d, actStart, actEnd);
+        const onPlan = inRange(d, planStart, planEnd);
+        if (onActual) xml += excelCell(LEFT + 1 + i, '', 'Actual');
+        else if (onPlan) xml += excelCell(LEFT + 1 + i, '', 'Plan');
+        else xml += excelCell(LEFT + 1 + i, '', 'Grid');
+      });
+      return xml;
+    }
 
     (groups || []).forEach((g) => {
-      rows.push([
-        g.name,
-        '部门汇总',
-        '',
-        '',
-        '',
-        fmtDate(g.minPs),
-        fmtDate(g.maxPe),
-        '',
-        '',
+      const gDays =
         g.minPs || g.maxPe
           ? String(Math.max(1, daysBetween(g.minPs || g.maxPe, g.maxPe || g.minPs) + 1))
-          : '',
-        '',
-      ]);
+          : '';
+      sheetRows.push(
+        excelRow(
+          leftCells(
+            [g.name, '部门汇总', '', '', '', fmtDate(g.minPs), fmtDate(g.maxPe), '', '', gDays, ''],
+            'GroupRow'
+          ) + paintDays(g.minPs, g.maxPe, 'Group')
+        )
+      );
       g.tasks.forEach((st) => {
         const r = rangeOfTask(st);
-        rows.push([
-          g.name,
-          '任务',
-          (st.content || '').trim(),
-          membersText(st) === '—' ? '' : membersText(st),
-          (st.status || '').trim(),
-          fmtDate(r.ps),
-          fmtDate(r.pe),
-          fmtDate(r.as),
-          fmtDate(r.ae),
-          plannedDays(st),
-          '', // 进度% 手填
-        ]);
+        sheetRows.push(
+          excelRow(
+            leftCells([
+              g.name,
+              '任务',
+              (st.content || '').trim(),
+              membersText(st) === '—' ? '' : membersText(st),
+              (st.status || '').trim(),
+              fmtDate(r.ps),
+              fmtDate(r.pe),
+              fmtDate(r.as),
+              fmtDate(r.ae),
+              plannedDays(st),
+              '',
+            ]) + paintTaskDays(r.ps, r.pe, r.as, r.ae)
+          )
+        );
       });
     });
 
-    const sheetRows = rows
-      .map((cols) => {
-        const cells = cols
-          .map((v) => `<Cell><Data ss:Type="String">${xmlEscape(v)}</Data></Cell>`)
-          .join('');
-        return `<Row>${cells}</Row>`;
-      })
-      .join('\n');
+    // 列宽：左侧固定宽，日期列很窄
+    let cols = '';
+    const leftWidths = [72, 48, 160, 72, 48, 72, 72, 72, 72, 36, 40];
+    leftWidths.forEach((w, i) => {
+      cols += `<Column ss:Index="${i + 1}" ss:AutoFitWidth="0" ss:Width="${w}"/>`;
+    });
+    cols += `<Column ss:Index="${LEFT + 1}" ss:AutoFitWidth="0" ss:Width="14" ss:Span="${Math.max(0, dayCount - 1)}"/>`;
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <?mso-application progid="Excel.Sheet"?>
@@ -420,10 +543,73 @@
  xmlns:x="urn:schemas-microsoft-com:office:excel"
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Center"/>
+   <Font ss:FontName="微软雅黑" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="Title">
+   <Font ss:FontName="微软雅黑" ss:Size="14" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="Meta">
+   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Color="#546E7A"/>
+  </Style>
+  <Style ss:ID="Head">
+   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Bold="1"/>
+   <Interior ss:Color="#ECEFF1" ss:Pattern="Solid"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CFD8DC"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="HeadDay">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Font ss:FontName="微软雅黑" ss:Size="8"/>
+   <Interior ss:Color="#ECEFF1" ss:Pattern="Solid"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0E0E0"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="GroupRow">
+   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Bold="1" ss:Color="#4527A0"/>
+   <Interior ss:Color="#F3E5F5" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="Group">
+   <Interior ss:Color="#7E57C2" ss:Pattern="Solid"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5E35B1"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="Plan">
+   <Interior ss:Color="#42A5F5" ss:Pattern="Solid"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#1E88E5"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="Actual">
+   <Interior ss:Color="#66BB6A" ss:Pattern="Solid"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#43A047"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="Grid">
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#F0F0F0"/>
+   </Borders>
+  </Style>
+ </Styles>
  <Worksheet ss:Name="甘特图">
   <Table>
-${sheetRows}
+${cols}
+${sheetRows.join('\n')}
   </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/>
+   <FrozenNoSplit/>
+   <SplitHorizontal>5</SplitHorizontal>
+   <TopRowBottomPane>5</TopRowBottomPane>
+   <SplitVertical>11</SplitVertical>
+   <LeftColumnRightPane>11</LeftColumnRightPane>
+  </WorksheetOptions>
  </Worksheet>
 </Workbook>`;
   }
@@ -435,7 +621,9 @@ ${sheetRows}
       return;
     }
     const xml = buildExcelXml(groups);
-    const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const blob = new Blob(['\ufeff' + xml], {
+      type: 'application/vnd.ms-excel;charset=utf-8',
+    });
     const workNo = ((project && project.work_no) || 'project').replace(/[\\/:*?"<>|]/g, '_');
     const name = ((project && project.name) || '甘特图').replace(/[\\/:*?"<>|]/g, '_');
     const a = document.createElement('a');
