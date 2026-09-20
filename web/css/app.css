@@ -1554,6 +1554,32 @@ body.kiosk-mode .dash-table thead th {
   background: #66bb6a;
 }
 
+.gantt-swatch-group {
+  background: #7e57c2;
+}
+
+.gantt-row-group {
+  background: #f3e5f5;
+}
+
+.gantt-row-group .gantt-label {
+  background: #f3e5f5;
+}
+
+.gantt-group-name {
+  font-weight: 700;
+  color: #4527a0;
+}
+
+.gantt-bar-group {
+  top: 14px;
+  height: 16px;
+  background: #7e57c2;
+  border: 1px solid #5e35b1;
+  box-shadow: inset 0 0 0 20px #7e57c2;
+  opacity: 0.9;
+}
+
 .gantt-root {
   background: #fff;
   border: 1px solid #e2e6ea;
