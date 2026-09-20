@@ -1,15 +1,13 @@
 /**
- * 项目甘特图（第一期）
- * - 按子任务成员「第一个部门」分组（一人多部门取 department_name 用「、」拆开后的第一段）
- * - 部门标题行带汇总计划时间条（该组任务最早～最晚）
- * - 导出可编辑 Excel（SpreadsheetML .xls，进度% 列留空手填）
+ * 项目甘特图（精简版，界面与 Excel 导出同结构）
+ * 左侧：计划任务 / 状态 / 责任人 / 进度% / 计划开始 / 计划结束 / 天数
+ * 部门作为分组标题行（不占列）；进度可在本页填写，本地保存并随导出带出
  */
 (function () {
   const ganttRoot = document.getElementById('ganttRoot');
   const summaryBar = document.getElementById('summaryBar');
   const pageTitle = document.getElementById('pageTitle');
   const backLink = document.getElementById('backLink');
-  const chkShowActual = document.getElementById('chkShowActual');
   const btnPrint = document.getElementById('btnPrintGantt');
   const btnExportExcel = document.getElementById('btnExportExcel');
   const btnRefresh = document.getElementById('btnRefresh');
@@ -17,6 +15,7 @@
   const projectId = queryParam('project_id');
   const from = (queryParam('from') || '').trim();
   const UNASSIGNED_DEPT = '（未分配部门）';
+  const PROGRESS_KEY = `projectshow_gantt_progress_${projectId}`;
 
   if (!projectId) {
     showError(ganttRoot, '缺少 project_id');
@@ -37,11 +36,13 @@
 
   let project = null;
   let subtasks = [];
-  let showActual = true;
+  /** @type {Record<string, number>} */
+  let progressMap = {};
   /** @type {ReturnType<typeof groupByDepartment>|null} */
   let lastGroups = null;
 
   const DAY_MS = 24 * 60 * 60 * 1000;
+  const WEEK = ['日', '一', '二', '三', '四', '五', '六'];
 
   function parseDate(value) {
     const s = String(value || '').trim();
@@ -60,6 +61,11 @@
     return `${y}-${m}-${day}`;
   }
 
+  function fmtDateSlash(d) {
+    if (!d) return '';
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+  }
+
   function addDays(d, n) {
     const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     x.setDate(x.getDate() + n);
@@ -72,23 +78,19 @@
 
   function membersText(st) {
     const list = Array.isArray(st.members) ? st.members : [];
-    if (!list.length) return '—';
-    return (
-      list
-        .map((m) => (m.name || m.userid || '').trim())
-        .filter(Boolean)
-        .join('、') || '—'
-    );
+    if (!list.length) return '';
+    return list
+      .map((m) => (m.name || m.userid || '').trim())
+      .filter(Boolean)
+      .join('、');
   }
 
-  // 一人多部门时 department_name 为「A、B、C」；取第一段作为分组部门。
   function firstDepartmentName(raw) {
     const s = String(raw || '').trim();
     if (!s) return '';
     return s.split(/[、,，]/)[0].trim();
   }
 
-  // 子任务归属部门：取第一个成员的第一个部门；无成员 → 未分配。
   function taskDepartment(st) {
     const list = Array.isArray(st.members) ? st.members : [];
     for (let i = 0; i < list.length; i++) {
@@ -98,12 +100,72 @@
     return UNASSIGNED_DEPT;
   }
 
-  function rangeOfTask(st) {
+  function planRange(st) {
     const ps = parseDate(st.planned_start_date);
     const pe = parseDate(st.planned_end_date);
-    const as = parseDate(st.actual_start_date);
-    const ae = parseDate(st.actual_end_date);
-    return { ps, pe, as, ae };
+    return { ps, pe };
+  }
+
+  function planDaysText(st) {
+    const { ps, pe } = planRange(st);
+    if (!ps && !pe) return '';
+    const s = ps || pe;
+    const e = pe || ps;
+    return String(Math.max(1, daysBetween(s, e) + 1));
+  }
+
+  function loadProgress() {
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      progressMap = raw ? JSON.parse(raw) || {} : {};
+    } catch (e) {
+      progressMap = {};
+    }
+  }
+
+  function saveProgress() {
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(progressMap));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function getProgress(st) {
+    const id = String(st.id);
+    if (progressMap[id] != null && progressMap[id] !== '') {
+      const n = Number(progressMap[id]);
+      return Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : '';
+    }
+    // 已完结默认 100，便于首次打开；仍可改
+    if ((st.status || '').trim() === '已完结') return 100;
+    return '';
+  }
+
+  function setProgress(stId, value) {
+    const id = String(stId);
+    if (value === '' || value == null) {
+      delete progressMap[id];
+    } else {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return;
+      progressMap[id] = Math.max(0, Math.min(100, Math.round(n)));
+    }
+    saveProgress();
+  }
+
+  function groupOwners(tasks) {
+    const seen = new Set();
+    const names = [];
+    (tasks || []).forEach((st) => {
+      (st.members || []).forEach((m) => {
+        const n = (m.name || m.userid || '').trim();
+        if (!n || seen.has(n)) return;
+        seen.add(n);
+        names.push(n);
+      });
+    });
+    return names.join('、');
   }
 
   function groupByDepartment(tasks) {
@@ -113,25 +175,29 @@
       if (!map.has(dept)) map.set(dept, []);
       map.get(dept).push(st);
     });
-
     const names = Array.from(map.keys()).sort((a, b) => {
       if (a === UNASSIGNED_DEPT) return 1;
       if (b === UNASSIGNED_DEPT) return -1;
       return a.localeCompare(b, 'zh-CN');
     });
-
     return names.map((name) => {
       const items = map.get(name) || [];
       let minPs = null;
       let maxPe = null;
       items.forEach((st) => {
-        const r = rangeOfTask(st);
+        const r = planRange(st);
         if (r.ps && (!minPs || r.ps < minPs)) minPs = r.ps;
         if (r.pe && (!maxPe || r.pe > maxPe)) maxPe = r.pe;
         if (!r.ps && r.pe && (!minPs || r.pe < minPs)) minPs = r.pe;
         if (!r.pe && r.ps && (!maxPe || r.ps > maxPe)) maxPe = r.ps;
       });
-      return { name, tasks: items, minPs, maxPe };
+      return {
+        name,
+        tasks: items,
+        minPs,
+        maxPe,
+        owners: groupOwners(items),
+      };
     });
   }
 
@@ -144,13 +210,9 @@
       if (!max || d > max) max = d;
     };
     tasks.forEach((st) => {
-      const r = rangeOfTask(st);
+      const r = planRange(st);
       touch(r.ps);
       touch(r.pe);
-      if (showActual) {
-        touch(r.as);
-        touch(r.ae);
-      }
     });
     if (project) {
       touch(parseDate(project.start_date));
@@ -162,11 +224,10 @@
       const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       return { start, end, totalDays: daysBetween(start, end) + 1 };
     }
-    const start = addDays(min, -2);
-    let end = addDays(max, 2);
+    const start = addDays(min, -1);
+    let end = addDays(max, 1);
     if (end < start) end = addDays(start, 7);
-    const totalDays = Math.max(1, daysBetween(start, end) + 1);
-    return { start, end, totalDays };
+    return { start, end, totalDays: Math.max(1, daysBetween(start, end) + 1) };
   }
 
   function buildTicks(timeline) {
@@ -176,8 +237,6 @@
     if (totalDays > 120) step = 14;
     else if (totalDays > 60) step = 7;
     else if (totalDays > 30) step = 3;
-    else step = 1;
-
     for (let i = 0; i < totalDays; i += step) {
       const d = addDays(start, i);
       if (d > end) break;
@@ -195,10 +254,8 @@
 
   function barStyle(start, end, timeline) {
     if (!start && !end) return null;
-    let s = start;
-    let e = end;
-    if (s && !e) e = s;
-    if (!s && e) s = e;
+    let s = start || end;
+    let e = end || start;
     if (e < s) {
       const t = s;
       s = e;
@@ -215,58 +272,88 @@
     };
   }
 
-  function renderTaskRow(st, timeline) {
-    const r = rangeOfTask(st);
-    const plan = barStyle(r.ps, r.pe, timeline);
-    const actual = showActual ? barStyle(r.as, r.ae, timeline) : null;
-    const status = (st.status || '').trim() || '—';
+  function inRange(day, start, end) {
+    if (!day || (!start && !end)) return false;
+    const s = start || end;
+    const e = end || start;
+    const t0 = s < e ? s : e;
+    const t1 = s < e ? e : s;
+    return day >= t0 && day <= t1;
+  }
+
+  function renderGroupRow(group, timeline) {
+    const plan = barStyle(group.minPs, group.maxPe, timeline);
+    const days =
+      group.minPs || group.maxPe
+        ? String(Math.max(1, daysBetween(group.minPs || group.maxPe, group.maxPe || group.minPs) + 1))
+        : '';
     return `
-      <div class="gantt-row">
-        <div class="gantt-label">
-          <div class="gantt-task-name" title="${escapeHtml(st.content || '')}">${escapeHtml(displayOrDash(st.content))}</div>
-          <div class="gantt-task-meta">
-            <span>${escapeHtml(membersText(st))}</span>
-            <span class="gantt-status">${escapeHtml(status)}</span>
-          </div>
+      <div class="gantt-row gantt-row-group">
+        <div class="gantt-label gantt-label-lean">
+          <div class="gantt-c-task gantt-group-name" title="${escapeHtml(group.name)}">${escapeHtml(group.name)}</div>
+          <div class="gantt-c-status"></div>
+          <div class="gantt-c-owner" title="${escapeHtml(group.owners)}">${escapeHtml(group.owners || '')}</div>
+          <div class="gantt-c-progress"></div>
+          <div class="gantt-c-date">${escapeHtml(fmtDateSlash(group.minPs))}</div>
+          <div class="gantt-c-date">${escapeHtml(fmtDateSlash(group.maxPe))}</div>
+          <div class="gantt-c-days">${escapeHtml(days)}</div>
         </div>
         <div class="gantt-track">
           ${
             plan
-              ? `<div class="gantt-bar gantt-bar-plan" style="left:${plan.left};width:${plan.width}" title="计划 ${escapeHtml(plan.title)}"></div>`
-              : `<div class="gantt-bar-missing">无计划日期</div>`
-          }
-          ${
-            actual
-              ? `<div class="gantt-bar gantt-bar-actual" style="left:${actual.left};width:${actual.width}" title="实际 ${escapeHtml(actual.title)}"></div>`
+              ? `<div class="gantt-bar gantt-bar-group" style="left:${plan.left};width:${plan.width}" title="${escapeHtml(plan.title)}"></div>`
               : ''
           }
         </div>
       </div>`;
   }
 
-  function renderGroupRow(group, timeline) {
-    const plan = barStyle(group.minPs, group.maxPe, timeline);
-    const rangeText =
-      group.minPs || group.maxPe
-        ? `${fmtDate(group.minPs) || '—'} ~ ${fmtDate(group.maxPe) || '—'}`
-        : '无计划日期';
+  function renderTaskRow(st, timeline) {
+    const r = planRange(st);
+    const plan = barStyle(r.ps, r.pe, timeline);
+    const status = (st.status || '').trim() || '';
+    const prog = getProgress(st);
+    const progVal = prog === '' ? '' : String(prog);
     return `
-      <div class="gantt-row gantt-row-group">
-        <div class="gantt-label">
-          <div class="gantt-task-name gantt-group-name">${escapeHtml(group.name)}</div>
-          <div class="gantt-task-meta">
-            <span>${group.tasks.length} 项</span>
-            <span class="gantt-status">${escapeHtml(rangeText)}</span>
+      <div class="gantt-row" data-subtask-id="${st.id}">
+        <div class="gantt-label gantt-label-lean">
+          <div class="gantt-c-task" title="${escapeHtml(st.content || '')}">${escapeHtml(displayOrDash(st.content))}</div>
+          <div class="gantt-c-status">${escapeHtml(status)}</div>
+          <div class="gantt-c-owner" title="${escapeHtml(membersText(st))}">${escapeHtml(membersText(st))}</div>
+          <div class="gantt-c-progress">
+            <input type="number" class="gantt-progress-input no-print" min="0" max="100" step="1"
+              data-progress-id="${st.id}" value="${escapeHtml(progVal)}" placeholder="%" title="进度%，可编辑，导出时带出" />
+            <span class="gantt-progress-print">${progVal === '' ? '' : progVal + '%'}</span>
           </div>
+          <div class="gantt-c-date">${escapeHtml(fmtDateSlash(r.ps))}</div>
+          <div class="gantt-c-date">${escapeHtml(fmtDateSlash(r.pe))}</div>
+          <div class="gantt-c-days">${escapeHtml(planDaysText(st))}</div>
         </div>
         <div class="gantt-track">
           ${
             plan
-              ? `<div class="gantt-bar gantt-bar-group" style="left:${plan.left};width:${plan.width}" title="部门汇总 ${escapeHtml(plan.title)}"></div>`
+              ? `<div class="gantt-bar gantt-bar-plan gantt-bar-plan-only" style="left:${plan.left};width:${plan.width}" title="计划 ${escapeHtml(plan.title)}"></div>`
               : `<div class="gantt-bar-missing">无计划日期</div>`
           }
         </div>
       </div>`;
+  }
+
+  function bindProgressInputs() {
+    if (!ganttRoot) return;
+    ganttRoot.querySelectorAll('[data-progress-id]').forEach((input) => {
+      input.addEventListener('change', () => {
+        setProgress(input.getAttribute('data-progress-id'), input.value);
+        const printEl = input.parentNode && input.parentNode.querySelector('.gantt-progress-print');
+        if (printEl) {
+          const v = input.value === '' ? '' : `${input.value}%`;
+          printEl.textContent = v;
+        }
+      });
+      input.addEventListener('blur', () => {
+        setProgress(input.getAttribute('data-progress-id'), input.value);
+      });
+    });
   }
 
   function render(tasks) {
@@ -275,7 +362,7 @@
     const timeline = computeTimeline(tasks);
     const ticks = buildTicks(timeline);
     const missingPlan = tasks.filter((st) => {
-      const r = rangeOfTask(st);
+      const r = planRange(st);
       return !r.ps && !r.pe;
     }).length;
 
@@ -304,14 +391,22 @@
       .join('');
 
     ganttRoot.innerHTML = `
-      <div class="gantt-sheet">
+      <div class="gantt-sheet gantt-sheet-lean">
         <div class="gantt-print-head">
           <h2>${escapeHtml((project && project.name) || '项目甘特图')}</h2>
           <p>${escapeHtml(headMeta)}</p>
-          <p>时间范围：${escapeHtml(fmtDate(timeline.start))} ~ ${escapeHtml(fmtDate(timeline.end))} · 共 ${tasks.length} 项任务 · ${groups.length} 个部门</p>
+          <p>项目开始：${escapeHtml(fmtDateSlash(parseDate(project && project.start_date)) || '—')} · 时间轴 ${escapeHtml(fmtDate(timeline.start))} ~ ${escapeHtml(fmtDate(timeline.end))} · ${tasks.length} 项 / ${groups.length} 个部门</p>
         </div>
-        <div class="gantt-head-row">
-          <div class="gantt-corner">部门 / 任务 / 成员</div>
+        <div class="gantt-head-row gantt-head-lean">
+          <div class="gantt-label gantt-label-lean gantt-corner-lean">
+            <div class="gantt-c-task">计划任务项目</div>
+            <div class="gantt-c-status">状态</div>
+            <div class="gantt-c-owner">责任人</div>
+            <div class="gantt-c-progress">进度</div>
+            <div class="gantt-c-date">开始日期</div>
+            <div class="gantt-c-date">结束日期</div>
+            <div class="gantt-c-days">天数</div>
+          </div>
           <div class="gantt-timeline-head">
             <div class="gantt-ticks">${tickHtml}</div>
           </div>
@@ -321,10 +416,12 @@
         </div>
       </div>`;
 
+    bindProgressInputs();
+
     summaryBar.textContent =
       `共 ${tasks.length} 项子任务，${groups.length} 个部门` +
       (missingPlan ? `，其中 ${missingPlan} 项无计划日期` : '') +
-      ` · 轴：${fmtDate(timeline.start)} ~ ${fmtDate(timeline.end)}`;
+      ` · 进度可在本页填写，导出 Excel 时一并带出`;
   }
 
   function xmlEscape(s) {
@@ -335,94 +432,52 @@
       .replace(/"/g, '&quot;');
   }
 
-  function plannedDays(st) {
-    const r = rangeOfTask(st);
-    if (!r.ps && !r.pe) return '';
-    const s = r.ps || r.pe;
-    const e = r.pe || r.ps;
-    return String(Math.max(1, daysBetween(s, e) + 1));
-  }
-
-  function inRange(day, start, end) {
-    if (!day || (!start && !end)) return false;
-    const s = start || end;
-    const e = end || start;
-    const t0 = s < e ? s : e;
-    const t1 = s < e ? e : s;
-    return day >= t0 && day <= t1;
-  }
-
   function excelCell(colIndex, value, styleId) {
     const attrs = [`ss:Index="${colIndex}"`];
     if (styleId) attrs.push(`ss:StyleID="${styleId}"`);
-    if (value === '' || value == null) {
-      return `<Cell ${attrs.join(' ')}/>`;
-    }
+    if (value === '' || value == null) return `<Cell ${attrs.join(' ')}/>`;
     return `<Cell ${attrs.join(' ')}><Data ss:Type="String">${xmlEscape(value)}</Data></Cell>`;
   }
 
-  function excelRow(cellsXml, height) {
-    const h = height ? ` ss:Height="${height}"` : '';
-    return `<Row${h}>${cellsXml}</Row>`;
+  function excelRow(cellsXml) {
+    return `<Row>${cellsXml}</Row>`;
   }
 
-  // 导出「左侧信息 + 右侧按日色块」的甘特样式 Excel（可编辑，进度% 留空）。
+  // 与页面同结构：部门作标题行；列=任务/状态/责任人/进度/开始/结束/天数 + 右侧按日色块
   function buildExcelXml(groups) {
     const title = (project && project.name) || '项目甘特图';
     const workNo = (project && project.work_no) || '';
     const allTasks = (groups || []).reduce((acc, g) => acc.concat(g.tasks), []);
     const timeline = computeTimeline(allTasks);
-    // 导出用逐日格子；过长时仍按日（Excel 可横向滚动），上限约一年避免极端文件
     const dayCount = Math.min(Math.max(1, timeline.totalDays), 370);
     const days = [];
-    for (let i = 0; i < dayCount; i++) {
-      days.push(addDays(timeline.start, i));
-    }
+    for (let i = 0; i < dayCount; i++) days.push(addDays(timeline.start, i));
 
-    const LEFT = 11; // A..K
-    const headers = [
-      '部门',
-      '行类型',
-      '任务内容',
-      '责任人',
-      '状态',
-      '计划开始',
-      '计划结束',
-      '实际开始',
-      '实际结束',
-      '天数',
-      '进度%',
-    ];
-
-    const WEEK = ['日', '一', '二', '三', '四', '五', '六'];
+    const LEFT = 7;
+    const headers = ['计划任务项目', '状态', '责任人', '进度', '开始日期', '结束日期', '天数'];
     const sheetRows = [];
 
-    // 标题
     sheetRows.push(
       excelRow(
         excelCell(1, `${workNo ? workNo + ' ' : ''}${title}`.trim(), 'Title') +
-          excelCell(2, '', 'Title') +
           excelCell(LEFT + 1, '图例：', 'Meta') +
-          excelCell(LEFT + 2, '部门汇总', 'Group') +
-          excelCell(LEFT + 3, '计划', 'Plan') +
-          excelCell(LEFT + 4, '实际', 'Actual')
+          excelCell(LEFT + 2, '部门', 'Group') +
+          excelCell(LEFT + 3, '计划', 'Plan')
       )
     );
     sheetRows.push(
       excelRow(
         excelCell(
           1,
-          `负责人：${(project && (project.manager_name || project.manager_userid)) || '—'}  ·  导出：${fmtDate(new Date())}  ·  进度% 请手填  ·  色块为甘特条（可改）`,
+          `项目开始：${fmtDateSlash(parseDate(project && project.start_date)) || '—'}  ·  负责人：${(project && (project.manager_name || project.manager_userid)) || '—'}  ·  导出：${fmtDateSlash(new Date())}`,
           'Meta'
         )
       )
     );
 
-    // 月行
-    let monthCells = '';
-    for (let i = 0; i < LEFT; i++) {
-      monthCells += excelCell(i + 1, i === 0 ? '月份' : '', 'Head');
-    }
+    // 月份行
+    let monthCells = excelCell(1, '月份', 'Head');
+    for (let i = 1; i < LEFT; i++) monthCells += excelCell(i + 1, '', 'Head');
     let mi = 0;
     while (mi < days.length) {
       const d0 = days[mi];
@@ -436,17 +491,14 @@
       }
       monthCells += excelCell(
         LEFT + 1 + mi,
-        `${d0.getFullYear()}-${String(d0.getMonth() + 1).padStart(2, '0')}`,
+        `${d0.getMonth() + 1}月`,
         'Head'
       );
-      for (let k = mi + 1; k < mj; k++) {
-        monthCells += excelCell(LEFT + 1 + k, '', 'Head');
-      }
+      for (let k = mi + 1; k < mj; k++) monthCells += excelCell(LEFT + 1 + k, '', 'Head');
       mi = mj;
     }
     sheetRows.push(excelRow(monthCells));
 
-    // 日号 + 星期
     let dayCells = '';
     let weekCells = '';
     headers.forEach((h, i) => {
@@ -471,24 +523,7 @@
     function paintDays(start, end, styleId) {
       let xml = '';
       days.forEach((d, i) => {
-        if (inRange(d, start, end)) {
-          xml += excelCell(LEFT + 1 + i, '', styleId);
-        } else {
-          xml += excelCell(LEFT + 1 + i, '', 'Grid');
-        }
-      });
-      return xml;
-    }
-
-    // 计划优先铺蓝，实际覆盖为绿（同一天有实际则显示实际）
-    function paintTaskDays(planStart, planEnd, actStart, actEnd) {
-      let xml = '';
-      days.forEach((d, i) => {
-        const onActual = showActual && inRange(d, actStart, actEnd);
-        const onPlan = inRange(d, planStart, planEnd);
-        if (onActual) xml += excelCell(LEFT + 1 + i, '', 'Actual');
-        else if (onPlan) xml += excelCell(LEFT + 1 + i, '', 'Plan');
-        else xml += excelCell(LEFT + 1 + i, '', 'Grid');
+        xml += excelCell(LEFT + 1 + i, '', inRange(d, start, end) ? styleId : 'Grid');
       });
       return xml;
     }
@@ -498,43 +533,48 @@
         g.minPs || g.maxPe
           ? String(Math.max(1, daysBetween(g.minPs || g.maxPe, g.maxPe || g.minPs) + 1))
           : '';
+      // 部门作标题行：任务列写部门名，责任人写汇总
       sheetRows.push(
         excelRow(
           leftCells(
-            [g.name, '部门汇总', '', '', '', fmtDate(g.minPs), fmtDate(g.maxPe), '', '', gDays, ''],
+            [
+              g.name,
+              '',
+              g.owners || '',
+              '',
+              fmtDateSlash(g.minPs),
+              fmtDateSlash(g.maxPe),
+              gDays,
+            ],
             'GroupRow'
           ) + paintDays(g.minPs, g.maxPe, 'Group')
         )
       );
       g.tasks.forEach((st) => {
-        const r = rangeOfTask(st);
+        const r = planRange(st);
+        const prog = getProgress(st);
         sheetRows.push(
           excelRow(
             leftCells([
-              g.name,
-              '任务',
               (st.content || '').trim(),
-              membersText(st) === '—' ? '' : membersText(st),
               (st.status || '').trim(),
-              fmtDate(r.ps),
-              fmtDate(r.pe),
-              fmtDate(r.as),
-              fmtDate(r.ae),
-              plannedDays(st),
-              '',
-            ]) + paintTaskDays(r.ps, r.pe, r.as, r.ae)
+              membersText(st),
+              prog === '' ? '' : `${prog}%`,
+              fmtDateSlash(r.ps),
+              fmtDateSlash(r.pe),
+              planDaysText(st),
+            ]) + paintDays(r.ps, r.pe, 'Plan')
           )
         );
       });
     });
 
-    // 列宽：左侧固定宽，日期列很窄
     let cols = '';
-    const leftWidths = [72, 48, 160, 72, 48, 72, 72, 72, 72, 36, 40];
+    const leftWidths = [120, 44, 56, 40, 68, 68, 32];
     leftWidths.forEach((w, i) => {
       cols += `<Column ss:Index="${i + 1}" ss:AutoFitWidth="0" ss:Width="${w}"/>`;
     });
-    cols += `<Column ss:Index="${LEFT + 1}" ss:AutoFitWidth="0" ss:Width="14" ss:Span="${Math.max(0, dayCount - 1)}"/>`;
+    cols += `<Column ss:Index="${LEFT + 1}" ss:AutoFitWidth="0" ss:Width="12" ss:Span="${Math.max(0, dayCount - 1)}"/>`;
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <?mso-application progid="Excel.Sheet"?>
@@ -545,56 +585,29 @@
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
-   <Alignment ss:Vertical="Center"/>
+   <Alignment ss:Vertical="Center" ss:WrapText="1"/>
    <Font ss:FontName="微软雅黑" ss:Size="9"/>
   </Style>
-  <Style ss:ID="Title">
-   <Font ss:FontName="微软雅黑" ss:Size="14" ss:Bold="1"/>
-  </Style>
-  <Style ss:ID="Meta">
-   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Color="#546E7A"/>
-  </Style>
+  <Style ss:ID="Title"><Font ss:FontName="微软雅黑" ss:Size="14" ss:Bold="1"/></Style>
+  <Style ss:ID="Meta"><Font ss:FontName="微软雅黑" ss:Size="9" ss:Color="#546E7A"/></Style>
   <Style ss:ID="Head">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
    <Font ss:FontName="微软雅黑" ss:Size="9" ss:Bold="1"/>
-   <Interior ss:Color="#ECEFF1" ss:Pattern="Solid"/>
-   <Borders>
-    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CFD8DC"/>
-   </Borders>
+   <Interior ss:Color="#DCEEFF" ss:Pattern="Solid"/>
   </Style>
   <Style ss:ID="HeadDay">
    <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
    <Font ss:FontName="微软雅黑" ss:Size="8"/>
    <Interior ss:Color="#ECEFF1" ss:Pattern="Solid"/>
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0E0E0"/>
-   </Borders>
   </Style>
   <Style ss:ID="GroupRow">
-   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Bold="1" ss:Color="#4527A0"/>
-   <Interior ss:Color="#F3E5F5" ss:Pattern="Solid"/>
+   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Bold="1"/>
+   <Interior ss:Color="#B3D4FC" ss:Pattern="Solid"/>
   </Style>
-  <Style ss:ID="Group">
-   <Interior ss:Color="#7E57C2" ss:Pattern="Solid"/>
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5E35B1"/>
-   </Borders>
-  </Style>
-  <Style ss:ID="Plan">
-   <Interior ss:Color="#42A5F5" ss:Pattern="Solid"/>
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#1E88E5"/>
-   </Borders>
-  </Style>
-  <Style ss:ID="Actual">
-   <Interior ss:Color="#66BB6A" ss:Pattern="Solid"/>
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#43A047"/>
-   </Borders>
-  </Style>
+  <Style ss:ID="Group"><Interior ss:Color="#5B9BD5" ss:Pattern="Solid"/></Style>
+  <Style ss:ID="Plan"><Interior ss:Color="#5B9BD5" ss:Pattern="Solid"/></Style>
   <Style ss:ID="Grid">
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#F0F0F0"/>
-   </Borders>
+   <Borders><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#F0F0F0"/></Borders>
   </Style>
  </Styles>
  <Worksheet ss:Name="甘特图">
@@ -603,18 +616,21 @@ ${cols}
 ${sheetRows.join('\n')}
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
-   <FreezePanes/>
-   <FrozenNoSplit/>
-   <SplitHorizontal>5</SplitHorizontal>
-   <TopRowBottomPane>5</TopRowBottomPane>
-   <SplitVertical>11</SplitVertical>
-   <LeftColumnRightPane>11</LeftColumnRightPane>
+   <FreezePanes/><FrozenNoSplit/>
+   <SplitHorizontal>5</SplitHorizontal><TopRowBottomPane>5</TopRowBottomPane>
+   <SplitVertical>7</SplitVertical><LeftColumnRightPane>7</LeftColumnRightPane>
   </WorksheetOptions>
  </Worksheet>
 </Workbook>`;
   }
 
   function exportExcel() {
+    // 导出前把输入框最新值写入
+    if (ganttRoot) {
+      ganttRoot.querySelectorAll('[data-progress-id]').forEach((input) => {
+        setProgress(input.getAttribute('data-progress-id'), input.value);
+      });
+    }
     const groups = lastGroups || groupByDepartment(subtasks);
     if (!groups.length) {
       alert('暂无子任务可导出');
@@ -647,6 +663,7 @@ ${sheetRows.join('\n')}
       ]);
       project = projData.project || null;
       subtasks = subData.subtasks || [];
+      loadProgress();
       const name = (project && project.name) || `项目 #${projectId}`;
       pageTitle.textContent = name;
       document.title = `甘特图 — ${name}`;
@@ -657,21 +674,9 @@ ${sheetRows.join('\n')}
     }
   }
 
-  if (chkShowActual) {
-    chkShowActual.addEventListener('change', () => {
-      showActual = !!chkShowActual.checked;
-      if (project || subtasks.length) render(subtasks);
-    });
-  }
-  if (btnPrint) {
-    btnPrint.addEventListener('click', () => window.print());
-  }
-  if (btnExportExcel) {
-    btnExportExcel.addEventListener('click', exportExcel);
-  }
-  if (btnRefresh) {
-    btnRefresh.addEventListener('click', () => load());
-  }
+  if (btnPrint) btnPrint.addEventListener('click', () => window.print());
+  if (btnExportExcel) btnExportExcel.addEventListener('click', exportExcel);
+  if (btnRefresh) btnRefresh.addEventListener('click', () => load());
 
   load();
 })();

@@ -1504,22 +1504,7 @@ body.kiosk-mode .dash-table thead th {
   color: #90a0b0;
 }
 
-/* —— 项目甘特图 —— */
-.gantt-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: #546e7a;
-  margin-right: 4px;
-  white-space: nowrap;
-}
-
-.gantt-toggle input {
-  width: auto;
-  margin: 0;
-}
-
+/* —— 项目甘特图（精简：部门作标题行，左侧少列，右侧多给时间轴） —— */
 .gantt-main {
   max-width: none;
 }
@@ -1546,38 +1531,31 @@ body.kiosk-mode .dash-table thead th {
   border-radius: 3px;
 }
 
-.gantt-swatch-plan {
-  background: #42a5f5;
+.gantt-swatch-plan,
+.gantt-swatch-group {
+  background: #5b9bd5;
 }
 
 .gantt-swatch-actual {
   background: #66bb6a;
 }
 
-.gantt-swatch-group {
-  background: #7e57c2;
-}
-
-.gantt-row-group {
-  background: #f3e5f5;
-}
-
+.gantt-row-group,
 .gantt-row-group .gantt-label {
-  background: #f3e5f5;
+  background: #b3d4fc;
 }
 
 .gantt-group-name {
   font-weight: 700;
-  color: #4527a0;
+  color: #1a237e;
 }
 
 .gantt-bar-group {
-  top: 14px;
-  height: 16px;
-  background: #7e57c2;
-  border: 1px solid #5e35b1;
-  box-shadow: inset 0 0 0 20px #7e57c2;
-  opacity: 0.9;
+  top: 10px;
+  height: 14px;
+  background: #5b9bd5;
+  border: 1px solid #2f6fad;
+  box-shadow: inset 0 0 0 20px #5b9bd5;
 }
 
 .gantt-root {
@@ -1587,8 +1565,9 @@ body.kiosk-mode .dash-table thead th {
   overflow: auto;
 }
 
-.gantt-sheet {
-  min-width: 720px;
+.gantt-sheet,
+.gantt-sheet-lean {
+  min-width: 960px;
 }
 
 .gantt-print-head {
@@ -1610,76 +1589,105 @@ body.kiosk-mode .dash-table thead th {
 .gantt-head-row,
 .gantt-row {
   display: grid;
-  grid-template-columns: minmax(200px, 260px) minmax(400px, 1fr);
+  grid-template-columns: minmax(300px, 34vw) minmax(480px, 1fr);
+  border-bottom: 1px solid #eef1f4;
+  align-items: stretch;
 }
 
 .gantt-head-row {
   position: sticky;
   top: 0;
   z-index: 3;
-  background: #fafbfc;
-  border-bottom: 1px solid #e2e6ea;
+  background: #dceeff;
+  border-bottom: 1px solid #b0bec5;
   min-height: 36px;
-}
-
-.gantt-corner {
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #607080;
-  border-right: 1px solid #eef1f4;
 }
 
 .gantt-timeline-head {
   position: relative;
   min-height: 36px;
+  border-left: 1px solid #cfd8dc;
+  background: #eceff1;
 }
 
 .gantt-row {
-  border-bottom: 1px solid #eef1f4;
-  min-height: 48px;
+  min-height: 36px;
 }
 
-.gantt-row:nth-child(even) {
-  background: #fcfdfe;
+.gantt-row:nth-child(even):not(.gantt-row-group) {
+  background: #faf8f5;
 }
 
 .gantt-label {
-  padding: 8px 10px;
+  padding: 4px 6px;
   border-right: 1px solid #eef1f4;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
+  min-width: 0;
 }
 
-.gantt-task-name {
-  font-size: 13px;
+.gantt-label-lean {
+  display: grid;
+  grid-template-columns: minmax(72px, 1.6fr) 44px 52px 40px 62px 62px 28px;
+  gap: 2px 4px;
+  align-items: center;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.gantt-corner-lean {
+  font-size: 12px;
   font-weight: 600;
-  color: #263238;
+  color: #37474f;
+  background: #dceeff;
+}
+
+.gantt-c-task {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.gantt-c-status,
+.gantt-c-progress,
+.gantt-c-date,
+.gantt-c-days {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #455a64;
 }
 
-.gantt-task-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+.gantt-c-owner {
+  min-width: 0;
+  color: #455a64;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.gantt-c-days {
+  text-align: center;
+}
+
+.gantt-progress-input {
+  width: 100%;
+  max-width: 48px;
+  padding: 2px 4px;
   font-size: 11px;
-  color: #78909c;
+  border: 1px solid #cfd8dc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
-.gantt-status {
-  flex-shrink: 0;
+.gantt-progress-print {
+  display: none;
 }
 
 .gantt-track {
   position: relative;
-  min-height: 48px;
-  padding: 6px 0;
+  min-height: 36px;
+  padding: 4px 0;
 }
 
 .gantt-ticks {
@@ -1716,34 +1724,26 @@ body.kiosk-mode .dash-table thead th {
 .gantt-bar {
   position: absolute;
   height: 14px;
-  border-radius: 4px;
+  border-radius: 3px;
   box-sizing: border-box;
   min-width: 4px;
-  /* 打印/另存 PDF 时必须强制输出背景色，否则条带会消失 */
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   color-adjust: exact;
 }
 
-.gantt-bar-plan {
-  top: 8px;
-  background: #42a5f5;
-  border: 1px solid #1e88e5;
-  /* 无背景图时，边框+阴影仍能在打印预览里看见条带 */
-  box-shadow: inset 0 0 0 20px #42a5f5;
-}
-
-.gantt-bar-actual {
-  top: 26px;
-  background: #66bb6a;
-  border: 1px solid #43a047;
-  box-shadow: inset 0 0 0 20px #66bb6a;
+.gantt-bar-plan,
+.gantt-bar-plan-only {
+  top: 10px;
+  background: #5b9bd5;
+  border: 1px solid #2f6fad;
+  box-shadow: inset 0 0 0 20px #5b9bd5;
 }
 
 .gantt-bar-missing {
   position: absolute;
   left: 8px;
-  top: 14px;
+  top: 10px;
   font-size: 11px;
   color: #b0bec5;
 }
@@ -1776,6 +1776,14 @@ body.kiosk-mode .dash-table thead th {
     display: none !important;
   }
 
+  .gantt-progress-input {
+    display: none !important;
+  }
+
+  .gantt-progress-print {
+    display: inline !important;
+  }
+
   .app-main,
   .gantt-main {
     max-width: none !important;
@@ -1793,7 +1801,8 @@ body.kiosk-mode .dash-table thead th {
     display: block !important;
   }
 
-  .gantt-sheet {
+  .gantt-sheet,
+  .gantt-sheet-lean {
     min-width: 0;
   }
 
@@ -1801,35 +1810,22 @@ body.kiosk-mode .dash-table thead th {
     position: static;
   }
 
+  .gantt-head-lean,
+  .gantt-sheet-lean .gantt-row {
+    grid-template-columns: 42% 58%;
+  }
+
   .gantt-row,
   .gantt-head-row {
     break-inside: avoid;
   }
 
-  .gantt-track {
-    min-height: 48px !important;
-    height: 48px !important;
-    overflow: visible !important;
-  }
-
   .gantt-bar,
   .gantt-bar-plan,
-  .gantt-bar-actual {
+  .gantt-bar-group {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
     opacity: 1 !important;
-  }
-
-  .gantt-bar-plan {
-    background: #42a5f5 !important;
-    border: 1px solid #1565c0 !important;
-    box-shadow: inset 0 0 0 20px #42a5f5 !important;
-  }
-
-  .gantt-bar-actual {
-    background: #66bb6a !important;
-    border: 1px solid #2e7d32 !important;
-    box-shadow: inset 0 0 0 20px #66bb6a !important;
   }
 }
