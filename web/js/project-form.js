@@ -60,8 +60,20 @@
     }
   }
 
-  function ensureCanEdit(actionLabel) {
-    if (canEdit()) return true;
+  function canPickAnyManager() {
+    return !!(window.Auth && typeof window.Auth.isAdminOrAbove === 'function' && window.Auth.isAdminOrAbove());
+  }
+
+  function ensureCanEdit(actionLabel, project) {
+    if (project && window.Auth && typeof window.Auth.canEditProject === 'function') {
+      if (window.Auth.canEditProject(project)) return true;
+      if (window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+        alert('仅项目负责人或管理员可编辑该项目');
+        return false;
+      }
+    } else if (canEdit()) {
+      return true;
+    }
     const goLogin = confirm(
       `${actionLabel || '此操作'}需要先登录且具备编辑权限。是否前往登录？`
     );
@@ -70,6 +82,45 @@
       window.location.href = `index.html?view=projects&login=1&return=${returnTo}`;
     }
     return false;
+  }
+
+  function setManagerFieldsLocked(locked) {
+    projectManagerDept.disabled = !!locked;
+    projectManager.disabled = !!locked;
+  }
+
+  // 普通用户：负责人锁定为本人（按姓名匹配企微成员）；管理员可选任意人。
+  function preferSelfAsManager() {
+    if (canPickAnyManager()) {
+      setManagerFieldsLocked(false);
+      return;
+    }
+    const identity =
+      window.Auth && typeof window.Auth.identityName === 'function'
+        ? window.Auth.identityName()
+        : '';
+    const norm =
+      window.Auth && typeof window.Auth.normalizePersonName === 'function'
+        ? window.Auth.normalizePersonName
+        : (s) => String(s || '').replace(/\s+/g, '').trim();
+    const me = allUsers.find((u) => norm(u.name) === identity);
+    if (me) {
+      const userid = (me.userid || '').trim();
+      const dept = departmentIdForUser(userid);
+      if (dept != null) {
+        projectManagerDept.value = String(dept);
+        refreshManagerCombo(userid);
+      }
+    }
+    setManagerFieldsLocked(true);
+  }
+
+  function lockManagerForNonAdminEdit() {
+    if (canPickAnyManager()) {
+      setManagerFieldsLocked(false);
+      return;
+    }
+    setManagerFieldsLocked(true);
   }
 
   function userLabel(user) {
@@ -311,12 +362,14 @@
       await loadMeta();
       setMetaReady();
       applyMetaToForm();
+      preferSelfAsManager();
       clearError();
     } catch (err) {
       allDepartments = [];
       allUsers = [];
       setMetaReady();
       applyMetaToForm();
+      preferSelfAsManager();
       showError(
         (err && err.message) ||
           '加载部门/成员失败。仍可填写名称与日期创建；选人需 Nginx 反代 /api/departments 与 /api/wecom/users'
@@ -344,7 +397,7 @@
   }
 
   async function openEditModal(project) {
-    if (!ensureCanEdit('编辑项目')) return;
+    if (!ensureCanEdit('编辑项目', project)) return;
     if (!project || !project.id) {
       alert('缺少项目数据');
       return;
@@ -376,6 +429,7 @@
       refreshManagerCombo(managerId);
       projectMemberDept.value = DEPT_PLACEHOLDER;
       refreshMemberList();
+      lockManagerForNonAdminEdit();
       clearError();
     } catch (err) {
       allDepartments = [];
@@ -385,6 +439,7 @@
       fillDepartmentSelect(projectMemberDept);
       refreshManagerCombo('');
       refreshMemberList();
+      lockManagerForNonAdminEdit();
       showError((err && err.message) || '加载部门/成员失败，仍可修改基本字段');
     } finally {
       loadingMeta = false;
@@ -402,10 +457,26 @@
 
   function buildPayload() {
     const managerOpt = projectManager.selectedOptions[0];
-    const managerUserid = (projectManager.value || '').trim();
-    const managerName = managerOpt
+    let managerUserid = (projectManager.value || '').trim();
+    let managerName = managerOpt
       ? (managerOpt.dataset.name || '').trim()
       : '';
+
+    // 普通用户强制负责人姓名为本人（防止绕过锁定的下拉框）
+    if (!canPickAnyManager() && window.Auth) {
+      const user = window.Auth.getUser && window.Auth.getUser();
+      const forcedName = ((user && (user.display_name || user.username)) || '').trim();
+      if (forcedName) {
+        managerName = forcedName;
+        const norm =
+          window.Auth.normalizePersonName ||
+          ((s) => String(s || '').replace(/\s+/g, '').trim());
+        const optName = managerOpt ? (managerOpt.dataset.name || '').trim() : '';
+        if (norm(optName) !== norm(forcedName)) {
+          managerUserid = '';
+        }
+      }
+    }
 
     const members = Object.keys(selectedMembers).map((userid) => ({
       userid,

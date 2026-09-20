@@ -40,16 +40,10 @@
   let editingSubtask = null;
 
   function canEdit() {
-    if (window.Auth && window.Auth.canEditProjects()) return true;
-    try {
-      const key = (window.AUTH_KEYS && window.AUTH_KEYS.user) || 'projectshow_auth_user';
-      const raw = localStorage.getItem(key);
-      if (!raw) return false;
-      const user = JSON.parse(raw);
-      return !!(user && user.can_edit_projects);
-    } catch (e) {
-      return false;
+    if (window.Auth && typeof window.Auth.canEditProject === 'function') {
+      return window.Auth.canEditProject(currentProject);
     }
+    return false;
   }
 
   function refreshAddButton() {
@@ -58,6 +52,10 @@
 
   function ensureCanEdit(actionLabel) {
     if (canEdit()) return true;
+    if (window.Auth && window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+      alert(`仅项目负责人或管理员可${actionLabel || '修改子任务'}`);
+      return false;
+    }
     const goLogin = confirm(
       `${actionLabel || '此操作'}需要先登录且具备编辑权限。是否前往登录？`
     );

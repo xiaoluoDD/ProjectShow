@@ -65,7 +65,7 @@
   }
 
   function canEdit() {
-    return !!(window.Auth && window.Auth.canEditProjects());
+    return !!(window.Auth && window.Auth.canEditProject(currentProject));
   }
 
   function refreshActionButtons() {
@@ -81,7 +81,14 @@
     if (btnEdit) btnEdit.hidden = !editable;
     if (btnDeleteProject) btnDeleteProject.hidden = !editable;
     editHint.hidden = editable;
-    if (!editable) return;
+    if (!editable) {
+      if (window.Auth && window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+        editHint.textContent = '仅项目负责人或管理员可编辑、标记完结或删除本项目';
+      } else {
+        editHint.textContent = '登录后可编辑、标记完结或删除自己负责的项目';
+      }
+      return;
+    }
     btnComplete.textContent = hasEndDate(currentProject) ? '修改完结日期' : '标记完结';
   }
 

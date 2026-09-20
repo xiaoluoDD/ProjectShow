@@ -33,6 +33,7 @@
   let allSubtasks = [];
   let editingSubtask = null;
   let saving = false;
+  let currentProject = null;
 
   const btnRefresh = document.getElementById('btnRefresh');
   let btnAddSubtask = document.getElementById('btnAddSubtask');
@@ -60,7 +61,7 @@
     // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
     if (!document.querySelector('script[data-subtask-form]')) {
       const s = document.createElement('script');
-      s.src = 'js/subtask-form.js?v=1.2.24';
+      s.src = 'js/subtask-form.js?v=1.2.25';
       s.setAttribute('data-subtask-form', '1');
       s.onload = () => {
         if (!tryOpen()) {
@@ -98,21 +99,22 @@
   }
 
   function canEdit() {
-    if (window.Auth && window.Auth.canEditProjects()) return true;
-    // 兜底：Auth 尚未刷新完成时，读本地缓存用户权限
-    try {
-      const key = (window.AUTH_KEYS && window.AUTH_KEYS.user) || 'projectshow_auth_user';
-      const raw = localStorage.getItem(key);
-      if (!raw) return false;
-      const user = JSON.parse(raw);
-      return !!(user && user.can_edit_projects);
-    } catch (e) {
+    if (window.Auth && typeof window.Auth.canEditProject === 'function' && currentProject) {
+      return window.Auth.canEditProject(currentProject);
+    }
+    if (window.Auth && window.Auth.canEditProjects()) {
+      // 项目尚未加载时：有编辑角色也不先亮按钮，等项目到位再判断归属
       return false;
     }
+    return false;
   }
 
   function ensureCanEdit() {
     if (canEdit()) return true;
+    if (window.Auth && window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+      alert('仅项目负责人或管理员可修改本项目的子任务');
+      return false;
+    }
     const goLogin = confirm('标记完结需要先登录。是否前往登录？');
     if (goLogin) {
       const returnTo = encodeURIComponent(window.location.href);
@@ -340,7 +342,8 @@
 
   fetchProject(projectId)
     .then((data) => {
-      const name = (data.project && data.project.name) || '';
+      currentProject = data.project || null;
+      const name = (currentProject && currentProject.name) || '';
       if (name) {
         pageTitle.textContent = statusFilter
           ? `子任务 · ${name}（${statusFilter}）`
@@ -348,9 +351,13 @@
       } else if (statusFilter) {
         pageTitle.textContent = `子任务（${statusFilter}）`;
       }
+      refreshAddButton();
+      if (allSubtasks.length) renderList();
     })
     .catch(() => {
+      currentProject = null;
       if (statusFilter) pageTitle.textContent = `子任务（${statusFilter}）`;
+      refreshAddButton();
     });
 
   loadSubtasks();

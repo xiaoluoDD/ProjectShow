@@ -150,13 +150,20 @@
     }
   }
 
+  function canEditThis(project) {
+    if (window.Auth && typeof window.Auth.canEditProject === 'function') {
+      return window.Auth.canEditProject(project);
+    }
+    return canEdit();
+  }
+
   function renderCard(project) {
     const id = project.id;
     const title = displayOrDash(project.name);
     const meta = [project.year, project.work_no].filter((x) => String(x || '').trim()).join(' · ');
     const summary = (project.task_summary || '').trim();
     const subCount = project.subtask_count ?? 0;
-    const editable = canEdit();
+    const editable = canEditThis(project);
     const delBtn = editable
       ? `<button type="button" class="btn btn-sm btn-danger" data-del-project="${id}">删除</button>`
       : '';
@@ -206,9 +213,9 @@
       btn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (!canEdit()) return;
         const pid = Number(btn.getAttribute('data-del-project'));
         const project = allProjects.find((p) => p.id === pid);
+        if (!canEditThis(project)) return;
         const name = project ? displayOrDash(project.name) : String(pid);
         if (!confirm(`确定删除项目「${name}」？\n子任务等关联数据也会一并删除，且不可恢复。`)) {
           return;

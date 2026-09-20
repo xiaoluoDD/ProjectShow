@@ -86,6 +86,36 @@
     return !!(currentUser && currentUser.can_manage_accounts);
   }
 
+  function isAdminOrAbove() {
+    if (!currentUser) return false;
+    if (currentUser.is_super_admin || currentUser.can_manage_accounts) return true;
+    const role = String(currentUser.role || '');
+    return role === 'admin' || role === 'super_admin';
+  }
+
+  // 登录身份姓名：优先 display_name，空则 username（与后端 AuthUserIdentityName 一致）
+  function identityName() {
+    const user = currentUser || readStoredUser();
+    if (!user) return '';
+    const display = String(user.display_name || '').replace(/\s+/g, '').replace(/\u3000/g, '').trim();
+    if (display) return display;
+    return String(user.username || '').replace(/\s+/g, '').replace(/\u3000/g, '').trim();
+  }
+
+  function normalizePersonName(s) {
+    return String(s || '').replace(/\s+/g, '').replace(/\u3000/g, '').trim();
+  }
+
+  // 是否可改某个项目（及其子任务）：管理员/root，或身份姓名 = 项目负责人姓名
+  function canEditProject(project) {
+    if (!canEditProjects()) return false;
+    if (isAdminOrAbove()) return true;
+    if (!project) return false;
+    const manager = normalizePersonName(project.manager_name);
+    const me = identityName();
+    return !!(me && manager && me === manager);
+  }
+
   function notifyChanged() {
     document.dispatchEvent(new CustomEvent('authchange', { detail: { user: currentUser } }));
   }
@@ -158,6 +188,10 @@
     isLoggedIn,
     canEditProjects,
     canManageAccounts,
+    isAdminOrAbove,
+    identityName,
+    normalizePersonName,
+    canEditProject,
     login,
     logout,
     refreshMe,
