@@ -183,7 +183,8 @@
       if (now < state.manualUntil) return;
       const max = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
       if (max <= 0) return;
-      wrap.scrollTop += 0.9;
+      // 必须是整数像素。树莓派等环境会把 0.9 收成 0，滚动会停住。
+      wrap.scrollTop += 1;
       // 兜底：理论上不会真的滚到底（无缝回退会提前接手），意外情况直接绕回开头
       if (wrap.scrollTop >= max) {
         wrap.scrollTop = unitHeight > 1 ? unitHeight - 1 : 0;
