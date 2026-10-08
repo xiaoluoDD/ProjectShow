@@ -1649,7 +1649,7 @@ body.kiosk-mode .dash-table thead th {
 
 .gantt-label-lean {
   display: grid;
-  grid-template-columns: minmax(72px, 1.6fr) 44px 52px 40px 62px 62px 28px;
+  grid-template-columns: minmax(72px, 1.6fr) 44px 52px 64px 62px 62px 28px;
   gap: 2px 4px;
   align-items: center;
   font-size: 11px;
@@ -1695,8 +1695,8 @@ body.kiosk-mode .dash-table thead th {
 
 .gantt-progress-input {
   width: 100%;
-  max-width: 48px;
-  padding: 2px 4px;
+  max-width: none;
+  padding: 2px 2px;
   font-size: 11px;
   border: 1px solid #cfd8dc;
   border-radius: 4px;
