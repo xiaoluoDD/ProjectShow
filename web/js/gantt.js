@@ -1,7 +1,8 @@
 /**
  * 项目甘特图（精简版，界面与 Excel 导出同结构）
  * 左侧：计划任务 / 状态 / 责任人 / 进度% / 计划开始 / 计划结束 / 天数
- * 部门作为分组标题行（不占列）；进度可在本页填写，本地保存并随导出带出
+ * 部门作为分组标题行（不占列）；进度可在本页填写，本地保存并随 xlsx 导出带出
+ * 色条按状态区分，与导出的 Excel 条件格式一致
  */
 (function () {
   const ganttRoot = document.getElementById('ganttRoot');
@@ -281,7 +282,28 @@
     return day >= t0 && day <= t1;
   }
 
-  function renderGroupRow(group, timeline) {
+  function statusBarClass(status) {
+    const s = (status || '').trim();
+    if (s === '已完结' || s === '完成') return 'gantt-bar-done';
+    if (s === '进行中' || s === '正常进行') return 'gantt-bar-run';
+    if (s === '逾期' || s === '严重推迟' || s === '推迟') return 'gantt-bar-late';
+    if (s === '待启动' || s === '目标' || s === '小幅推迟') return 'gantt-bar-wait';
+    return '';
+  }
+
+  function todayPct(timeline) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (today < timeline.start || today > timeline.end) return null;
+    return (daysBetween(timeline.start, today) / timeline.totalDays) * 100;
+  }
+
+  function todayLine(pct) {
+    if (pct == null) return '';
+    return `<div class="gantt-today" style="left:${pct}%" title="今天"></div>`;
+  }
+
+  function renderGroupRow(group, timeline, today) {
     const plan = barStyle(group.minPs, group.maxPe, timeline);
     const days =
       group.minPs || group.maxPe
@@ -299,6 +321,7 @@
           <div class="gantt-c-days">${escapeHtml(days)}</div>
         </div>
         <div class="gantt-track">
+          ${todayLine(today)}
           ${
             plan
               ? `<div class="gantt-bar gantt-bar-group" style="left:${plan.left};width:${plan.width}" title="${escapeHtml(plan.title)}"></div>`
@@ -308,7 +331,7 @@
       </div>`;
   }
 
-  function renderTaskRow(st, timeline) {
+  function renderTaskRow(st, timeline, today) {
     const r = planRange(st);
     const plan = barStyle(r.ps, r.pe, timeline);
     const status = (st.status || '').trim() || '';
@@ -330,9 +353,10 @@
           <div class="gantt-c-days">${escapeHtml(planDaysText(st))}</div>
         </div>
         <div class="gantt-track">
+          ${todayLine(today)}
           ${
             plan
-              ? `<div class="gantt-bar gantt-bar-plan gantt-bar-plan-only" style="left:${plan.left};width:${plan.width}" title="计划 ${escapeHtml(plan.title)}"></div>`
+              ? `<div class="gantt-bar gantt-bar-plan gantt-bar-plan-only ${statusBarClass(status)}" style="left:${plan.left};width:${plan.width}" title="计划 ${escapeHtml(plan.title)}"></div>`
               : `<div class="gantt-bar-missing">无计划日期</div>`
           }
         </div>
@@ -376,6 +400,7 @@
           .join(' · ')
       : '';
 
+    const today = todayPct(timeline);
     const tickHtml = ticks
       .map(
         (t) =>
@@ -387,7 +412,7 @@
       .join('');
 
     const rowsHtml = groups
-      .map((g) => renderGroupRow(g, timeline) + g.tasks.map((st) => renderTaskRow(st, timeline)).join(''))
+      .map((g) => renderGroupRow(g, timeline, today) + g.tasks.map((st) => renderTaskRow(st, timeline, today)).join(''))
       .join('');
 
     ganttRoot.innerHTML = `
@@ -408,7 +433,7 @@
             <div class="gantt-c-days">天数</div>
           </div>
           <div class="gantt-timeline-head">
-            <div class="gantt-ticks">${tickHtml}</div>
+            <div class="gantt-ticks">${tickHtml}${todayLine(today)}</div>
           </div>
         </div>
         <div class="gantt-body">
@@ -421,211 +446,15 @@
     summaryBar.textContent =
       `共 ${tasks.length} 项子任务，${groups.length} 个部门` +
       (missingPlan ? `，其中 ${missingPlan} 项无计划日期` : '') +
-      ` · 进度可在本页填写，导出 Excel 时一并带出`;
+      ` · 进度可在本页填写。导出的 Excel 按状态上色，改开始/结束日期后色条会自动变`;
   }
 
-  function xmlEscape(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+  function progressText(st) {
+    const p = getProgress(st);
+    return p === '' ? '' : String(p);
   }
 
-  function excelCell(colIndex, value, styleId) {
-    const attrs = [`ss:Index="${colIndex}"`];
-    if (styleId) attrs.push(`ss:StyleID="${styleId}"`);
-    if (value === '' || value == null) return `<Cell ${attrs.join(' ')}/>`;
-    return `<Cell ${attrs.join(' ')}><Data ss:Type="String">${xmlEscape(value)}</Data></Cell>`;
-  }
-
-  function excelRow(cellsXml) {
-    return `<Row>${cellsXml}</Row>`;
-  }
-
-  // 与页面同结构：部门作标题行；列=任务/状态/责任人/进度/开始/结束/天数 + 右侧按日色块
-  function buildExcelXml(groups) {
-    const title = (project && project.name) || '项目甘特图';
-    const workNo = (project && project.work_no) || '';
-    const allTasks = (groups || []).reduce((acc, g) => acc.concat(g.tasks), []);
-    const timeline = computeTimeline(allTasks);
-    const dayCount = Math.min(Math.max(1, timeline.totalDays), 370);
-    const days = [];
-    for (let i = 0; i < dayCount; i++) days.push(addDays(timeline.start, i));
-
-    const LEFT = 7;
-    const headers = ['计划任务项目', '状态', '责任人', '进度', '开始日期', '结束日期', '天数'];
-    const sheetRows = [];
-
-    sheetRows.push(
-      excelRow(
-        excelCell(1, `${workNo ? workNo + ' ' : ''}${title}`.trim(), 'Title') +
-          excelCell(LEFT + 1, '图例：', 'Meta') +
-          excelCell(LEFT + 2, '部门', 'Group') +
-          excelCell(LEFT + 3, '计划', 'Plan')
-      )
-    );
-    sheetRows.push(
-      excelRow(
-        excelCell(
-          1,
-          `项目开始：${fmtDateSlash(parseDate(project && project.start_date)) || '—'}  ·  负责人：${(project && (project.manager_name || project.manager_userid)) || '—'}  ·  导出：${fmtDateSlash(new Date())}`,
-          'Meta'
-        )
-      )
-    );
-
-    // 月份行
-    let monthCells = excelCell(1, '月份', 'Head');
-    for (let i = 1; i < LEFT; i++) monthCells += excelCell(i + 1, '', 'Head');
-    let mi = 0;
-    while (mi < days.length) {
-      const d0 = days[mi];
-      let mj = mi + 1;
-      while (
-        mj < days.length &&
-        days[mj].getFullYear() === d0.getFullYear() &&
-        days[mj].getMonth() === d0.getMonth()
-      ) {
-        mj++;
-      }
-      monthCells += excelCell(
-        LEFT + 1 + mi,
-        `${d0.getMonth() + 1}月`,
-        'Head'
-      );
-      for (let k = mi + 1; k < mj; k++) monthCells += excelCell(LEFT + 1 + k, '', 'Head');
-      mi = mj;
-    }
-    sheetRows.push(excelRow(monthCells));
-
-    let dayCells = '';
-    let weekCells = '';
-    headers.forEach((h, i) => {
-      dayCells += excelCell(i + 1, h, 'Head');
-      weekCells += excelCell(i + 1, '', 'Head');
-    });
-    days.forEach((d, i) => {
-      dayCells += excelCell(LEFT + 1 + i, String(d.getDate()), 'HeadDay');
-      weekCells += excelCell(LEFT + 1 + i, WEEK[d.getDay()], 'HeadDay');
-    });
-    sheetRows.push(excelRow(dayCells));
-    sheetRows.push(excelRow(weekCells));
-
-    function leftCells(vals, styleId) {
-      let xml = '';
-      for (let i = 0; i < LEFT; i++) {
-        xml += excelCell(i + 1, vals[i] == null ? '' : vals[i], styleId || '');
-      }
-      return xml;
-    }
-
-    function paintDays(start, end, styleId) {
-      let xml = '';
-      days.forEach((d, i) => {
-        xml += excelCell(LEFT + 1 + i, '', inRange(d, start, end) ? styleId : 'Grid');
-      });
-      return xml;
-    }
-
-    (groups || []).forEach((g) => {
-      const gDays =
-        g.minPs || g.maxPe
-          ? String(Math.max(1, daysBetween(g.minPs || g.maxPe, g.maxPe || g.minPs) + 1))
-          : '';
-      // 部门作标题行：任务列写部门名，责任人写汇总
-      sheetRows.push(
-        excelRow(
-          leftCells(
-            [
-              g.name,
-              '',
-              g.owners || '',
-              '',
-              fmtDateSlash(g.minPs),
-              fmtDateSlash(g.maxPe),
-              gDays,
-            ],
-            'GroupRow'
-          ) + paintDays(g.minPs, g.maxPe, 'Group')
-        )
-      );
-      g.tasks.forEach((st) => {
-        const r = planRange(st);
-        const prog = getProgress(st);
-        sheetRows.push(
-          excelRow(
-            leftCells([
-              (st.content || '').trim(),
-              (st.status || '').trim(),
-              membersText(st),
-              prog === '' ? '' : `${prog}%`,
-              fmtDateSlash(r.ps),
-              fmtDateSlash(r.pe),
-              planDaysText(st),
-            ]) + paintDays(r.ps, r.pe, 'Plan')
-          )
-        );
-      });
-    });
-
-    let cols = '';
-    const leftWidths = [120, 44, 56, 40, 68, 68, 32];
-    leftWidths.forEach((w, i) => {
-      cols += `<Column ss:Index="${i + 1}" ss:AutoFitWidth="0" ss:Width="${w}"/>`;
-    });
-    cols += `<Column ss:Index="${LEFT + 1}" ss:AutoFitWidth="0" ss:Width="12" ss:Span="${Math.max(0, dayCount - 1)}"/>`;
-
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<?mso-application progid="Excel.Sheet"?>
-<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
- xmlns:o="urn:schemas-microsoft-com:office:office"
- xmlns:x="urn:schemas-microsoft-com:office:excel"
- xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
- xmlns:html="http://www.w3.org/TR/REC-html40">
- <Styles>
-  <Style ss:ID="Default" ss:Name="Normal">
-   <Alignment ss:Vertical="Center" ss:WrapText="1"/>
-   <Font ss:FontName="微软雅黑" ss:Size="9"/>
-  </Style>
-  <Style ss:ID="Title"><Font ss:FontName="微软雅黑" ss:Size="14" ss:Bold="1"/></Style>
-  <Style ss:ID="Meta"><Font ss:FontName="微软雅黑" ss:Size="9" ss:Color="#546E7A"/></Style>
-  <Style ss:ID="Head">
-   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
-   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Bold="1"/>
-   <Interior ss:Color="#DCEEFF" ss:Pattern="Solid"/>
-  </Style>
-  <Style ss:ID="HeadDay">
-   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
-   <Font ss:FontName="微软雅黑" ss:Size="8"/>
-   <Interior ss:Color="#ECEFF1" ss:Pattern="Solid"/>
-  </Style>
-  <Style ss:ID="GroupRow">
-   <Font ss:FontName="微软雅黑" ss:Size="9" ss:Bold="1"/>
-   <Interior ss:Color="#B3D4FC" ss:Pattern="Solid"/>
-  </Style>
-  <Style ss:ID="Group"><Interior ss:Color="#5B9BD5" ss:Pattern="Solid"/></Style>
-  <Style ss:ID="Plan"><Interior ss:Color="#5B9BD5" ss:Pattern="Solid"/></Style>
-  <Style ss:ID="Grid">
-   <Borders><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#F0F0F0"/></Borders>
-  </Style>
- </Styles>
- <Worksheet ss:Name="甘特图">
-  <Table>
-${cols}
-${sheetRows.join('\n')}
-  </Table>
-  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
-   <FreezePanes/><FrozenNoSplit/>
-   <SplitHorizontal>5</SplitHorizontal><TopRowBottomPane>5</TopRowBottomPane>
-   <SplitVertical>7</SplitVertical><LeftColumnRightPane>7</LeftColumnRightPane>
-  </WorksheetOptions>
- </Worksheet>
-</Workbook>`;
-  }
-
-  function exportExcel() {
-    // 导出前把输入框最新值写入
+  async function exportExcel() {
     if (ganttRoot) {
       ganttRoot.querySelectorAll('[data-progress-id]').forEach((input) => {
         setProgress(input.getAttribute('data-progress-id'), input.value);
@@ -636,21 +465,69 @@ ${sheetRows.join('\n')}
       alert('暂无子任务可导出');
       return;
     }
-    const xml = buildExcelXml(groups);
-    const blob = new Blob(['\ufeff' + xml], {
-      type: 'application/vnd.ms-excel;charset=utf-8',
+    const rows = [];
+    groups.forEach((g) => {
+      rows.push({
+        kind: 'group',
+        name: g.name || '',
+        status: '',
+        owner: g.owners || '',
+        progress: '',
+        start: fmtDate(g.minPs),
+        end: fmtDate(g.maxPe),
+      });
+      (g.tasks || []).forEach((st) => {
+        const r = planRange(st);
+        rows.push({
+          kind: 'task',
+          name: st.content || '',
+          status: (st.status || '').trim(),
+          owner: membersText(st),
+          progress: progressText(st),
+          start: fmtDate(r.ps),
+          end: fmtDate(r.pe),
+        });
+      });
     });
-    const workNo = ((project && project.work_no) || 'project').replace(/[\\/:*?"<>|]/g, '_');
-    const name = ((project && project.name) || '甘特图').replace(/[\\/:*?"<>|]/g, '_');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${workNo}_${name}_甘特图.xls`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      URL.revokeObjectURL(a.href);
-      a.remove();
-    }, 0);
+    if (btnExportExcel) btnExportExcel.disabled = true;
+    try {
+      const res = await fetch(apiBase() + '/api/gantt/export', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+        body: JSON.stringify({
+          work_no: (project && project.work_no) || '',
+          title: (project && project.name) || '项目甘特图',
+          rows: rows,
+        }),
+      });
+      if (!res.ok) {
+        let msg = '导出失败（' + res.status + '）';
+        try {
+          const data = await res.json();
+          if (data && data.error) msg = data.error;
+        } catch (e) {
+          /* ignore */
+        }
+        alert(msg);
+        return;
+      }
+      const blob = await res.blob();
+      const workNo = ((project && project.work_no) || 'project').replace(/[\\/:*?"<>|]/g, '_');
+      const name = ((project && project.name) || '甘特图').replace(/[\\/:*?"<>|]/g, '_');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = workNo + '_' + name + '_甘特图.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        URL.revokeObjectURL(a.href);
+        a.remove();
+      }, 0);
+    } catch (err) {
+      alert((err && err.message) || '导出失败');
+    } finally {
+      if (btnExportExcel) btnExportExcel.disabled = false;
+    }
   }
 
   async function load() {

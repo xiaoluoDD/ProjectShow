@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>项目甘特图</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.28" />
+  <link rel="stylesheet" href="css/app.css?v=1.2.29" />
 </head>
 <body>
   <header class="app-header no-print">
@@ -18,17 +18,21 @@
   <main class="app-main gantt-main">
     <p class="hint-bar" id="summaryBar">加载中…</p>
     <div class="gantt-legend no-print">
-      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-group"></i>部门标题</span>
-      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-plan"></i>计划</span>
-      <span class="gantt-legend-item muted">部门作分组标题 · 进度可在本页填写 · 导出 Excel 与本页同结构</span>
+      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-group"></i>部门</span>
+      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-done"></i>已完结</span>
+      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-run"></i>进行中</span>
+      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-late"></i>逾期</span>
+      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-wait"></i>待启动</span>
+      <span class="gantt-legend-item"><i class="gantt-swatch gantt-swatch-today"></i>今天</span>
+      <span class="gantt-legend-item muted">进度可在本页填写 · 导出 Excel 后改日期或状态，色条会跟着变</span>
     </div>
     <div id="ganttRoot" class="gantt-root"></div>
   </main>
 
-  <script src="js/config.js?v=1.2.28"></script>
-  <script src="js/status.js?v=1.2.28"></script>
-  <script src="js/utils.js?v=1.2.28"></script>
-  <script src="js/api.js?v=1.2.28"></script>
-  <script src="js/gantt.js?v=1.2.28"></script>
+  <script src="js/config.js?v=1.2.29"></script>
+  <script src="js/status.js?v=1.2.29"></script>
+  <script src="js/utils.js?v=1.2.29"></script>
+  <script src="js/api.js?v=1.2.29"></script>
+  <script src="js/gantt.js?v=1.2.29"></script>
 </body>
 </html>
