@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>项目管理看板 v1.2.24</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.24.1" />
+  <title>项目管理看板 v1.2.25</title>
+  <link rel="stylesheet" href="css/app.css?v=1.2.25" />
 </head>
 <body>
   <header class="app-header">
@@ -36,6 +36,7 @@
       <div class="dash-toolbar">
         <label for="dashYear">年度</label>
         <select id="dashYear"><option value="">全部</option></select>
+        <button type="button" class="btn" id="btnAskAssistant">问一下</button>
       </div>
       <p class="hint-bar" id="dashSummaryBar">加载中…</p>
       <div id="dashboardRoot"></div>
@@ -150,6 +151,18 @@
           <button type="button" class="btn" id="btnOpenChangelog">变更记录</button>
         </div>
         <p class="hint-bar" id="exportSummary">尚未导出</p>
+        <div class="tools-form assistant-bind">
+          <p class="hint-bar">DeepSeek 问答（只回答问题，不修改数据、不执行命令）</p>
+          <p class="hint-bar" id="assistantBindStatus">正在检查是否已绑定…</p>
+          <label for="assistantApiKey">API Key</label>
+          <input id="assistantApiKey" type="password" autocomplete="off" placeholder="sk- 开头，留空不会覆盖已保存的密钥" />
+          <p class="modal-hint" id="assistantBindMessage" hidden></p>
+          <p class="modal-error" id="assistantBindError" hidden></p>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSaveAssistantKey">保存绑定</button>
+            <button type="button" class="btn" id="btnClearAssistantKey">清除绑定</button>
+          </div>
+        </div>
       </div>
 
       <div id="toolsPanelLogs" hidden>
@@ -340,18 +353,34 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.24.1"></script>
-  <script src="js/status.js?v=1.2.24.1"></script>
-  <script src="js/utils.js?v=1.2.24.1"></script>
-  <script src="js/api.js?v=1.2.24.1"></script>
-  <script src="js/auth.js?v=1.2.24.1"></script>
-  <script src="js/dashboard.js?v=1.2.24.1"></script>
-  <script src="js/list.js?v=1.2.24.1"></script>
-  <script src="js/project-form.js?v=1.2.24.1"></script>
-  <script src="js/accounts.js?v=1.2.24.1"></script>
-  <script src="js/departments.js?v=1.2.24.1"></script>
-  <script src="js/members.js?v=1.2.24.1"></script>
-  <script src="js/admin-tools.js?v=1.2.24.1"></script>
-  <script src="js/app.js?v=1.2.24.1"></script>
+  <div class="modal-mask" id="askModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="askTitle">
+      <h2 id="askTitle">问一下</h2>
+      <p class="modal-hint">只回答这套系统怎么用。不会修改数据，也不会在服务器上执行命令。</p>
+      <label for="askQuestion">问题</label>
+      <textarea id="askQuestion" rows="4" maxlength="800" placeholder="例如：部门准时率是怎么计算的？"></textarea>
+      <p class="modal-error" id="askError" hidden></p>
+      <div class="ask-answer" id="askAnswer" hidden></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnAskCancel">关闭</button>
+        <button type="button" class="btn btn-primary" id="btnAskSubmit">发送</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=1.2.25"></script>
+  <script src="js/status.js?v=1.2.25"></script>
+  <script src="js/utils.js?v=1.2.25"></script>
+  <script src="js/api.js?v=1.2.25"></script>
+  <script src="js/auth.js?v=1.2.25"></script>
+  <script src="js/dashboard.js?v=1.2.25"></script>
+  <script src="js/list.js?v=1.2.25"></script>
+  <script src="js/project-form.js?v=1.2.25"></script>
+  <script src="js/accounts.js?v=1.2.25"></script>
+  <script src="js/departments.js?v=1.2.25"></script>
+  <script src="js/members.js?v=1.2.25"></script>
+  <script src="js/admin-tools.js?v=1.2.25"></script>
+  <script src="js/assistant.js?v=1.2.25"></script>
+  <script src="js/app.js?v=1.2.25"></script>
 </body>
 </html>
