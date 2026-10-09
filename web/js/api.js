@@ -129,6 +129,15 @@ function fetchDashboardSummary(year) {
   return apiGet(`/api/dashboard/summary${qs ? `?${qs}` : ''}`);
 }
 
+function fetchDashboardDepartmentTasks(params) {
+  const q = new URLSearchParams();
+  if (params.department_id != null && params.department_id !== '') q.set('department_id', params.department_id);
+  if (params.department_name) q.set('department_name', params.department_name);
+  if (params.year) q.set('year', params.year);
+  if (params.kind) q.set('kind', params.kind);
+  return apiGet(`/api/dashboard/department-tasks?${q.toString()}`);
+}
+
 function fetchDashboardPersonTasks(params) {
   const q = new URLSearchParams();
   if (params.userid) q.set('userid', params.userid);

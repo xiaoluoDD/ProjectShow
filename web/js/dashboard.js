@@ -312,7 +312,7 @@
   }
 
   // 部门准时率：已完结看实际≤计划；逾期未完结计不准时；未到期计入总数但不进准时率分母。
-  function punctualityHtml(rows) {
+  function punctualityHtml(rows, year) {
     const list = Array.isArray(rows) ? rows : [];
     if (!list.length) {
       return `
@@ -343,22 +343,38 @@
         </div>`;
     }
 
+    function deptTasksHref(row, kind) {
+      const q = new URLSearchParams();
+      q.set('department_id', String(row.department_id != null ? row.department_id : 0));
+      q.set('department_name', row.department_name || '');
+      if (year) q.set('year', year);
+      if (kind) q.set('kind', kind);
+      return `dept-tasks.html?${q.toString()}`;
+    }
+
     const body = list
       .map((row) => {
         const rate = Number(row.rate) || 0;
         const rateClass =
           rate >= 80 ? 'rate-good' : rate >= 50 ? 'rate-mid' : 'rate-bad';
+        const hrefAll = deptTasksHref(row, '');
+        const hrefNotDue = deptTasksHref(row, 'not_due');
+        const hrefOnTime = deptTasksHref(row, 'on_time');
+        const hrefScored = deptTasksHref(row, 'scored');
+        const rateText = rate.toFixed(rate % 1 === 0 ? 0 : 1);
         return `
           <tr>
-            <td class="col-group">${escapeHtml(row.department_name || '—')}</td>
-            <td class="col-num">${row.total || 0}</td>
-            <td class="col-num">${row.not_due || 0}</td>
-            <td class="col-num">${row.on_time || 0}</td>
+            <td class="col-group"><a href="${escapeHtml(hrefAll)}">${escapeHtml(row.department_name || '—')}</a></td>
+            <td class="col-num"><a href="${escapeHtml(hrefAll)}">${row.total || 0}</a></td>
+            <td class="col-num"><a href="${escapeHtml(hrefNotDue)}">${row.not_due || 0}</a></td>
+            <td class="col-num"><a href="${escapeHtml(hrefOnTime)}">${row.on_time || 0}</a></td>
             <td class="col-rate">
-              <div class="rate-cell ${rateClass}">
-                <span class="rate-text">${rate.toFixed(rate % 1 === 0 ? 0 : 1)}%</span>
-                <span class="rate-bar" aria-hidden="true"><i style="width:${Math.max(0, Math.min(100, rate))}%"></i></span>
-              </div>
+              <a class="rate-link" href="${escapeHtml(hrefScored)}">
+                <div class="rate-cell ${rateClass}">
+                  <span class="rate-text">${rateText}%</span>
+                  <span class="rate-bar" aria-hidden="true"><i style="width:${Math.max(0, Math.min(100, rate))}%"></i></span>
+                </div>
+              </a>
             </td>
           </tr>`;
       })
@@ -593,7 +609,7 @@
         <div class="dash-card-head">
           <h2>部门准时率</h2>
         </div>
-        ${punctualityHtml(summary.by_department_punctuality)}
+        ${punctualityHtml(summary.by_department_punctuality, year)}
       </article>`;
 
     const personBlock = `

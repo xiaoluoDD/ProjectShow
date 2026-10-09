@@ -487,6 +487,12 @@ a {
   min-width: 88px;
 }
 
+.punctuality-table a.rate-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .rate-cell {
   display: flex;
   flex-direction: column;

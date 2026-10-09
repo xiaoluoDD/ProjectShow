@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>部门准时率明细</title>
+  <link rel="stylesheet" href="css/app.css?v=1.2.24" />
+</head>
+<body>
+  <header class="app-header">
+    <a class="back-link" id="backLink" href="index.html?view=dashboard">‹ 返回总览</a>
+    <h1 id="pageTitle">部门准时率明细</h1>
+    <button type="button" class="btn btn-primary" id="btnRefresh">刷新</button>
+  </header>
+
+  <main class="app-main">
+    <p class="hint-bar" id="summaryBar">加载中…</p>
+    <div id="taskRoot"></div>
+  </main>
+
+  <script src="js/config.js?v=1.2.24"></script>
+  <script src="js/status.js?v=1.2.24"></script>
+  <script src="js/utils.js?v=1.2.24"></script>
+  <script src="js/api.js?v=1.2.24"></script>
+  <script src="js/dept-tasks.js?v=1.2.24"></script>
+</body>
+</html>
