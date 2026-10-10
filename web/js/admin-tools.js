@@ -92,7 +92,6 @@
       if (panel) panel.hidden = !on;
     });
     if (name === 'logs') loadLogs(false);
-    if (name === 'data') loadAssistantBind();
   }
 
   if (tabSettings) tabSettings.addEventListener('click', () => switchTab('settings'));
@@ -109,10 +108,6 @@
   if (btnDownloadDb) btnDownloadDb.addEventListener('click', downloadDatabase);
   const btnOpenChangelog = document.getElementById('btnOpenChangelog');
   if (btnOpenChangelog) btnOpenChangelog.addEventListener('click', openChangelog);
-  const btnSaveAssistantKey = document.getElementById('btnSaveAssistantKey');
-  if (btnSaveAssistantKey) btnSaveAssistantKey.addEventListener('click', saveAssistantBind);
-  const btnClearAssistantKey = document.getElementById('btnClearAssistantKey');
-  if (btnClearAssistantKey) btnClearAssistantKey.addEventListener('click', clearAssistantBind);
   const btnRefreshChangelog = document.getElementById('btnRefreshChangelog');
   if (btnRefreshChangelog) {
     btnRefreshChangelog.addEventListener('click', () => loadChangelog(true));
@@ -198,66 +193,6 @@
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
-  function setAssistantBindMessage(ok, text) {
-    const okEl = document.getElementById('assistantBindMessage');
-    const errEl = document.getElementById('assistantBindError');
-    if (okEl) {
-      okEl.hidden = !ok || !text;
-      okEl.textContent = ok ? text || '' : '';
-    }
-    if (errEl) {
-      errEl.hidden = ok || !text;
-      errEl.textContent = ok ? '' : text || '';
-    }
-  }
-
-  async function loadAssistantBind() {
-    const statusEl = document.getElementById('assistantBindStatus');
-    if (!statusEl || !canManage()) return;
-    try {
-      const data = await fetchAssistantStatus();
-      if (data.bound) {
-        statusEl.textContent = data.masked ? `已绑定 ${data.masked}` : '已绑定';
-      } else {
-        statusEl.textContent = '尚未绑定';
-      }
-    } catch (err) {
-      statusEl.textContent = err.message || '无法读取绑定状态';
-    }
-  }
-
-  async function saveAssistantBind() {
-    const input = document.getElementById('assistantApiKey');
-    const key = input ? input.value.trim() : '';
-    setAssistantBindMessage(true, '');
-    if (!key) {
-      setAssistantBindMessage(false, '请填写 API Key。留空不会覆盖已保存的密钥。');
-      return;
-    }
-    try {
-      const data = await saveAssistantKey(key);
-      if (input) input.value = '';
-      setAssistantBindMessage(true, data.msg || '已绑定');
-      await loadAssistantBind();
-    } catch (err) {
-      setAssistantBindMessage(false, err.message || '保存失败');
-    }
-  }
-
-  async function clearAssistantBind() {
-    if (!confirm('确定清除已绑定的 DeepSeek API Key？')) return;
-    setAssistantBindMessage(true, '');
-    try {
-      const data = await clearAssistantKey();
-      const input = document.getElementById('assistantApiKey');
-      if (input) input.value = '';
-      setAssistantBindMessage(true, data.msg || '已清除绑定');
-      await loadAssistantBind();
-    } catch (err) {
-      setAssistantBindMessage(false, err.message || '清除失败');
-    }
   }
 
   function renderExportSummary() {
@@ -520,7 +455,6 @@
       if (force && changelogRoot) delete changelogRoot.dataset.loaded;
       await loadSettings();
       renderExportSummary();
-      await loadAssistantBind();
       loadedOnce = true;
       switchTab(activeTab || 'settings');
     } catch (err) {

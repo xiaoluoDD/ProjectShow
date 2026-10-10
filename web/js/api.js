@@ -122,22 +122,6 @@ function deleteSubtask(id) {
   return apiDelete(`/api/project-subtasks?id=${encodeURIComponent(id)}`);
 }
 
-function fetchAssistantStatus() {
-  return apiGet('/api/assistant/status');
-}
-
-function saveAssistantKey(apiKey) {
-  return apiPut('/api/assistant/settings', { api_key: apiKey, clear: false });
-}
-
-function clearAssistantKey() {
-  return apiPut('/api/assistant/settings', { api_key: '', clear: true });
-}
-
-function askAssistant(question) {
-  return apiPost('/api/assistant/ask', { question: question });
-}
-
 function fetchDashboardSummary(year) {
   const q = new URLSearchParams();
   if (year) q.set('year', year);

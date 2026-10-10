@@ -361,7 +361,6 @@ a {
 
 .dash-toolbar select {
   flex: 1;
-  max-width: 220px;
   padding: 8px 10px;
   border: 1px solid #cfd8dc;
   border-radius: 8px;
@@ -1150,31 +1149,6 @@ body.kiosk-mode .dash-table thead th {
   padding: 8px 10px;
   border: 1px solid #cfd8dc;
   border-radius: 8px;
-}
-
-.dash-toolbar #btnAskAssistant {
-  margin-left: auto;
-  flex: 0 0 auto;
-}
-
-.assistant-bind {
-  margin-top: 16px;
-  padding-top: 8px;
-  border-top: 1px solid #eef1f4;
-}
-
-.ask-answer {
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #f7f9fb;
-  border: 1px solid #e8ecf0;
-  white-space: pre-wrap;
-  line-height: 1.5;
-  font-size: 14px;
-  color: #2c3340;
-  max-height: 320px;
-  overflow: auto;
 }
 
 .tools-log-list {
