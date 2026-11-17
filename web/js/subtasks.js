@@ -61,7 +61,7 @@
     // 旧版 HTML 可能未引入 subtask-form.js，动态加载一次
     if (!document.querySelector('script[data-subtask-form]')) {
       const s = document.createElement('script');
-      s.src = 'js/subtask-form.js?v=1.2.24.1';
+      s.src = 'js/subtask-form.js?v=1.2.26';
       s.setAttribute('data-subtask-form', '1');
       s.onload = () => {
         if (!tryOpen()) {
@@ -111,7 +111,12 @@
 
   function ensureCanEdit() {
     if (canEdit()) return true;
-    if (window.Auth && window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+    if (
+      currentProject &&
+      window.Auth &&
+      window.Auth.isLoggedIn() &&
+      window.Auth.canEditProjects()
+    ) {
       alert('仅项目负责人或管理员可修改本项目的子任务');
       return false;
     }

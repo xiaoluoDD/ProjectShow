@@ -89,7 +89,7 @@
     projectManager.disabled = !!locked;
   }
 
-  // 普通用户：负责人锁定为本人（按姓名匹配企微成员）；管理员可选任意人。
+  // 普通用户：负责人锁定为本人（优先 userid，其次姓名匹配企微成员）；管理员可选任意人。
   function preferSelfAsManager() {
     if (canPickAnyManager()) {
       setManagerFieldsLocked(false);
@@ -103,7 +103,13 @@
       window.Auth && typeof window.Auth.normalizePersonName === 'function'
         ? window.Auth.normalizePersonName
         : (s) => String(s || '').replace(/\s+/g, '').trim();
-    const me = allUsers.find((u) => norm(u.name) === identity);
+    const myIds =
+      window.Auth && typeof window.Auth.identityUserids === 'function'
+        ? window.Auth.identityUserids()
+        : [];
+    const me =
+      allUsers.find((u) => myIds.indexOf(String((u.userid || '').trim())) >= 0) ||
+      allUsers.find((u) => norm(u.name) === identity);
     if (me) {
       const userid = (me.userid || '').trim();
       const dept = departmentIdForUser(userid);
@@ -462,19 +468,25 @@
       ? (managerOpt.dataset.name || '').trim()
       : '';
 
-    // 普通用户强制负责人姓名为本人（防止绕过锁定的下拉框）
+    // 普通用户强制负责人为本人：保留企微 userid，姓名与登录身份对齐（便于前后端归属校验）
     if (!canPickAnyManager() && window.Auth) {
       const user = window.Auth.getUser && window.Auth.getUser();
       const forcedName = ((user && (user.display_name || user.username)) || '').trim();
-      if (forcedName) {
-        managerName = forcedName;
-        const norm =
-          window.Auth.normalizePersonName ||
-          ((s) => String(s || '').replace(/\s+/g, '').trim());
-        const optName = managerOpt ? (managerOpt.dataset.name || '').trim() : '';
-        if (norm(optName) !== norm(forcedName)) {
-          managerUserid = '';
-        }
+      const myIds =
+        typeof window.Auth.identityUserids === 'function'
+          ? window.Auth.identityUserids()
+          : [];
+      if (forcedName) managerName = forcedName;
+      // 若下拉未选中或选错人，尽量回填本人企微 userid，不再清空
+      if (!managerUserid || (myIds.length && myIds.indexOf(managerUserid) < 0)) {
+        const self =
+          allUsers.find((u) => myIds.indexOf(String((u.userid || '').trim())) >= 0) ||
+          allUsers.find(
+            (u) =>
+              window.Auth.normalizePersonName(u.name) ===
+              window.Auth.normalizePersonName(forcedName)
+          );
+        if (self && self.userid) managerUserid = String(self.userid).trim();
       }
     }
 

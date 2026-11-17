@@ -106,14 +106,47 @@
     return String(s || '').replace(/\s+/g, '').replace(/\u3000/g, '').trim();
   }
 
-  // 是否可改某个项目（及其子任务）：管理员/root，或身份姓名 = 项目负责人姓名
+  // 登录账号可能对应的企微/业务 userid 候选（用于和项目 manager_userid 比对）
+  function identityUserids() {
+    const user = currentUser || readStoredUser();
+    if (!user) return [];
+    const ids = [
+      user.wecom_userid,
+      user.userid,
+      user.bound_userid,
+      user.username,
+    ]
+      .map((x) => String(x || '').trim())
+      .filter(Boolean);
+    return Array.from(new Set(ids));
+  }
+
+  // 是否可改某个项目（及其子任务）：
+  // 管理员/root，或当前用户匹配项目负责人（优先 userid，其次姓名）
   function canEditProject(project) {
     if (!canEditProjects()) return false;
     if (isAdminOrAbove()) return true;
     if (!project) return false;
+
+    const mgrId = String(project.manager_userid || '').trim();
+    if (mgrId) {
+      const myIds = identityUserids();
+      if (myIds.indexOf(mgrId) >= 0) return true;
+    }
+
     const manager = normalizePersonName(project.manager_name);
     const me = identityName();
-    return !!(me && manager && me === manager);
+    if (me && manager && me === manager) return true;
+
+    // 兜底：display_name / username 任一与负责人姓名一致
+    const user = currentUser || readStoredUser();
+    if (user && manager) {
+      const candidates = [user.display_name, user.username]
+        .map((x) => normalizePersonName(x))
+        .filter(Boolean);
+      if (candidates.indexOf(manager) >= 0) return true;
+    }
+    return false;
   }
 
   function notifyChanged() {
@@ -190,6 +223,7 @@
     canManageAccounts,
     isAdminOrAbove,
     identityName,
+    identityUserids,
     normalizePersonName,
     canEditProject,
     login,

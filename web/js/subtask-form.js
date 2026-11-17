@@ -52,7 +52,13 @@
 
   function ensureCanEdit(actionLabel) {
     if (canEdit()) return true;
-    if (window.Auth && window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+    // 项目尚未加载时不误报「仅负责人」，由调用方先 loadMeta 再校验
+    if (
+      currentProject &&
+      window.Auth &&
+      window.Auth.isLoggedIn() &&
+      window.Auth.canEditProjects()
+    ) {
       alert(`仅项目负责人或管理员可${actionLabel || '修改子任务'}`);
       return false;
     }
@@ -282,8 +288,16 @@
   }
 
   async function openCreateModal() {
-    if (!ensureCanEdit('新增子任务')) return;
     if (loadingMeta) return;
+    // 先要求已登录；具体「是否本项目负责人」等项目加载后再判，避免 currentProject 为空误拒
+    if (!(window.Auth && window.Auth.isLoggedIn())) {
+      ensureCanEdit('新增子任务');
+      return;
+    }
+    if (!(window.Auth && window.Auth.canEditProjects())) {
+      ensureCanEdit('新增子任务');
+      return;
+    }
 
     loadingMeta = true;
     editingSubtask = null;
@@ -305,6 +319,10 @@
 
     try {
       await loadMeta();
+      if (!ensureCanEdit('新增子任务')) {
+        closeModal();
+        return;
+      }
       setMetaReady();
       resetFormBasics();
       applyMetaToForm();
@@ -344,9 +362,16 @@
   }
 
   async function openEditModal(st) {
-    if (!ensureCanEdit('编辑子任务')) return;
     if (!st || !st.id) return;
     if (loadingMeta) return;
+    if (!(window.Auth && window.Auth.isLoggedIn())) {
+      ensureCanEdit('编辑子任务');
+      return;
+    }
+    if (!(window.Auth && window.Auth.canEditProjects())) {
+      ensureCanEdit('编辑子任务');
+      return;
+    }
 
     loadingMeta = true;
     editingSubtask = st;
@@ -359,6 +384,10 @@
 
     try {
       await loadMeta();
+      if (!ensureCanEdit('编辑子任务')) {
+        closeModal();
+        return;
+      }
       setMetaReady();
       fillFormFromSubtask(st);
       fillDepartmentSelect(subtaskMemberDept);
