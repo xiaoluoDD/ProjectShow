@@ -80,8 +80,12 @@
   function refreshAddButton() {
     if (!btnAddSubtask) return;
     btnAddSubtask.hidden = !canEdit();
-    if (window.SubtaskBatchApp && typeof window.SubtaskBatchApp.refreshButton === 'function') {
-      window.SubtaskBatchApp.refreshButton();
+    if (window.SubtaskBatchApp) {
+      if (typeof window.SubtaskBatchApp.setProject === 'function') {
+        window.SubtaskBatchApp.setProject(currentProject);
+      } else if (typeof window.SubtaskBatchApp.refreshButton === 'function') {
+        window.SubtaskBatchApp.refreshButton();
+      }
     }
   }
 

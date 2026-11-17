@@ -37,7 +37,13 @@
 
   function ensureCanEdit() {
     if (canEdit()) return true;
-    if (window.Auth && window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+    // 项目尚未加载时不误报「仅负责人」，由调用方先 loadMeta 再校验
+    if (
+      currentProject &&
+      window.Auth &&
+      window.Auth.isLoggedIn() &&
+      window.Auth.canEditProjects()
+    ) {
       alert('仅项目负责人或管理员可批量新增子任务');
       return false;
     }
@@ -375,8 +381,17 @@
   }
 
   async function openModal() {
-    if (!ensureCanEdit()) return;
     if (loadingMeta) return;
+    // 先要求已登录；具体「是否本项目负责人」等项目加载后再判，避免 currentProject 为空误拒
+    if (!(window.Auth && window.Auth.isLoggedIn())) {
+      ensureCanEdit();
+      return;
+    }
+    if (!(window.Auth && window.Auth.canEditProjects())) {
+      ensureCanEdit();
+      return;
+    }
+
     loadingMeta = true;
     if (btnBatch) btnBatch.disabled = true;
     clearError();
@@ -386,6 +401,10 @@
 
     try {
       await loadMeta();
+      if (!ensureCanEdit()) {
+        closeModal();
+        return;
+      }
       ownerHint.textContent = `负责人固定为项目负责人：${formatOwnerLabel(currentProject)}`;
       clearError();
       const first = bodyEl.querySelector('.batch-content');
@@ -406,11 +425,13 @@
     } finally {
       loadingMeta = false;
       if (btnBatch) btnBatch.disabled = false;
+      if (window.SubtaskBatchApp) window.SubtaskBatchApp.refreshButton();
     }
   }
 
   async function saveBatch() {
     if (saving) return;
+    if (!ensureCanEdit()) return;
     clearError();
     let payload;
     try {
@@ -456,6 +477,11 @@
 
   window.SubtaskBatchApp = {
     open: openModal,
+    /** 由 subtasks.js 在项目加载后同步，避免按钮因本地 currentProject 为空一直隐藏 */
+    setProject(project) {
+      currentProject = project || null;
+      if (window.SubtaskBatchApp) window.SubtaskBatchApp.refreshButton();
+    },
     refreshButton() {
       if (!btnBatch) return;
       // 宽屏才显示；窄屏仍可用单条新增
