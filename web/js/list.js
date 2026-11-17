@@ -2,10 +2,15 @@
   const listRoot = document.getElementById('listRoot');
   const summaryBar = document.getElementById('summaryBar');
   const filterPanel = document.getElementById('filterPanel');
+  const filterName = document.getElementById('filterName');
   const filterYear = document.getElementById('filterYear');
+  const filterYearSearch = document.getElementById('filterYearSearch');
   const filterWorkNo = document.getElementById('filterWorkNo');
+  const filterWorkNoSearch = document.getElementById('filterWorkNoSearch');
   const filterManager = document.getElementById('filterManager');
+  const filterManagerSearch = document.getElementById('filterManagerSearch');
   const filterStatus = document.getElementById('filterStatus');
+  const filterStatusSearch = document.getElementById('filterStatusSearch');
 
   let allProjects = [];
   let loadedOnce = false;
@@ -21,16 +26,27 @@
     filterPanel.classList.remove('open');
   });
   document.getElementById('btnClearFilter').addEventListener('click', () => {
+    filterName.value = '';
     filterYear.value = '';
+    filterYearSearch.value = '';
     filterWorkNo.value = '';
+    filterWorkNoSearch.value = '';
     filterManager.value = '';
+    filterManagerSearch.value = '';
     filterStatus.value = '';
+    filterStatusSearch.value = '';
     renderList();
   });
 
   [filterYear, filterWorkNo, filterManager, filterStatus].forEach((el) => {
     el.addEventListener('change', renderList);
   });
+  // 名称筛选 + 每个下拉框旁的输入框：支持直接打字实时查找，不用逐个翻下拉框选项。
+  [filterName, filterYearSearch, filterWorkNoSearch, filterManagerSearch, filterStatusSearch].forEach(
+    (el) => {
+      el.addEventListener('input', renderList);
+    }
+  );
 
   document.addEventListener('touchstart', (e) => {
     if (window.scrollY <= 0) {
@@ -80,22 +96,52 @@
   }
 
   function passesFilter(project) {
+    const name = filterName.value.trim().toLowerCase();
     const year = filterYear.value;
+    const yearSearch = filterYearSearch.value.trim().toLowerCase();
     const workNo = filterWorkNo.value;
+    const workNoSearch = filterWorkNoSearch.value.trim().toLowerCase();
     const manager = filterManager.value;
+    const managerSearch = filterManagerSearch.value.trim().toLowerCase();
     const status = filterStatus.value;
+    const statusSearch = filterStatusSearch.value.trim().toLowerCase();
 
-    if (year && (project.year || '').trim() !== year) return false;
-    if (workNo && (project.work_no || '').trim() !== workNo) return false;
-    if (manager && managerText(project) !== manager) return false;
-    if (status && (project.status || '').trim() !== status) return false;
+    if (name && !(project.name || '').toLowerCase().includes(name)) return false;
+
+    // 每个字段：只要旁边的输入框填了关键字，就按"包含"匹配直接查找，
+    // 优先于下拉框的精确选择；输入框为空时才回退到下拉框的精确匹配。
+    if (yearSearch) {
+      if (!(project.year || '').toLowerCase().includes(yearSearch)) return false;
+    } else if (year && (project.year || '').trim() !== year) {
+      return false;
+    }
+
+    if (workNoSearch) {
+      if (!(project.work_no || '').toLowerCase().includes(workNoSearch)) return false;
+    } else if (workNo && (project.work_no || '').trim() !== workNo) {
+      return false;
+    }
+
+    if (managerSearch) {
+      if (!managerText(project).toLowerCase().includes(managerSearch)) return false;
+    } else if (manager && managerText(project) !== manager) {
+      return false;
+    }
+
+    if (statusSearch) {
+      if (!(project.status || '').toLowerCase().includes(statusSearch)) return false;
+    } else if (status && (project.status || '').trim() !== status) {
+      return false;
+    }
+
     return true;
   }
 
   function canEdit() {
     if (window.Auth && window.Auth.canEditProjects()) return true;
     try {
-      const raw = localStorage.getItem('projectshow_auth_user');
+      const key = (window.AUTH_KEYS && window.AUTH_KEYS.user) || 'projectshow_auth_user';
+      const raw = localStorage.getItem(key);
       if (!raw) return false;
       const user = JSON.parse(raw);
       return !!(user && user.can_edit_projects);
@@ -104,13 +150,20 @@
     }
   }
 
+  function canEditThis(project) {
+    if (window.Auth && typeof window.Auth.canEditProject === 'function') {
+      return window.Auth.canEditProject(project);
+    }
+    return canEdit();
+  }
+
   function renderCard(project) {
     const id = project.id;
     const title = displayOrDash(project.name);
     const meta = [project.year, project.work_no].filter((x) => String(x || '').trim()).join(' · ');
     const summary = (project.task_summary || '').trim();
     const subCount = project.subtask_count ?? 0;
-    const editable = canEdit();
+    const editable = canEditThis(project);
     const delBtn = editable
       ? `<button type="button" class="btn btn-sm btn-danger" data-del-project="${id}">删除</button>`
       : '';
@@ -160,9 +213,9 @@
       btn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (!canEdit()) return;
         const pid = Number(btn.getAttribute('data-del-project'));
         const project = allProjects.find((p) => p.id === pid);
+        if (!canEditThis(project)) return;
         const name = project ? displayOrDash(project.name) : String(pid);
         if (!confirm(`确定删除项目「${name}」？\n子任务等关联数据也会一并删除，且不可恢复。`)) {
           return;

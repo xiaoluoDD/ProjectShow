@@ -40,15 +40,10 @@
   let editingSubtask = null;
 
   function canEdit() {
-    if (window.Auth && window.Auth.canEditProjects()) return true;
-    try {
-      const raw = localStorage.getItem('projectshow_auth_user');
-      if (!raw) return false;
-      const user = JSON.parse(raw);
-      return !!(user && user.can_edit_projects);
-    } catch (e) {
-      return false;
+    if (window.Auth && typeof window.Auth.canEditProject === 'function') {
+      return window.Auth.canEditProject(currentProject);
     }
+    return false;
   }
 
   function refreshAddButton() {
@@ -57,6 +52,16 @@
 
   function ensureCanEdit(actionLabel) {
     if (canEdit()) return true;
+    // 项目尚未加载时不误报「仅负责人」，由调用方先 loadMeta 再校验
+    if (
+      currentProject &&
+      window.Auth &&
+      window.Auth.isLoggedIn() &&
+      window.Auth.canEditProjects()
+    ) {
+      alert(`仅项目负责人或管理员可${actionLabel || '修改子任务'}`);
+      return false;
+    }
     const goLogin = confirm(
       `${actionLabel || '此操作'}需要先登录且具备编辑权限。是否前往登录？`
     );
@@ -84,16 +89,30 @@
     return name || userid || '—';
   }
 
-  function userDeptId(user) {
+  // 一人可能同时属于多个部门（企业微信多部门归属），返回其所有部门 id；
+  // 没有 department_ids（旧数据兜底）时退回单个 department_id。
+  function userDeptIds(user) {
+    if (Array.isArray(user && user.department_ids) && user.department_ids.length) {
+      return user.department_ids.map(Number).filter((n) => Number.isFinite(n) && n > 0);
+    }
     const id = Number(user && user.department_id);
-    return Number.isFinite(id) ? id : 0;
+    return Number.isFinite(id) && id > 0 ? [id] : [];
   }
 
+  // 判断成员是否属于指定部门；deptId=0（未分配）时匹配"不属于任何部门"的成员。
+  function userInDept(user, deptId) {
+    const ids = userDeptIds(user);
+    if (deptId === 0) return ids.length === 0;
+    return ids.indexOf(deptId) !== -1;
+  }
+
+  // 用于"预选成员/负责人所在部门"下拉框：一人多部门时取第一个作为默认展示。
   function departmentIdForUser(userid) {
     if (!userid) return null;
     const u = allUsers.find((x) => (x.userid || '').trim() === userid);
     if (!u) return null;
-    return userDeptId(u);
+    const ids = userDeptIds(u);
+    return ids.length ? ids[0] : 0;
   }
 
   function showError(msg) {
@@ -155,7 +174,7 @@
     }
 
     const deptId = Number(deptRaw);
-    const inDept = allUsers.filter((u) => userDeptId(u) === deptId);
+    const inDept = allUsers.filter((u) => userInDept(u, deptId));
     if (!inDept.length) {
       subtaskMemberList.innerHTML =
         '<p class="muted member-empty">该部门暂无成员</p>';
@@ -269,8 +288,16 @@
   }
 
   async function openCreateModal() {
-    if (!ensureCanEdit('新增子任务')) return;
     if (loadingMeta) return;
+    // 先要求已登录；具体「是否本项目负责人」等项目加载后再判，避免 currentProject 为空误拒
+    if (!(window.Auth && window.Auth.isLoggedIn())) {
+      ensureCanEdit('新增子任务');
+      return;
+    }
+    if (!(window.Auth && window.Auth.canEditProjects())) {
+      ensureCanEdit('新增子任务');
+      return;
+    }
 
     loadingMeta = true;
     editingSubtask = null;
@@ -292,6 +319,10 @@
 
     try {
       await loadMeta();
+      if (!ensureCanEdit('新增子任务')) {
+        closeModal();
+        return;
+      }
       setMetaReady();
       resetFormBasics();
       applyMetaToForm();
@@ -331,9 +362,16 @@
   }
 
   async function openEditModal(st) {
-    if (!ensureCanEdit('编辑子任务')) return;
     if (!st || !st.id) return;
     if (loadingMeta) return;
+    if (!(window.Auth && window.Auth.isLoggedIn())) {
+      ensureCanEdit('编辑子任务');
+      return;
+    }
+    if (!(window.Auth && window.Auth.canEditProjects())) {
+      ensureCanEdit('编辑子任务');
+      return;
+    }
 
     loadingMeta = true;
     editingSubtask = st;
@@ -346,6 +384,10 @@
 
     try {
       await loadMeta();
+      if (!ensureCanEdit('编辑子任务')) {
+        closeModal();
+        return;
+      }
       setMetaReady();
       fillFormFromSubtask(st);
       fillDepartmentSelect(subtaskMemberDept);

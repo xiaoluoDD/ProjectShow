@@ -1,17 +1,13 @@
 (function () {
-  function isPreviewMode() {
-    return window.location && window.location.pathname.indexOf('/mobile-preview/') >= 0;
-  }
-
-  const STORAGE_SUFFIX = isPreviewMode() ? '_preview' : '';
-  const TOKEN_KEY = `projectshow_auth_token${STORAGE_SUFFIX}`;
-  const USER_KEY = `projectshow_auth_user${STORAGE_SUFFIX}`;
-  const ALL_STORAGE_KEYS = [
-    'projectshow_auth_token',
-    'projectshow_auth_user',
-    'projectshow_auth_token_preview',
-    'projectshow_auth_user_preview',
-  ];
+  const KEYS = window.AUTH_KEYS || {
+    token: 'projectshow_auth_token',
+    user: 'projectshow_auth_user',
+    session: 'projectshow_session_active',
+  };
+  const TOKEN_KEY = KEYS.token;
+  const USER_KEY = KEYS.user;
+  const SESSION_FLAG_KEY = KEYS.session;
+  const AUTH_STORAGE_KEYS = [TOKEN_KEY, USER_KEY];
 
   let currentUser = null;
 
@@ -43,11 +39,28 @@
     }
   }
 
-  function clearAllAuthStorage() {
+  // 预览版 / 正式版分别使用独立 key（见 config.js 的 AUTH_KEYS），这里只清
+  // 当前环境自己的登录态，不会影响另一个环境。
+  function clearStoredAuth() {
     try {
-      ALL_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+      AUTH_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     } catch (e) {
       /* ignore */
+    }
+  }
+
+  // 是否本次浏览器标签页第一次打开本站：新开标签页 / 关闭重开都算“重新打开网
+  // 页”，要求重新登录；但同一次打开内从首页跳到项目详情、子任务页（本站是多
+  // 页面应用，每次跳转都会整页刷新）属于同一次使用，不应把刚登录的状态清掉，
+  // 否则会出现“标记完结时莫名被要求重新登录，登录后一点子任务又被登出”的问题。
+  function isFreshBrowserSession() {
+    try {
+      if (sessionStorage.getItem(SESSION_FLAG_KEY)) return false;
+      sessionStorage.setItem(SESSION_FLAG_KEY, '1');
+      return true;
+    } catch (e) {
+      // sessionStorage 不可用时，保守起见不清登录态，避免影响正常使用
+      return false;
     }
   }
 
@@ -71,6 +84,69 @@
 
   function canManageAccounts() {
     return !!(currentUser && currentUser.can_manage_accounts);
+  }
+
+  function isAdminOrAbove() {
+    if (!currentUser) return false;
+    if (currentUser.is_super_admin || currentUser.can_manage_accounts) return true;
+    const role = String(currentUser.role || '');
+    return role === 'admin' || role === 'super_admin';
+  }
+
+  // 登录身份姓名：优先 display_name，空则 username（与后端 AuthUserIdentityName 一致）
+  function identityName() {
+    const user = currentUser || readStoredUser();
+    if (!user) return '';
+    const display = String(user.display_name || '').replace(/\s+/g, '').replace(/\u3000/g, '').trim();
+    if (display) return display;
+    return String(user.username || '').replace(/\s+/g, '').replace(/\u3000/g, '').trim();
+  }
+
+  function normalizePersonName(s) {
+    return String(s || '').replace(/\s+/g, '').replace(/\u3000/g, '').trim();
+  }
+
+  // 登录账号可能对应的企微/业务 userid 候选（用于和项目 manager_userid 比对）
+  function identityUserids() {
+    const user = currentUser || readStoredUser();
+    if (!user) return [];
+    const ids = [
+      user.wecom_userid,
+      user.userid,
+      user.bound_userid,
+      user.username,
+    ]
+      .map((x) => String(x || '').trim())
+      .filter(Boolean);
+    return Array.from(new Set(ids));
+  }
+
+  // 是否可改某个项目（及其子任务）：
+  // 管理员/root，或当前用户匹配项目负责人（优先 userid，其次姓名）
+  function canEditProject(project) {
+    if (!canEditProjects()) return false;
+    if (isAdminOrAbove()) return true;
+    if (!project) return false;
+
+    const mgrId = String(project.manager_userid || '').trim();
+    if (mgrId) {
+      const myIds = identityUserids();
+      if (myIds.indexOf(mgrId) >= 0) return true;
+    }
+
+    const manager = normalizePersonName(project.manager_name);
+    const me = identityName();
+    if (me && manager && me === manager) return true;
+
+    // 兜底：display_name / username 任一与负责人姓名一致
+    const user = currentUser || readStoredUser();
+    if (user && manager) {
+      const candidates = [user.display_name, user.username]
+        .map((x) => normalizePersonName(x))
+        .filter(Boolean);
+      if (candidates.indexOf(manager) >= 0) return true;
+    }
+    return false;
   }
 
   function notifyChanged() {
@@ -131,16 +207,25 @@
     notifyChanged();
   }
 
-  // 先挂载 Auth，再异步校验；避免首请求拿不到 Authorization
-  if (isPreviewMode()) {
-    clearAllAuthStorage();
+  // 每次真正“打开网页”（新开标签页 / 重新访问）才清空登录凭据，避免复用陈旧
+  // 登录状态；同一次打开内的页面跳转保留登录态。
+  if (isFreshBrowserSession()) {
+    clearStoredAuth();
+    currentUser = null;
+  } else {
+    currentUser = readStoredUser();
   }
-  currentUser = readStoredUser();
+
   window.Auth = {
     getUser,
     isLoggedIn,
     canEditProjects,
     canManageAccounts,
+    isAdminOrAbove,
+    identityName,
+    identityUserids,
+    normalizePersonName,
+    canEditProject,
     login,
     logout,
     refreshMe,

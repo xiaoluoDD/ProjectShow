@@ -50,7 +50,8 @@
   function canEdit() {
     if (window.Auth && window.Auth.canEditProjects()) return true;
     try {
-      const raw = localStorage.getItem('projectshow_auth_user');
+      const key = (window.AUTH_KEYS && window.AUTH_KEYS.user) || 'projectshow_auth_user';
+      const raw = localStorage.getItem(key);
       if (!raw) return false;
       const user = JSON.parse(raw);
       return !!(user && user.can_edit_projects);
@@ -59,8 +60,20 @@
     }
   }
 
-  function ensureCanEdit(actionLabel) {
-    if (canEdit()) return true;
+  function canPickAnyManager() {
+    return !!(window.Auth && typeof window.Auth.isAdminOrAbove === 'function' && window.Auth.isAdminOrAbove());
+  }
+
+  function ensureCanEdit(actionLabel, project) {
+    if (project && window.Auth && typeof window.Auth.canEditProject === 'function') {
+      if (window.Auth.canEditProject(project)) return true;
+      if (window.Auth.isLoggedIn() && window.Auth.canEditProjects()) {
+        alert('仅项目负责人或管理员可编辑该项目');
+        return false;
+      }
+    } else if (canEdit()) {
+      return true;
+    }
     const goLogin = confirm(
       `${actionLabel || '此操作'}需要先登录且具备编辑权限。是否前往登录？`
     );
@@ -71,6 +84,51 @@
     return false;
   }
 
+  function setManagerFieldsLocked(locked) {
+    projectManagerDept.disabled = !!locked;
+    projectManager.disabled = !!locked;
+  }
+
+  // 普通用户：负责人锁定为本人（优先 userid，其次姓名匹配企微成员）；管理员可选任意人。
+  function preferSelfAsManager() {
+    if (canPickAnyManager()) {
+      setManagerFieldsLocked(false);
+      return;
+    }
+    const identity =
+      window.Auth && typeof window.Auth.identityName === 'function'
+        ? window.Auth.identityName()
+        : '';
+    const norm =
+      window.Auth && typeof window.Auth.normalizePersonName === 'function'
+        ? window.Auth.normalizePersonName
+        : (s) => String(s || '').replace(/\s+/g, '').trim();
+    const myIds =
+      window.Auth && typeof window.Auth.identityUserids === 'function'
+        ? window.Auth.identityUserids()
+        : [];
+    const me =
+      allUsers.find((u) => myIds.indexOf(String((u.userid || '').trim())) >= 0) ||
+      allUsers.find((u) => norm(u.name) === identity);
+    if (me) {
+      const userid = (me.userid || '').trim();
+      const dept = departmentIdForUser(userid);
+      if (dept != null) {
+        projectManagerDept.value = String(dept);
+        refreshManagerCombo(userid);
+      }
+    }
+    setManagerFieldsLocked(true);
+  }
+
+  function lockManagerForNonAdminEdit() {
+    if (canPickAnyManager()) {
+      setManagerFieldsLocked(false);
+      return;
+    }
+    setManagerFieldsLocked(true);
+  }
+
   function userLabel(user) {
     const userid = (user.userid || '').trim();
     const name = (user.name || '').trim();
@@ -78,9 +136,21 @@
     return name || userid || '—';
   }
 
-  function userDeptId(user) {
+  // 一人可能同时属于多个部门（企业微信多部门归属），返回其所有部门 id；
+  // 没有 department_ids（旧数据兜底）时退回单个 department_id。
+  function userDeptIds(user) {
+    if (Array.isArray(user && user.department_ids) && user.department_ids.length) {
+      return user.department_ids.map(Number).filter((n) => Number.isFinite(n) && n > 0);
+    }
     const id = Number(user && user.department_id);
-    return Number.isFinite(id) ? id : 0;
+    return Number.isFinite(id) && id > 0 ? [id] : [];
+  }
+
+  // 判断成员是否属于指定部门；deptId=0（未分配）时匹配"不属于任何部门"的成员。
+  function userInDept(user, deptId) {
+    const ids = userDeptIds(user);
+    if (deptId === 0) return ids.length === 0;
+    return ids.indexOf(deptId) !== -1;
   }
 
   function showError(msg) {
@@ -121,7 +191,7 @@
     projectManager.disabled = false;
     const deptId = Number(deptRaw);
     allUsers.forEach((u) => {
-      if (userDeptId(u) !== deptId) return;
+      if (!userInDept(u, deptId)) return;
       const userid = (u.userid || '').trim();
       if (!userid) return;
       const opt = document.createElement('option');
@@ -173,7 +243,7 @@
     }
 
     const deptId = Number(deptRaw);
-    const inDept = allUsers.filter((u) => userDeptId(u) === deptId);
+    const inDept = allUsers.filter((u) => userInDept(u, deptId));
     if (!inDept.length) {
       projectMemberList.innerHTML =
         '<p class="muted member-empty">该部门暂无成员</p>';
@@ -298,12 +368,14 @@
       await loadMeta();
       setMetaReady();
       applyMetaToForm();
+      preferSelfAsManager();
       clearError();
     } catch (err) {
       allDepartments = [];
       allUsers = [];
       setMetaReady();
       applyMetaToForm();
+      preferSelfAsManager();
       showError(
         (err && err.message) ||
           '加载部门/成员失败。仍可填写名称与日期创建；选人需 Nginx 反代 /api/departments 与 /api/wecom/users'
@@ -331,7 +403,7 @@
   }
 
   async function openEditModal(project) {
-    if (!ensureCanEdit('编辑项目')) return;
+    if (!ensureCanEdit('编辑项目', project)) return;
     if (!project || !project.id) {
       alert('缺少项目数据');
       return;
@@ -363,6 +435,7 @@
       refreshManagerCombo(managerId);
       projectMemberDept.value = DEPT_PLACEHOLDER;
       refreshMemberList();
+      lockManagerForNonAdminEdit();
       clearError();
     } catch (err) {
       allDepartments = [];
@@ -372,25 +445,50 @@
       fillDepartmentSelect(projectMemberDept);
       refreshManagerCombo('');
       refreshMemberList();
+      lockManagerForNonAdminEdit();
       showError((err && err.message) || '加载部门/成员失败，仍可修改基本字段');
     } finally {
       loadingMeta = false;
     }
   }
 
+  // 用于"编辑项目时预选负责人所在部门"的下拉框：一人多部门时取第一个作为默认展示。
   function departmentIdForUser(userid) {
     if (!userid) return null;
     const u = allUsers.find((x) => (x.userid || '').trim() === userid);
     if (!u) return null;
-    return userDeptId(u);
+    const ids = userDeptIds(u);
+    return ids.length ? ids[0] : 0;
   }
 
   function buildPayload() {
     const managerOpt = projectManager.selectedOptions[0];
-    const managerUserid = (projectManager.value || '').trim();
-    const managerName = managerOpt
+    let managerUserid = (projectManager.value || '').trim();
+    let managerName = managerOpt
       ? (managerOpt.dataset.name || '').trim()
       : '';
+
+    // 普通用户强制负责人为本人：保留企微 userid，姓名与登录身份对齐（便于前后端归属校验）
+    if (!canPickAnyManager() && window.Auth) {
+      const user = window.Auth.getUser && window.Auth.getUser();
+      const forcedName = ((user && (user.display_name || user.username)) || '').trim();
+      const myIds =
+        typeof window.Auth.identityUserids === 'function'
+          ? window.Auth.identityUserids()
+          : [];
+      if (forcedName) managerName = forcedName;
+      // 若下拉未选中或选错人，尽量回填本人企微 userid，不再清空
+      if (!managerUserid || (myIds.length && myIds.indexOf(managerUserid) < 0)) {
+        const self =
+          allUsers.find((u) => myIds.indexOf(String((u.userid || '').trim())) >= 0) ||
+          allUsers.find(
+            (u) =>
+              window.Auth.normalizePersonName(u.name) ===
+              window.Auth.normalizePersonName(forcedName)
+          );
+        if (self && self.userid) managerUserid = String(self.userid).trim();
+      }
+    }
 
     const members = Object.keys(selectedMembers).map((userid) => ({
       userid,
