@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -102,10 +102,7 @@
     <section id="membersView" hidden>
       <div class="accounts-toolbar">
         <p class="hint-bar" id="membersSummaryBar">登录后可管理成员</p>
-        <div class="toolbar-actions">
-          <button type="button" class="btn" id="btnPreviewMainDept">获取主部门对照</button>
-          <button type="button" class="btn btn-primary" id="btnSyncMembers">同步可见成员</button>
-        </div>
+        <button type="button" class="btn btn-primary" id="btnSyncMembers">同步可见成员</button>
       </div>
       <input
         type="text"
@@ -291,29 +288,6 @@
       <div class="modal-actions">
         <button type="button" class="btn" id="btnMemberCancel">取消</button>
         <button type="button" class="btn btn-primary" id="btnMemberSave">保存</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 主部门对照（测试用：只读，不改库；确认后再改同步逻辑） -->
-  <div class="modal-mask" id="mainDeptPreviewModal" hidden>
-    <div class="modal-card modal-card-wide modal-card-main-dept" role="dialog" aria-modal="true" aria-labelledby="mainDeptPreviewTitle">
-      <h2 id="mainDeptPreviewTitle">主部门对照</h2>
-      <p class="modal-hint" id="mainDeptPreviewHint">
-        展示最近一次同步写入的「主部门」与「全部部门」，可与企微通讯录对照。本次只读，不会改库。
-      </p>
-      <div class="main-dept-toolbar">
-        <label class="main-dept-filter">
-          <input type="checkbox" id="mainDeptOnlyMulti" />
-          仅看多部门成员
-        </label>
-        <span class="muted" id="mainDeptPreviewStats"></span>
-      </div>
-      <div id="mainDeptPreviewRoot" class="main-dept-preview-root modal-scroll"></div>
-      <p class="modal-error" id="mainDeptPreviewError" hidden></p>
-      <div class="modal-actions">
-        <button type="button" class="btn" id="btnRefreshMainDeptPreview">重新拉取</button>
-        <button type="button" class="btn btn-primary" id="btnMainDeptPreviewClose">关闭</button>
       </div>
     </div>
   </div>

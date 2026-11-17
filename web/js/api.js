@@ -199,15 +199,6 @@ function syncWecomUsers() {
   return apiPost('/api/wecom/sync', {});
 }
 
-/**
- * 主部门对照预览（只读，不落库）。
- * 优先走后端 dry-run：GET/POST /api/wecom/preview-main-departments
- * 若接口尚未上线（404），调用方应回退到 /api/wecom/users 本地对照。
- */
-function previewWecomMainDepartments() {
-  return apiGet('/api/wecom/preview-main-departments');
-}
-
 function updateWecomUser(payload) {
   return apiPut('/api/wecom/users', payload);
 }
