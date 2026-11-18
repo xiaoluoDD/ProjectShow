@@ -946,6 +946,50 @@ body.kiosk-mode .dash-table thead th {
   white-space: nowrap;
 }
 
+.dept-progress-table .dept-progress-cell {
+  vertical-align: top;
+}
+
+.dept-progress-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 8px 6px 0;
+  padding: 4px 8px;
+  background: #f8fafc;
+  border: 1px solid #e8eef3;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.dept-progress-chip.is-editable {
+  background: #fff;
+}
+
+.dept-progress-name {
+  color: #334155;
+  font-weight: 600;
+}
+
+.dept-progress-value {
+  color: #0f766e;
+  font-variant-numeric: tabular-nums;
+}
+
+.dept-progress-input {
+  width: 3.4em;
+  padding: 2px 4px;
+  border: 1px solid #cfd8dc;
+  border-radius: 4px;
+  font-size: 13px;
+  text-align: right;
+}
+
+.dept-progress-suffix {
+  color: #64748b;
+}
+
 .dash-table .col-extra {
   color: #37474f;
   max-width: 240px;

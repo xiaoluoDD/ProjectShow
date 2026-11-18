@@ -12,6 +12,7 @@
     <select class="view-switch" id="viewSwitch" aria-label="界面切换">
       <option value="dashboard">总览看板</option>
       <option value="projects">项目界面</option>
+      <option value="dept-progress">部门进度</option>
       <option value="departments" id="optDepartments" hidden>部门管理</option>
       <option value="members" id="optMembers" hidden>成员管理</option>
       <option value="accounts" id="optAccounts" hidden>账户管理</option>
@@ -39,6 +40,16 @@
       </div>
       <p class="hint-bar" id="dashSummaryBar">加载中…</p>
       <div id="dashboardRoot"></div>
+    </section>
+
+    <!-- 部门进度 -->
+    <section id="deptProgressView" hidden>
+      <div class="dash-toolbar">
+        <label for="deptProgressYear">年度</label>
+        <select id="deptProgressYear"><option value="">全部</option></select>
+      </div>
+      <p class="hint-bar" id="deptProgressSummaryBar">加载中…</p>
+      <div id="deptProgressRoot"></div>
     </section>
 
     <!-- 项目列表 -->
@@ -346,6 +357,7 @@
   <script src="js/api.js?v=1.2.26"></script>
   <script src="js/auth.js?v=1.2.26"></script>
   <script src="js/dashboard.js?v=1.2.26"></script>
+  <script src="js/dept-progress.js?v=1.2.26"></script>
   <script src="js/list.js?v=1.2.26"></script>
   <script src="js/project-form.js?v=1.2.26"></script>
   <script src="js/accounts.js?v=1.2.26"></script>

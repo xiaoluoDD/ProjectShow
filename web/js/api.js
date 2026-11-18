@@ -199,6 +199,17 @@ function syncWecomUsers() {
   return apiPost('/api/wecom/sync', {});
 }
 
+function fetchDepartmentProgress(year) {
+  const q = new URLSearchParams();
+  if (year) q.set('year', year);
+  const qs = q.toString();
+  return apiGet(`/api/department-progress${qs ? `?${qs}` : ''}`);
+}
+
+function updateDepartmentProgress(payload) {
+  return apiPut('/api/department-progress', payload);
+}
+
 function updateWecomUser(payload) {
   return apiPut('/api/wecom/users', payload);
 }

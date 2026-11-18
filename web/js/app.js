@@ -16,6 +16,7 @@
   const btnLogout = document.getElementById('btnLogout');
   const authUserBar = document.getElementById('authUserBar');
   const dashboardView = document.getElementById('dashboardView');
+  const deptProgressView = document.getElementById('deptProgressView');
   const projectsView = document.getElementById('projectsView');
   const accountsView = document.getElementById('accountsView');
   const departmentsView = document.getElementById('departmentsView');
@@ -44,6 +45,7 @@
     if (
       q === 'projects' ||
       q === 'dashboard' ||
+      q === 'dept-progress' ||
       q === 'accounts' ||
       q === 'departments' ||
       q === 'members' ||
@@ -107,7 +109,7 @@
 
   function setView(view, pushUrl) {
     let next = view;
-    const allowed = ['projects', 'dashboard', 'accounts', 'departments', 'members', 'tools'];
+    const allowed = ['projects', 'dashboard', 'dept-progress', 'accounts', 'departments', 'members', 'tools'];
     if (allowed.indexOf(next) < 0) next = 'dashboard';
 
     const canManage = window.Auth && window.Auth.canManageAccounts();
@@ -118,6 +120,7 @@
 
     viewSwitch.value = next;
     const isDash = next === 'dashboard';
+    const isDeptProgress = next === 'dept-progress';
     const isProjects = next === 'projects';
     const isAccounts = next === 'accounts';
     const isDepartments = next === 'departments';
@@ -125,6 +128,7 @@
     const isTools = next === 'tools';
 
     dashboardView.hidden = !isDash;
+    if (deptProgressView) deptProgressView.hidden = !isDeptProgress;
     projectsView.hidden = !isProjects;
     accountsView.hidden = !isAccounts;
     if (departmentsView) departmentsView.hidden = !isDepartments;
@@ -153,7 +157,9 @@
       scheduleIdleKiosk();
     } else {
       clearIdleKioskTimer();
-      if (isProjects) {
+      if (isDeptProgress) {
+        if (window.DeptProgressApp) window.DeptProgressApp.load(true);
+      } else if (isProjects) {
         if (window.ProjectListApp) window.ProjectListApp.load(true);
       } else if (isAccounts) {
         if (window.AccountsApp) window.AccountsApp.load(true);
@@ -250,6 +256,9 @@
     if (v === 'dashboard') {
       if (window.DashboardApp) window.DashboardApp.load(true);
       else setView('dashboard', false);
+    } else if (v === 'dept-progress') {
+      if (window.DeptProgressApp) window.DeptProgressApp.load(true);
+      else setView('dept-progress', false);
     } else if (v === 'projects') {
       if (window.ProjectListApp) window.ProjectListApp.load(true);
       else setView('projects', false);
