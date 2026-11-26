@@ -956,6 +956,8 @@ body.kiosk-mode .dash-table thead th {
   max-width: 100%;
   min-width: 0;
   overflow: auto;
+  /* 固定可视高度，保证行多时一定出现纵向滚动条，闲置缓滚才有内容可滚 */
+  height: min(70vh, calc(100dvh - 220px));
   max-height: min(70vh, calc(100dvh - 220px));
   -webkit-overflow-scrolling: touch;
   border: 1px solid #e8eef3;

@@ -536,6 +536,7 @@
         summaryBar.textContent = hint;
         summaryBar.dataset.baseText = hint;
       }
+      const wasShowcasing = showcaseRunning;
       render(projects, lastColumns);
       loadedOnce = true;
       cacheKey = key;
@@ -543,7 +544,13 @@
       startAutoRefresh();
       bindShowcaseIdle();
       // 静默同步绝不能重置闲置计时，否则每5秒清零永远滚不起来
-      if (!silent) scheduleIdleShowcase();
+      if (!silent) {
+        scheduleIdleShowcase();
+      } else if (wasShowcasing && !showcaseRaf) {
+        // DOM 重绘后若动画帧丢失，接着滚
+        showcaseRunning = false;
+        startShowcase();
+      }
     } catch (err) {
       if (!silent) {
         showError(root, err.message || '加载失败');
