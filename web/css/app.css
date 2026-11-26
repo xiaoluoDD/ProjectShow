@@ -967,6 +967,13 @@ body.kiosk-mode .dash-table thead th {
 
 .dept-progress-wrap.is-showcasing {
   outline: 1px solid #bbdefb;
+  /* 缓滚展示时隐藏滚动条，减少干扰 */
+  scrollbar-width: none;
+}
+
+.dept-progress-wrap.is-showcasing::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .dept-progress-table {

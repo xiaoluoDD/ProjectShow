@@ -17,7 +17,7 @@
   const viewEl = document.getElementById('deptProgressView');
   const AUTO_REFRESH_MS = 5 * 1000;
   const IDLE_SHOWCASE_MS = 10 * 1000;
-  // 整像素 + 复制一份 tbody 无缝下滚（与总览一致）
+  // 整像素下滚；顶行滚出可视区后接到表尾，始终只有一份数据
   const SHOWCASE_TICK_MS = 32;
 
   let loadedOnce = false;
@@ -31,7 +31,6 @@
   let idleShowcaseTimer = null;
   let showcaseTimer = null;
   let showcaseManualUntil = 0;
-  let showcaseUnitHeight = 0;
   let showcaseRunning = false;
   let showcaseBound = false;
 
@@ -93,62 +92,29 @@
     }, AUTO_REFRESH_MS);
   }
 
-  // 复制一份行接到 tbody 末尾；滚过 unitHeight 后 scrollTop 退回等量，画面无跳变
-  function buildSeamlessLoop(wrap) {
-    const table = wrap && wrap.querySelector('table');
-    const tbody = table && table.querySelector('tbody');
-    if (!tbody || !tbody.children.length) return 0;
-    if (tbody.dataset.loopBuilt === '1') {
-      const full = tbody.getBoundingClientRect().height;
-      return full > 0 ? full / 2 : 0;
-    }
-    const unitHeight = tbody.getBoundingClientRect().height;
-    if (!(unitHeight > 0)) return 0;
-    const frag = document.createDocumentFragment();
-    Array.from(tbody.children).forEach((tr) => {
-      const clone = tr.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');
-      clone.classList.add('dept-progress-loop-clone');
-      clone.querySelectorAll('input').forEach((inp) => {
-        inp.tabIndex = -1;
-        inp.readOnly = true;
-        inp.disabled = true;
-      });
-      frag.appendChild(clone);
+  // 缓滚会把行轮转到表尾；停止时按原始项目顺序还原
+  function restoreShowcaseRowOrder(wrap) {
+    const tbody = wrap && wrap.querySelector('tbody');
+    if (!tbody || !lastProjects.length) return;
+    const map = new Map();
+    Array.from(tbody.querySelectorAll('tr[data-project-id]')).forEach((tr) => {
+      map.set(tr.getAttribute('data-project-id'), tr);
     });
-    tbody.appendChild(frag);
-    tbody.dataset.loopBuilt = '1';
-    return unitHeight;
-  }
-
-  function tearDownSeamlessLoop(wrap) {
-    if (!wrap) return;
-    const tbody = wrap.querySelector('tbody');
-    if (!tbody || tbody.dataset.loopBuilt !== '1') return;
-    let unit = showcaseUnitHeight;
-    if (!(unit > 1)) {
-      const full = tbody.getBoundingClientRect().height;
-      unit = full > 0 ? full / 2 : 0;
-    }
-    if (unit > 1 && wrap.scrollTop >= unit) {
-      wrap.scrollTop -= unit;
-    }
-    tbody.querySelectorAll('tr.dept-progress-loop-clone').forEach((tr) => tr.remove());
-    delete tbody.dataset.loopBuilt;
-    const max = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
-    if (wrap.scrollTop > max) wrap.scrollTop = max;
+    lastProjects.forEach((p) => {
+      const tr = map.get(String(p.project_id));
+      if (tr) tbody.appendChild(tr);
+    });
   }
 
   function stopShowcase() {
     showcaseRunning = false;
-    showcaseUnitHeight = 0;
     if (showcaseTimer) {
       clearInterval(showcaseTimer);
       showcaseTimer = null;
     }
     const wrap = getWrap();
     if (wrap) {
-      tearDownSeamlessLoop(wrap);
+      restoreShowcaseRowOrder(wrap);
       wrap.classList.remove('is-showcasing');
     }
   }
@@ -189,8 +155,6 @@
       return;
     }
 
-    const unitHeight = buildSeamlessLoop(wrap);
-    showcaseUnitHeight = unitHeight;
     showcaseRunning = true;
     showcaseManualUntil = 0;
     wrap.classList.add('is-showcasing');
@@ -211,16 +175,17 @@
         showcaseManualUntil = now + 2000;
         return;
       }
-      const unit = showcaseUnitHeight;
-      // 无缝：滚过第一份高度就退回，画面不变，继续往下
-      if (unit > 1 && el.scrollTop >= unit) {
-        el.scrollTop -= unit;
-      }
       const max = Math.max(0, el.scrollHeight - el.clientHeight);
       if (max <= 0) return;
       el.scrollTop += 1;
-      if (el.scrollTop >= max) {
-        el.scrollTop = unit > 1 ? unit - 1 : 0;
+      // 顶行完全滚出可视区后接到表尾，scrollTop 退一行高，始终只有一份行
+      const tbody = el.querySelector('tbody');
+      const first = tbody && tbody.firstElementChild;
+      if (!first) return;
+      const rowH = first.offsetHeight;
+      if (rowH > 0 && el.scrollTop >= rowH) {
+        tbody.appendChild(first);
+        el.scrollTop -= rowH;
       }
     }, SHOWCASE_TICK_MS);
   }
@@ -491,7 +456,7 @@
         const stageCells = cols
           .map((c) => renderCell(p, c.key, cells[c.key], editable))
           .join('');
-        return `<tr>
+        return `<tr data-project-id="${escapeHtml(String(p.project_id))}">
           <td class="dept-progress-sticky col-work col-group">${escapeHtml(p.work_no || '—')}</td>
           <td class="dept-progress-sticky col-name" title="${escapeHtml(p.name || '')}">${escapeHtml(p.name || '—')}</td>
           <td class="dept-progress-sticky col-status">${escapeHtml(p.status || '—')}</td>
