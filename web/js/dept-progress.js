@@ -168,15 +168,11 @@
       }
       const max = Math.max(0, el.scrollHeight - el.clientHeight);
       if (max <= 0) return;
-      // 整像素上下折返，滚完整份项目列表
-      el.scrollTop += showcaseDirY;
-      if (el.scrollTop >= max) {
-        el.scrollTop = max;
-        showcaseDirY = -1;
-        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
-      } else if (el.scrollTop <= 0) {
-        el.scrollTop = 0;
-        showcaseDirY = 1;
+      // 整像素移动；若被浏览器夹住说明到顶/底，再反转（避免卡在底部）
+      const before = el.scrollTop;
+      el.scrollTop = before + showcaseDirY;
+      if (el.scrollTop === before) {
+        showcaseDirY = showcaseDirY > 0 ? -1 : 1;
         showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
       }
     }, SHOWCASE_TICK_MS);
