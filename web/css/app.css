@@ -946,18 +946,93 @@ body.kiosk-mode .dash-table thead th {
   white-space: nowrap;
 }
 
-.dept-progress-wrap {
+.dept-progress-scroll-top {
   overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 4px;
+  max-width: 100%;
+}
+
+.dept-progress-scroll-top[hidden] {
+  display: none;
+}
+
+.dept-progress-scroll-spacer {
+  height: 1px;
+  pointer-events: none;
+}
+
+.dept-progress-wrap {
+  overflow: auto;
+  max-height: min(70vh, calc(100dvh - 220px));
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e8eef3;
+  border-radius: 8px;
+  background: #fff;
 }
 
 .dept-progress-table {
+  width: max-content;
   min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.dept-progress-table th,
+.dept-progress-table td {
+  box-sizing: border-box;
+}
+
+.dept-progress-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #fafbfc;
+}
+
+.dept-progress-table .dept-progress-sticky {
+  position: sticky;
+  z-index: 2;
+  background: #fff;
+  white-space: nowrap;
+}
+
+.dept-progress-table thead .dept-progress-sticky {
+  z-index: 4;
+  background: #fafbfc;
+}
+
+.dept-progress-table .col-work {
+  left: 0;
+  width: 7.5em;
+  min-width: 7.5em;
+  max-width: 7.5em;
+}
+
+.dept-progress-table .col-name {
+  left: 7.5em;
+  width: 14em;
+  min-width: 14em;
+  max-width: 14em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dept-progress-table .col-status {
+  left: 21.5em;
+  width: 5.5em;
+  min-width: 5.5em;
+  max-width: 5.5em;
+  box-shadow: 4px 0 8px -4px rgba(15, 23, 42, 0.18);
 }
 
 .dept-progress-table th.dept-progress-col-head {
   white-space: nowrap;
   font-size: 12px;
-  max-width: 7.5em;
+  width: 6.8em;
+  min-width: 6.8em;
+  max-width: 6.8em;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -967,7 +1042,9 @@ body.kiosk-mode .dash-table thead th {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
   color: #0f766e;
-  min-width: 5.5em;
+  width: 6.8em;
+  min-width: 6.8em;
+  max-width: 6.8em;
 }
 
 .dept-progress-table td.dept-progress-stage.is-na,

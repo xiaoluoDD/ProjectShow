@@ -219,9 +219,9 @@
     }
 
     const head = [
-      '<th>工番号</th>',
-      '<th>项目名称</th>',
-      '<th>完成状态</th>',
+      '<th class="dept-progress-sticky col-work">工番号</th>',
+      '<th class="dept-progress-sticky col-name">项目名称</th>',
+      '<th class="dept-progress-sticky col-status">完成状态</th>',
     ]
       .concat(cols.map((c) => `<th class="dept-progress-col-head" title="${escapeHtml(c.label || c.key)}">${escapeHtml(c.label || c.key)}</th>`))
       .join('');
@@ -233,15 +233,18 @@
           .map((c) => renderCell(p, c.key, cells[c.key], editable))
           .join('');
         return `<tr>
-          <td class="col-group">${escapeHtml(p.work_no || '—')}</td>
-          <td>${escapeHtml(p.name || '—')}</td>
-          <td>${escapeHtml(p.status || '—')}</td>
+          <td class="dept-progress-sticky col-work col-group">${escapeHtml(p.work_no || '—')}</td>
+          <td class="dept-progress-sticky col-name" title="${escapeHtml(p.name || '')}">${escapeHtml(p.name || '—')}</td>
+          <td class="dept-progress-sticky col-status">${escapeHtml(p.status || '—')}</td>
           ${stageCells}
         </tr>`;
       })
       .join('');
 
     root.innerHTML = `
+      <div class="dept-progress-scroll-top" aria-hidden="true">
+        <div class="dept-progress-scroll-spacer"></div>
+      </div>
       <div class="table-wrap dept-progress-wrap">
         <table class="dash-table dept-progress-table">
           <thead><tr>${head}</tr></thead>
@@ -249,6 +252,39 @@
         </table>
       </div>`;
     bindEditors();
+    bindScrollSync();
+  }
+
+  function bindScrollSync() {
+    if (!root) return;
+    const top = root.querySelector('.dept-progress-scroll-top');
+    const wrap = root.querySelector('.dept-progress-wrap');
+    const spacer = root.querySelector('.dept-progress-scroll-spacer');
+    const table = root.querySelector('.dept-progress-table');
+    if (!top || !wrap || !spacer || !table) return;
+
+    const syncSize = () => {
+      spacer.style.width = `${table.scrollWidth}px`;
+      top.hidden = wrap.scrollWidth <= wrap.clientWidth + 1;
+    };
+    syncSize();
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(syncSize);
+      ro.observe(wrap);
+      ro.observe(table);
+    }
+
+    let lock = false;
+    const link = (from, to) => {
+      from.addEventListener('scroll', () => {
+        if (lock) return;
+        lock = true;
+        to.scrollLeft = from.scrollLeft;
+        lock = false;
+      });
+    };
+    link(top, wrap);
+    link(wrap, top);
   }
 
   function openColumnsModal() {
