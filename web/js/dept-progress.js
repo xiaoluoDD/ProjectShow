@@ -17,21 +17,20 @@
   const viewEl = document.getElementById('deptProgressView');
   const AUTO_REFRESH_MS = 5 * 1000;
   const IDLE_SHOWCASE_MS = 10 * 1000;
-  // 浏览器 scrollTop 多为整数；小于 1px/帧会加不上，必须累计到整像素再滚
-  const SHOWCASE_SPEED = 0.55;
-  const SHOWCASE_EDGE_PAUSE_MS = 3200;
+  // 与总览看板一致：整像素 + setInterval，避免小数 scrollTop 被截断
+  const SHOWCASE_TICK_MS = 32;
 
   let loadedOnce = false;
   let cacheKey = '';
   let lastCatalog = [];
   let lastColumns = [];
+  let lastProjects = [];
   let autoRefreshTimer = null;
   let loadInFlight = false;
   let idleShowcaseTimer = null;
-  let showcaseRaf = null;
-  let showcaseDirY = 1;
-  let showcaseCarry = 0;
-  let showcaseEdgePauseUntil = 0;
+  let showcaseTimer = null;
+  let showcaseUnitHeight = 0;
+  let showcaseManualUntil = 0;
   let showcaseRunning = false;
   let showcaseBound = false;
 
@@ -73,14 +72,38 @@
     }, AUTO_REFRESH_MS);
   }
 
-  function stopShowcase() {
+  // 同总览：复制 tbody 行做无缝循环
+  function buildSeamlessLoop(wrap) {
+    const table = wrap.querySelector('table');
+    const tbody = table && table.querySelector('tbody');
+    if (!tbody || !tbody.children.length) return 0;
+    if (tbody.dataset.loopBuilt === '1') {
+      const full = tbody.getBoundingClientRect().height;
+      return full > 0 ? full / 2 : 0;
+    }
+    const unitHeight = tbody.getBoundingClientRect().height;
+    if (!(unitHeight > 0)) return 0;
+    const frag = document.createDocumentFragment();
+    Array.from(tbody.children).forEach((tr) => frag.appendChild(tr.cloneNode(true)));
+    tbody.appendChild(frag);
+    tbody.dataset.loopBuilt = '1';
+    return unitHeight;
+  }
+
+  function stopShowcase(rebuild) {
+    const wasRunning = showcaseRunning;
     showcaseRunning = false;
-    if (showcaseRaf) {
-      cancelAnimationFrame(showcaseRaf);
-      showcaseRaf = null;
+    showcaseUnitHeight = 0;
+    if (showcaseTimer) {
+      clearInterval(showcaseTimer);
+      showcaseTimer = null;
     }
     const wrap = getWrap();
     if (wrap) wrap.classList.remove('is-showcasing');
+    // 停滚后去掉复制行，恢复可编辑的单份表格
+    if (rebuild && wasRunning && lastProjects.length) {
+      render(lastProjects, lastColumns);
+    }
   }
 
   function clearIdleShowcase() {
@@ -92,7 +115,7 @@
 
   function scheduleIdleShowcase() {
     clearIdleShowcase();
-    stopShowcase();
+    stopShowcase(true);
     if (!isViewActive() || !getWrap()) return;
     if (columnsModal && !columnsModal.hidden) return;
     idleShowcaseTimer = setTimeout(() => {
@@ -113,62 +136,58 @@
   function startShowcase() {
     const wrap = getWrap();
     if (!wrap || showcaseRunning) return;
-    const yMax = wrap.scrollHeight - wrap.clientHeight;
-    if (yMax <= 1) {
+    const max0 = wrap.scrollHeight - wrap.clientHeight;
+    if (max0 <= 2) {
       scheduleIdleShowcase();
       return;
     }
+
+    showcaseUnitHeight = buildSeamlessLoop(wrap);
     showcaseRunning = true;
-    showcaseDirY = 1;
-    showcaseEdgePauseUntil = 0;
+    showcaseManualUntil = 0;
     wrap.classList.add('is-showcasing');
 
-    const tick = () => {
+    showcaseTimer = setInterval(() => {
       if (!showcaseRunning || !isViewActive()) {
-        stopShowcase();
+        stopShowcase(true);
         return;
       }
       const el = getWrap();
-      if (!el) {
-        stopShowcase();
+      if (!el || !el.isConnected) {
+        stopShowcase(false);
         return;
       }
-      const maxY = el.scrollHeight - el.clientHeight;
-      if (maxY <= 1) {
-        stopShowcase();
-        scheduleIdleShowcase();
+      if (showcaseUnitHeight > 1 && el.scrollTop >= showcaseUnitHeight) {
+        el.scrollTop -= showcaseUnitHeight;
+      }
+      if (performance.now() < showcaseManualUntil) return;
+      if (isEditingCell()) {
+        showcaseManualUntil = performance.now() + 2000;
         return;
       }
-      const now = performance.now();
-      if (now < showcaseEdgePauseUntil) {
-        showcaseRaf = requestAnimationFrame(tick);
-        return;
+      const max = Math.max(0, el.scrollHeight - el.clientHeight);
+      if (max <= 0) return;
+      // 必须整像素（与总览看板相同）
+      el.scrollTop += 1;
+      if (el.scrollTop >= max) {
+        el.scrollTop = showcaseUnitHeight > 1 ? showcaseUnitHeight - 1 : 0;
       }
-      el.scrollTop += SHOWCASE_SPEED * showcaseDirY;
-      if (el.scrollTop >= maxY - 0.5) {
-        el.scrollTop = maxY;
-        showcaseDirY = -1;
-        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
-      } else if (el.scrollTop <= 0.5) {
-        el.scrollTop = 0;
-        showcaseDirY = 1;
-        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
-      }
-      showcaseRaf = requestAnimationFrame(tick);
-    };
-    showcaseRaf = requestAnimationFrame(tick);
+    }, SHOWCASE_TICK_MS);
   }
 
   function onUserActivity() {
     if (!isViewActive()) return;
-    stopShowcase();
+    if (showcaseRunning) {
+      // 展示中：短暂停顿后继续，不必整表拆掉重建
+      showcaseManualUntil = performance.now() + 1800;
+      return;
+    }
     scheduleIdleShowcase();
   }
 
   function bindShowcaseIdle() {
     if (showcaseBound || !viewEl) return;
     showcaseBound = true;
-    // 仅用户真实操作重置；工具栏焦点不取消计时
     ['pointerdown', 'wheel', 'touchstart'].forEach((type) => {
       viewEl.addEventListener(
         type,
@@ -184,12 +203,11 @@
       (e) => {
         if (e && e.isTrusted === false) return;
         if (!isEditingCell() && e.target && e.target.matches && e.target.matches('select,button')) {
-          // 改筛选也算操作，重新计时
           onUserActivity();
           return;
         }
         if (isEditingCell() || (e.target && e.target.classList && e.target.classList.contains('dept-progress-input'))) {
-          stopShowcase();
+          stopShowcase(true);
           clearIdleShowcase();
         }
       },
@@ -199,7 +217,7 @@
       'focusin',
       (e) => {
         if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
-        stopShowcase();
+        stopShowcase(true);
         clearIdleShowcase();
       },
       true
@@ -525,6 +543,7 @@
       const projects = data.projects || [];
       lastCatalog = data.catalog || [];
       lastColumns = data.columns || [];
+      lastProjects = projects;
       fillYearOptions(data.years || []);
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
@@ -539,18 +558,24 @@
         summaryBar.dataset.baseText = hint;
       }
       const wasShowcasing = showcaseRunning;
+      if (wasShowcasing) {
+        // 静默重绘前先停表（不重建），避免旧 interval 打在已销毁节点上
+        showcaseRunning = false;
+        if (showcaseTimer) {
+          clearInterval(showcaseTimer);
+          showcaseTimer = null;
+        }
+      }
       render(projects, lastColumns);
       loadedOnce = true;
       cacheKey = key;
       root.dataset.filled = '1';
       startAutoRefresh();
       bindShowcaseIdle();
-      // 静默同步绝不能重置闲置计时，否则每5秒清零永远滚不起来
+      // 静默同步绝不能重置闲置计时；若刚才在展示则按总览方式重建无缝循环继续滚
       if (!silent) {
         scheduleIdleShowcase();
-      } else if (wasShowcasing && !showcaseRaf) {
-        // DOM 重绘后若动画帧丢失，接着滚
-        showcaseRunning = false;
+      } else if (wasShowcasing) {
         startShowcase();
       }
     } catch (err) {
