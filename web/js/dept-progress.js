@@ -14,13 +14,49 @@
   const columnsClose = document.getElementById('deptProgressColumnsClose');
   const columnsSave = document.getElementById('deptProgressColumnsSave');
 
+  const viewEl = document.getElementById('deptProgressView');
+  const AUTO_REFRESH_MS = 5 * 1000;
+
   let loadedOnce = false;
   let cacheKey = '';
   let lastCatalog = [];
   let lastColumns = [];
+  let autoRefreshTimer = null;
+  let loadInFlight = false;
 
   if (yearSelect) yearSelect.addEventListener('change', () => load(true));
   if (statusSelect) statusSelect.addEventListener('change', () => load(true));
+
+  function isViewActive() {
+    return !!(viewEl && !viewEl.hidden);
+  }
+
+  function isEditingCell() {
+    const active = document.activeElement;
+    return !!(active && active.classList && active.classList.contains('dept-progress-input'));
+  }
+
+  function stopAutoRefresh() {
+    if (autoRefreshTimer) {
+      clearInterval(autoRefreshTimer);
+      autoRefreshTimer = null;
+    }
+  }
+
+  function startAutoRefresh() {
+    stopAutoRefresh();
+    if (!isViewActive()) return;
+    autoRefreshTimer = setInterval(() => {
+      if (!isViewActive()) {
+        stopAutoRefresh();
+        return;
+      }
+      if (columnsModal && !columnsModal.hidden) return;
+      if (isEditingCell()) return;
+      if (loadInFlight) return;
+      load(true, { silent: true });
+    }, AUTO_REFRESH_MS);
+  }
 
   if (columnsBtn) {
     columnsBtn.addEventListener('click', () => openColumnsModal());
@@ -205,6 +241,9 @@
     if (!root) return;
     const editable = canEdit();
     const cols = Array.isArray(columns) && columns.length ? columns : [{ key: '采购品进度', label: '采购品进度', fixed: true }];
+    const wrap = root.querySelector('.dept-progress-wrap');
+    const scrollTop = wrap ? wrap.scrollTop : 0;
+    const scrollLeft = wrap ? wrap.scrollLeft : 0;
 
     if (!projects.length) {
       root.innerHTML = '<div class="state-box"><p>暂无项目</p></div>';
@@ -241,6 +280,11 @@
           <tbody>${body}</tbody>
         </table>
       </div>`;
+    const nextWrap = root.querySelector('.dept-progress-wrap');
+    if (nextWrap) {
+      nextWrap.scrollTop = scrollTop;
+      nextWrap.scrollLeft = scrollLeft;
+    }
     bindEditors();
   }
 
@@ -286,20 +330,31 @@
     }
   }
 
-  async function load(force) {
+  async function load(force, opts) {
     if (!root || !summaryBar) return;
+    const silent = !!(opts && opts.silent);
     if (columnsBtn) columnsBtn.hidden = !canEdit();
 
     const year = yearSelect ? yearSelect.value : '';
     const status = statusSelect ? statusSelect.value : '';
     const key = `${year}|${status}|${canEdit() ? 'edit' : 'view'}`;
     if (loadedOnce && !force && cacheKey === key && root.dataset.filled === '1') {
+      startAutoRefresh();
       return;
     }
-    showLoading(root, '正在加载部门进度…');
-    summaryBar.textContent = '加载中…';
+    if (loadInFlight) return;
+    loadInFlight = true;
+    if (!silent) {
+      showLoading(root, '正在加载部门进度…');
+      summaryBar.textContent = '加载中…';
+    }
     try {
       const data = await fetchDepartmentProgress(year, status);
+      // 静默刷新时若用户已开始编辑，跳过重绘，避免打断输入
+      if (silent && isEditingCell()) {
+        startAutoRefresh();
+        return;
+      }
       const projects = data.projects || [];
       lastCatalog = data.catalog || [];
       lastColumns = data.columns || [];
@@ -307,20 +362,34 @@
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
       const hint = canEdit()
-        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头`
-        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读`;
-      summaryBar.textContent = hint;
-      summaryBar.dataset.baseText = hint;
+        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头 · 约5秒自动同步`
+        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读 · 约5秒自动同步`;
+      if (!silent || !summaryBar.dataset.baseText) {
+        summaryBar.textContent = hint;
+        summaryBar.dataset.baseText = hint;
+      } else if (!(summaryBar.textContent || '').includes('已保存')) {
+        summaryBar.textContent = hint;
+        summaryBar.dataset.baseText = hint;
+      }
       render(projects, lastColumns);
       loadedOnce = true;
       cacheKey = key;
       root.dataset.filled = '1';
+      startAutoRefresh();
     } catch (err) {
-      showError(root, err.message || '加载失败');
-      summaryBar.textContent = '加载失败';
-      root.dataset.filled = '0';
+      if (!silent) {
+        showError(root, err.message || '加载失败');
+        summaryBar.textContent = '加载失败';
+        root.dataset.filled = '0';
+      }
+    } finally {
+      loadInFlight = false;
     }
   }
 
-  window.DeptProgressApp = { load };
+  function pause() {
+    stopAutoRefresh();
+  }
+
+  window.DeptProgressApp = { load, pause };
 })();
