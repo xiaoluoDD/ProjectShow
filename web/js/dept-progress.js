@@ -92,14 +92,21 @@
     }, AUTO_REFRESH_MS);
   }
 
-  // 缓滚会把行轮转到表尾；停止时按原始项目顺序还原
+  // 缓滚会把行轮转到表尾；停止时按原始项目顺序还原（顺序未变则不动 DOM，避免抢焦点）
   function restoreShowcaseRowOrder(wrap) {
     const tbody = wrap && wrap.querySelector('tbody');
     if (!tbody || !lastProjects.length) return;
-    const map = new Map();
-    Array.from(tbody.querySelectorAll('tr[data-project-id]')).forEach((tr) => {
-      map.set(tr.getAttribute('data-project-id'), tr);
-    });
+    const rows = Array.from(tbody.querySelectorAll('tr[data-project-id]'));
+    if (rows.length !== lastProjects.length) return;
+    let same = true;
+    for (let i = 0; i < lastProjects.length; i += 1) {
+      if (rows[i].getAttribute('data-project-id') !== String(lastProjects[i].project_id)) {
+        same = false;
+        break;
+      }
+    }
+    if (same) return;
+    const map = new Map(rows.map((tr) => [tr.getAttribute('data-project-id'), tr]));
     lastProjects.forEach((p) => {
       const tr = map.get(String(p.project_id));
       if (tr) tbody.appendChild(tr);
@@ -114,7 +121,8 @@
     }
     const wrap = getWrap();
     if (wrap) {
-      restoreShowcaseRowOrder(wrap);
+      // 正在输入时禁止重排，否则会丢掉焦点导致无法填进度
+      if (!isEditingCell()) restoreShowcaseRowOrder(wrap);
       wrap.classList.remove('is-showcasing');
     }
   }
@@ -243,6 +251,8 @@
         if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
         setTimeout(() => {
           if (!isViewActive() || isEditingCell()) return;
+          const wrap = getWrap();
+          if (wrap) restoreShowcaseRowOrder(wrap);
           scheduleIdleShowcase();
         }, 0);
       },
