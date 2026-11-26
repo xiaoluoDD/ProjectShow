@@ -502,7 +502,7 @@
     if (loadedOnce && !force && cacheKey === key && root.dataset.filled === '1') {
       startAutoRefresh();
       bindShowcaseIdle();
-      scheduleIdleShowcase();
+      if (!idleShowcaseTimer && !showcaseRunning) scheduleIdleShowcase();
       return;
     }
     if (loadInFlight) return;
@@ -542,8 +542,8 @@
       root.dataset.filled = '1';
       startAutoRefresh();
       bindShowcaseIdle();
+      // 静默同步绝不能重置闲置计时，否则每5秒清零永远滚不起来
       if (!silent) scheduleIdleShowcase();
-      else if (!showcaseRunning) scheduleIdleShowcase();
     } catch (err) {
       if (!silent) {
         showError(root, err.message || '加载失败');
