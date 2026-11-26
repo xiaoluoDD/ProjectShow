@@ -560,9 +560,17 @@
         return;
       }
       const projects = data.projects || [];
+      const columns = data.columns || [];
+      const fp = dataFingerprint(projects, columns);
+      // 数据没变：跳过重绘（滚动展示时尤其明显，否则约每5秒卡一下）
+      if (silent && fp && fp === lastDataFingerprint && root.dataset.filled === '1') {
+        startAutoRefresh();
+        return;
+      }
       lastCatalog = data.catalog || [];
-      lastColumns = data.columns || [];
+      lastColumns = columns;
       lastProjects = projects;
+      lastDataFingerprint = fp;
       fillYearOptions(data.years || []);
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
