@@ -17,9 +17,8 @@
   const viewEl = document.getElementById('deptProgressView');
   const AUTO_REFRESH_MS = 5 * 1000;
   const IDLE_SHOWCASE_MS = 10 * 1000;
-  // 整像素滚动（与总览一致）；上下折返而不是复制行循环，避免总在同一批项目里打转
+  // 整像素 + 复制一份 tbody 无缝下滚（与总览一致）
   const SHOWCASE_TICK_MS = 32;
-  const SHOWCASE_EDGE_PAUSE_MS = 2800;
 
   let loadedOnce = false;
   let cacheKey = '';
@@ -31,9 +30,8 @@
   let loadInFlight = false;
   let idleShowcaseTimer = null;
   let showcaseTimer = null;
-  let showcaseDirY = 1;
   let showcaseManualUntil = 0;
-  let showcaseEdgePauseUntil = 0;
+  let showcaseUnitHeight = 0;
   let showcaseRunning = false;
   let showcaseBound = false;
 
@@ -95,16 +93,64 @@
     }, AUTO_REFRESH_MS);
   }
 
+  // 复制一份行接到 tbody 末尾；滚过 unitHeight 后 scrollTop 退回等量，画面无跳变
+  function buildSeamlessLoop(wrap) {
+    const table = wrap && wrap.querySelector('table');
+    const tbody = table && table.querySelector('tbody');
+    if (!tbody || !tbody.children.length) return 0;
+    if (tbody.dataset.loopBuilt === '1') {
+      const full = tbody.getBoundingClientRect().height;
+      return full > 0 ? full / 2 : 0;
+    }
+    const unitHeight = tbody.getBoundingClientRect().height;
+    if (!(unitHeight > 0)) return 0;
+    const frag = document.createDocumentFragment();
+    Array.from(tbody.children).forEach((tr) => {
+      const clone = tr.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.classList.add('dept-progress-loop-clone');
+      clone.querySelectorAll('input').forEach((inp) => {
+        inp.tabIndex = -1;
+        inp.readOnly = true;
+        inp.disabled = true;
+      });
+      frag.appendChild(clone);
+    });
+    tbody.appendChild(frag);
+    tbody.dataset.loopBuilt = '1';
+    return unitHeight;
+  }
+
+  function tearDownSeamlessLoop(wrap) {
+    if (!wrap) return;
+    const tbody = wrap.querySelector('tbody');
+    if (!tbody || tbody.dataset.loopBuilt !== '1') return;
+    let unit = showcaseUnitHeight;
+    if (!(unit > 1)) {
+      const full = tbody.getBoundingClientRect().height;
+      unit = full > 0 ? full / 2 : 0;
+    }
+    if (unit > 1 && wrap.scrollTop >= unit) {
+      wrap.scrollTop -= unit;
+    }
+    tbody.querySelectorAll('tr.dept-progress-loop-clone').forEach((tr) => tr.remove());
+    delete tbody.dataset.loopBuilt;
+    const max = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
+    if (wrap.scrollTop > max) wrap.scrollTop = max;
+  }
+
   function stopShowcase() {
     showcaseRunning = false;
-    showcaseDirY = 1;
-    showcaseEdgePauseUntil = 0;
+    showcaseUnitHeight = 0;
     if (showcaseTimer) {
       clearInterval(showcaseTimer);
       showcaseTimer = null;
     }
     const wrap = getWrap();
-    if (wrap) wrap.classList.remove('is-showcasing');
+    if (wrap) {
+      tearDownSeamlessLoop(wrap);
+      wrap.classList.remove('is-showcasing');
+    }
   }
 
   function clearIdleShowcase() {
@@ -143,10 +189,10 @@
       return;
     }
 
+    const unitHeight = buildSeamlessLoop(wrap);
+    showcaseUnitHeight = unitHeight;
     showcaseRunning = true;
-    showcaseDirY = 1;
     showcaseManualUntil = 0;
-    showcaseEdgePauseUntil = 0;
     wrap.classList.add('is-showcasing');
 
     showcaseTimer = setInterval(() => {
@@ -161,19 +207,20 @@
       }
       const now = performance.now();
       if (now < showcaseManualUntil) return;
-      if (now < showcaseEdgePauseUntil) return;
       if (isEditingCell()) {
         showcaseManualUntil = now + 2000;
         return;
       }
+      const unit = showcaseUnitHeight;
+      // 无缝：滚过第一份高度就退回，画面不变，继续往下
+      if (unit > 1 && el.scrollTop >= unit) {
+        el.scrollTop -= unit;
+      }
       const max = Math.max(0, el.scrollHeight - el.clientHeight);
       if (max <= 0) return;
-      // 整像素移动；若被浏览器夹住说明到顶/底，再反转（避免卡在底部）
-      const before = el.scrollTop;
-      el.scrollTop = before + showcaseDirY;
-      if (el.scrollTop === before) {
-        showcaseDirY = showcaseDirY > 0 ? -1 : 1;
-        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
+      el.scrollTop += 1;
+      if (el.scrollTop >= max) {
+        el.scrollTop = unit > 1 ? unit - 1 : 0;
       }
     }, SHOWCASE_TICK_MS);
   }
@@ -559,8 +606,8 @@
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
       const hint = canEdit()
-        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 约5秒同步 · 闲置10秒自动缓滚`
-        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读 · 约5秒同步 · 闲置10秒自动缓滚`;
+        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 约5秒同步 · 闲置10秒无缝缓滚`
+        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读 · 约5秒同步 · 闲置10秒无缝缓滚`;
       if (!silent || !summaryBar.dataset.baseText) {
         summaryBar.textContent = hint;
         summaryBar.dataset.baseText = hint;
