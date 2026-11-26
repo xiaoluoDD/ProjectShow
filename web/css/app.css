@@ -946,22 +946,6 @@ body.kiosk-mode .dash-table thead th {
   white-space: nowrap;
 }
 
-.dept-progress-scroll-top {
-  overflow-x: auto;
-  overflow-y: hidden;
-  margin-bottom: 4px;
-  max-width: 100%;
-}
-
-.dept-progress-scroll-top[hidden] {
-  display: none;
-}
-
-.dept-progress-scroll-spacer {
-  height: 1px;
-  pointer-events: none;
-}
-
 .dept-progress-wrap {
   overflow: auto;
   max-height: min(70vh, calc(100dvh - 220px));

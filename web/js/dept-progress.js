@@ -14,10 +14,19 @@
   const columnsClose = document.getElementById('deptProgressColumnsClose');
   const columnsSave = document.getElementById('deptProgressColumnsSave');
 
+  const viewEl = document.getElementById('deptProgressView');
+  const IDLE_SHOWCASE_MS = 10 * 1000;
+  const SHOWCASE_SPEED = 0.45;
+
   let loadedOnce = false;
   let cacheKey = '';
   let lastCatalog = [];
   let lastColumns = [];
+  let idleShowcaseTimer = null;
+  let showcaseRaf = null;
+  let showcaseDirY = 1;
+  let showcaseDirX = 1;
+  let showcaseBound = false;
 
   if (yearSelect) yearSelect.addEventListener('change', () => load(true));
   if (statusSelect) statusSelect.addEventListener('change', () => load(true));
@@ -35,6 +44,131 @@
   }
   if (columnsSave) {
     columnsSave.addEventListener('click', saveColumns);
+  }
+
+  function isViewActive() {
+    return !!(viewEl && !viewEl.hidden);
+  }
+
+  function getWrap() {
+    return root ? root.querySelector('.dept-progress-wrap') : null;
+  }
+
+  function stopShowcase() {
+    if (showcaseRaf) {
+      cancelAnimationFrame(showcaseRaf);
+      showcaseRaf = null;
+    }
+  }
+
+  function clearIdleShowcase() {
+    if (idleShowcaseTimer) {
+      clearTimeout(idleShowcaseTimer);
+      idleShowcaseTimer = null;
+    }
+  }
+
+  function pauseShowcaseAndRearm() {
+    stopShowcase();
+    scheduleIdleShowcase();
+  }
+
+  function scheduleIdleShowcase() {
+    clearIdleShowcase();
+    stopShowcase();
+    if (!isViewActive() || !getWrap()) return;
+    if (columnsModal && !columnsModal.hidden) return;
+    idleShowcaseTimer = setTimeout(() => {
+      idleShowcaseTimer = null;
+      if (!isViewActive()) return;
+      if (columnsModal && !columnsModal.hidden) {
+        scheduleIdleShowcase();
+        return;
+      }
+      const active = document.activeElement;
+      if (active && root && root.contains(active) && active.matches('input,button,select,textarea')) {
+        scheduleIdleShowcase();
+        return;
+      }
+      startShowcase();
+    }, IDLE_SHOWCASE_MS);
+  }
+
+  function startShowcase() {
+    const wrap = getWrap();
+    if (!wrap || showcaseRaf) return;
+    const maxY = wrap.scrollHeight - wrap.clientHeight;
+    const maxX = wrap.scrollWidth - wrap.clientWidth;
+    if (maxY <= 1 && maxX <= 1) return;
+
+    const tick = () => {
+      if (!isViewActive()) {
+        stopShowcase();
+        return;
+      }
+      const el = getWrap();
+      if (!el) {
+        stopShowcase();
+        return;
+      }
+      const yMax = el.scrollHeight - el.clientHeight;
+      const xMax = el.scrollWidth - el.clientWidth;
+
+      if (yMax > 1) {
+        el.scrollTop += SHOWCASE_SPEED * showcaseDirY;
+        if (el.scrollTop >= yMax - 0.5) {
+          el.scrollTop = yMax;
+          showcaseDirY = -1;
+        } else if (el.scrollTop <= 0.5) {
+          el.scrollTop = 0;
+          showcaseDirY = 1;
+        }
+      }
+      if (xMax > 1) {
+        el.scrollLeft += SHOWCASE_SPEED * showcaseDirX;
+        if (el.scrollLeft >= xMax - 0.5) {
+          el.scrollLeft = xMax;
+          showcaseDirX = -1;
+        } else if (el.scrollLeft <= 0.5) {
+          el.scrollLeft = 0;
+          showcaseDirX = 1;
+        }
+      }
+      showcaseRaf = requestAnimationFrame(tick);
+    };
+    showcaseRaf = requestAnimationFrame(tick);
+  }
+
+  function bindShowcaseIdle() {
+    if (showcaseBound || !viewEl) return;
+    showcaseBound = true;
+    const onActivity = () => {
+      if (!isViewActive()) return;
+      pauseShowcaseAndRearm();
+    };
+    ['pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((type) => {
+      viewEl.addEventListener(type, onActivity, { passive: true, capture: true });
+    });
+    viewEl.addEventListener(
+      'focusin',
+      () => {
+        stopShowcase();
+        clearIdleShowcase();
+      },
+      true
+    );
+    viewEl.addEventListener(
+      'focusout',
+      () => {
+        setTimeout(() => {
+          if (!isViewActive()) return;
+          const active = document.activeElement;
+          if (active && viewEl.contains(active) && active.matches('input,button,select,textarea')) return;
+          scheduleIdleShowcase();
+        }, 0);
+      },
+      true
+    );
   }
 
   function canEdit() {
@@ -235,9 +369,6 @@
       .join('');
 
     root.innerHTML = `
-      <div class="dept-progress-scroll-top" aria-hidden="true">
-        <div class="dept-progress-scroll-spacer"></div>
-      </div>
       <div class="table-wrap dept-progress-wrap">
         <table class="dash-table dept-progress-table">
           <thead><tr>${head}</tr></thead>
@@ -245,43 +376,13 @@
         </table>
       </div>`;
     bindEditors();
-    bindScrollSync();
-  }
-
-  function bindScrollSync() {
-    if (!root) return;
-    const top = root.querySelector('.dept-progress-scroll-top');
-    const wrap = root.querySelector('.dept-progress-wrap');
-    const spacer = root.querySelector('.dept-progress-scroll-spacer');
-    const table = root.querySelector('.dept-progress-table');
-    if (!top || !wrap || !spacer || !table) return;
-
-    const syncSize = () => {
-      spacer.style.width = `${table.scrollWidth}px`;
-      top.hidden = wrap.scrollWidth <= wrap.clientWidth + 1;
-    };
-    syncSize();
-    if (typeof ResizeObserver !== 'undefined') {
-      const ro = new ResizeObserver(syncSize);
-      ro.observe(wrap);
-      ro.observe(table);
-    }
-
-    let lock = false;
-    const link = (from, to) => {
-      from.addEventListener('scroll', () => {
-        if (lock) return;
-        lock = true;
-        to.scrollLeft = from.scrollLeft;
-        lock = false;
-      });
-    };
-    link(top, wrap);
-    link(wrap, top);
+    bindShowcaseIdle();
+    scheduleIdleShowcase();
   }
 
   function openColumnsModal() {
     if (!columnsModal || !columnsList) return;
+    pause();
     const selected = new Set(
       (lastColumns || []).filter((c) => c && !c.fixed).map((c) => c.key)
     );
@@ -303,6 +404,7 @@
 
   function closeColumnsModal() {
     if (columnsModal) columnsModal.hidden = true;
+    if (isViewActive()) scheduleIdleShowcase();
   }
 
   async function saveColumns() {
@@ -330,8 +432,12 @@
     const status = statusSelect ? statusSelect.value : '';
     const key = `${year}|${status}|${canEdit() ? 'edit' : 'view'}`;
     if (loadedOnce && !force && cacheKey === key && root.dataset.filled === '1') {
+      bindShowcaseIdle();
+      scheduleIdleShowcase();
       return;
     }
+    stopShowcase();
+    clearIdleShowcase();
     showLoading(root, '正在加载部门进度…');
     summaryBar.textContent = '加载中…';
     try {
@@ -343,8 +449,8 @@
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
       const hint = canEdit()
-        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头`
-        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读`;
+        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头 · 闲置自动滚动`
+        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读 · 闲置自动滚动`;
       summaryBar.textContent = hint;
       summaryBar.dataset.baseText = hint;
       render(projects, lastColumns);
@@ -358,5 +464,10 @@
     }
   }
 
-  window.DeptProgressApp = { load };
+  function pause() {
+    stopShowcase();
+    clearIdleShowcase();
+  }
+
+  window.DeptProgressApp = { load, pause };
 })();
