@@ -17,8 +17,9 @@
   const viewEl = document.getElementById('deptProgressView');
   const AUTO_REFRESH_MS = 5 * 1000;
   const IDLE_SHOWCASE_MS = 10 * 1000;
-  // 与总览看板一致：整像素 + setInterval，避免小数 scrollTop 被截断
+  // 整像素滚动（与总览一致）；上下折返而不是复制行循环，避免总在同一批项目里打转
   const SHOWCASE_TICK_MS = 32;
+  const SHOWCASE_EDGE_PAUSE_MS = 2800;
 
   let loadedOnce = false;
   let cacheKey = '';
@@ -30,8 +31,9 @@
   let loadInFlight = false;
   let idleShowcaseTimer = null;
   let showcaseTimer = null;
-  let showcaseUnitHeight = 0;
+  let showcaseDirY = 1;
   let showcaseManualUntil = 0;
+  let showcaseEdgePauseUntil = 0;
   let showcaseRunning = false;
   let showcaseBound = false;
 
@@ -86,43 +88,23 @@
       }
       if (columnsModal && !columnsModal.hidden) return;
       if (isEditingCell()) return;
+      // 自动缓滚期间不同步重绘，否则会卡顿并跳回开头
+      if (showcaseRunning) return;
       if (loadInFlight) return;
       load(true, { silent: true });
     }, AUTO_REFRESH_MS);
   }
 
-  // 同总览：复制 tbody 行做无缝循环
-  function buildSeamlessLoop(wrap) {
-    const table = wrap.querySelector('table');
-    const tbody = table && table.querySelector('tbody');
-    if (!tbody || !tbody.children.length) return 0;
-    if (tbody.dataset.loopBuilt === '1') {
-      const full = tbody.getBoundingClientRect().height;
-      return full > 0 ? full / 2 : 0;
-    }
-    const unitHeight = tbody.getBoundingClientRect().height;
-    if (!(unitHeight > 0)) return 0;
-    const frag = document.createDocumentFragment();
-    Array.from(tbody.children).forEach((tr) => frag.appendChild(tr.cloneNode(true)));
-    tbody.appendChild(frag);
-    tbody.dataset.loopBuilt = '1';
-    return unitHeight;
-  }
-
-  function stopShowcase(rebuild) {
-    const wasRunning = showcaseRunning;
+  function stopShowcase() {
     showcaseRunning = false;
-    showcaseUnitHeight = 0;
+    showcaseDirY = 1;
+    showcaseEdgePauseUntil = 0;
     if (showcaseTimer) {
       clearInterval(showcaseTimer);
       showcaseTimer = null;
     }
     const wrap = getWrap();
     if (wrap) wrap.classList.remove('is-showcasing');
-    // 停滚后去掉复制行，恢复可编辑的单份表格
-    if (rebuild && wasRunning && lastProjects.length) {
-      render(lastProjects, lastColumns);
-    }
   }
 
   function clearIdleShowcase() {
@@ -134,7 +116,7 @@
 
   function scheduleIdleShowcase() {
     clearIdleShowcase();
-    stopShowcase(true);
+    stopShowcase();
     if (!isViewActive() || !getWrap()) return;
     if (columnsModal && !columnsModal.hidden) return;
     idleShowcaseTimer = setTimeout(() => {
@@ -161,35 +143,41 @@
       return;
     }
 
-    showcaseUnitHeight = buildSeamlessLoop(wrap);
     showcaseRunning = true;
+    showcaseDirY = 1;
     showcaseManualUntil = 0;
+    showcaseEdgePauseUntil = 0;
     wrap.classList.add('is-showcasing');
 
     showcaseTimer = setInterval(() => {
       if (!showcaseRunning || !isViewActive()) {
-        stopShowcase(true);
+        stopShowcase();
         return;
       }
       const el = getWrap();
       if (!el || !el.isConnected) {
-        stopShowcase(false);
+        stopShowcase();
         return;
       }
-      if (showcaseUnitHeight > 1 && el.scrollTop >= showcaseUnitHeight) {
-        el.scrollTop -= showcaseUnitHeight;
-      }
-      if (performance.now() < showcaseManualUntil) return;
+      const now = performance.now();
+      if (now < showcaseManualUntil) return;
+      if (now < showcaseEdgePauseUntil) return;
       if (isEditingCell()) {
-        showcaseManualUntil = performance.now() + 2000;
+        showcaseManualUntil = now + 2000;
         return;
       }
       const max = Math.max(0, el.scrollHeight - el.clientHeight);
       if (max <= 0) return;
-      // 必须整像素（与总览看板相同）
-      el.scrollTop += 1;
+      // 整像素上下折返，滚完整份项目列表
+      el.scrollTop += showcaseDirY;
       if (el.scrollTop >= max) {
-        el.scrollTop = showcaseUnitHeight > 1 ? showcaseUnitHeight - 1 : 0;
+        el.scrollTop = max;
+        showcaseDirY = -1;
+        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
+      } else if (el.scrollTop <= 0) {
+        el.scrollTop = 0;
+        showcaseDirY = 1;
+        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
       }
     }, SHOWCASE_TICK_MS);
   }
@@ -226,7 +214,7 @@
           return;
         }
         if (isEditingCell() || (e.target && e.target.classList && e.target.classList.contains('dept-progress-input'))) {
-          stopShowcase(true);
+          stopShowcase();
           clearIdleShowcase();
         }
       },
@@ -236,7 +224,7 @@
       'focusin',
       (e) => {
         if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
-        stopShowcase(true);
+        stopShowcase();
         clearIdleShowcase();
       },
       true
