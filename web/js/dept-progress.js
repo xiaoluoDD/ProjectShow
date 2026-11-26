@@ -14,20 +14,10 @@
   const columnsClose = document.getElementById('deptProgressColumnsClose');
   const columnsSave = document.getElementById('deptProgressColumnsSave');
 
-  const viewEl = document.getElementById('deptProgressView');
-  const IDLE_SHOWCASE_MS = 10 * 1000;
-  const SHOWCASE_SPEED = 0.18;
-  const SHOWCASE_EDGE_PAUSE_MS = 2800;
-
   let loadedOnce = false;
   let cacheKey = '';
   let lastCatalog = [];
   let lastColumns = [];
-  let idleShowcaseTimer = null;
-  let showcaseRaf = null;
-  let showcaseDirY = 1;
-  let showcaseEdgePauseUntil = 0;
-  let showcaseBound = false;
 
   if (yearSelect) yearSelect.addEventListener('change', () => load(true));
   if (statusSelect) statusSelect.addEventListener('change', () => load(true));
@@ -45,148 +35,6 @@
   }
   if (columnsSave) {
     columnsSave.addEventListener('click', saveColumns);
-  }
-
-  function isViewActive() {
-    return !!(viewEl && !viewEl.hidden);
-  }
-
-  function getWrap() {
-    return root ? root.querySelector('.dept-progress-wrap') : null;
-  }
-
-  function clearIdleShowcase() {
-    if (idleShowcaseTimer) {
-      clearTimeout(idleShowcaseTimer);
-      idleShowcaseTimer = null;
-    }
-  }
-
-  function pauseShowcaseAndRearm() {
-    stopShowcase();
-    scheduleIdleShowcase();
-  }
-
-  function isEditingCell() {
-    const active = document.activeElement;
-    return !!(active && active.classList && active.classList.contains('dept-progress-input'));
-  }
-
-  function scheduleIdleShowcase() {
-    clearIdleShowcase();
-    stopShowcase();
-    if (!isViewActive() || !getWrap()) return;
-    if (columnsModal && !columnsModal.hidden) return;
-    idleShowcaseTimer = setTimeout(() => {
-      idleShowcaseTimer = null;
-      if (!isViewActive()) return;
-      if (columnsModal && !columnsModal.hidden) {
-        scheduleIdleShowcase();
-        return;
-      }
-      // 仅在正在改单元格进度时推迟；工具栏下拉框有焦点不阻止展示
-      if (isEditingCell()) {
-        scheduleIdleShowcase();
-        return;
-      }
-      const active = document.activeElement;
-      if (active && viewEl && viewEl.contains(active) && typeof active.blur === 'function') {
-        if (active.matches('select,button')) active.blur();
-      }
-      startShowcase();
-    }, IDLE_SHOWCASE_MS);
-  }
-
-  function startShowcase() {
-    const wrap = getWrap();
-    if (!wrap || showcaseRaf) return;
-    const maxY = wrap.scrollHeight - wrap.clientHeight;
-    if (maxY <= 1) {
-      // 纵向无可滚内容时稍后重试，避免静默失败
-      scheduleIdleShowcase();
-      return;
-    }
-
-    wrap.classList.add('is-showcasing');
-    showcaseEdgePauseUntil = 0;
-    showcaseDirY = 1;
-    // 只纵向缓滚，避免列快速横移看不清；到顶/底停顿再折返
-    const tick = () => {
-      if (!isViewActive()) {
-        stopShowcase();
-        return;
-      }
-      const el = getWrap();
-      if (!el) {
-        stopShowcase();
-        return;
-      }
-      const yMax = el.scrollHeight - el.clientHeight;
-      if (yMax <= 1) {
-        scheduleIdleShowcase();
-        return;
-      }
-      const now = performance.now();
-      if (now < showcaseEdgePauseUntil) {
-        showcaseRaf = requestAnimationFrame(tick);
-        return;
-      }
-      el.scrollTop += SHOWCASE_SPEED * showcaseDirY;
-      if (el.scrollTop >= yMax - 0.5) {
-        el.scrollTop = yMax;
-        showcaseDirY = -1;
-        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
-      } else if (el.scrollTop <= 0.5) {
-        el.scrollTop = 0;
-        showcaseDirY = 1;
-        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
-      }
-      showcaseRaf = requestAnimationFrame(tick);
-    };
-    showcaseRaf = requestAnimationFrame(tick);
-  }
-
-  function stopShowcase() {
-    if (showcaseRaf) {
-      cancelAnimationFrame(showcaseRaf);
-      showcaseRaf = null;
-    }
-    const wrap = getWrap();
-    if (wrap) wrap.classList.remove('is-showcasing');
-  }
-
-  function bindShowcaseIdle() {
-    if (showcaseBound || !viewEl) return;
-    showcaseBound = true;
-    const onActivity = (e) => {
-      if (!isViewActive()) return;
-      // 自动滚动本身不产生这些事件；用户操作则重置计时
-      if (e && e.isTrusted === false) return;
-      pauseShowcaseAndRearm();
-    };
-    ['pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((type) => {
-      viewEl.addEventListener(type, onActivity, { passive: true, capture: true });
-    });
-    viewEl.addEventListener(
-      'focusin',
-      (e) => {
-        if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
-        stopShowcase();
-        clearIdleShowcase();
-      },
-      true
-    );
-    viewEl.addEventListener(
-      'focusout',
-      (e) => {
-        if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
-        setTimeout(() => {
-          if (!isViewActive() || isEditingCell()) return;
-          scheduleIdleShowcase();
-        }, 0);
-      },
-      true
-    );
   }
 
   function canEdit() {
@@ -394,13 +242,10 @@
         </table>
       </div>`;
     bindEditors();
-    bindShowcaseIdle();
-    scheduleIdleShowcase();
   }
 
   function openColumnsModal() {
     if (!columnsModal || !columnsList) return;
-    pause();
     const selected = new Set(
       (lastColumns || []).filter((c) => c && !c.fixed).map((c) => c.key)
     );
@@ -422,7 +267,6 @@
 
   function closeColumnsModal() {
     if (columnsModal) columnsModal.hidden = true;
-    if (isViewActive()) scheduleIdleShowcase();
   }
 
   async function saveColumns() {
@@ -450,12 +294,8 @@
     const status = statusSelect ? statusSelect.value : '';
     const key = `${year}|${status}|${canEdit() ? 'edit' : 'view'}`;
     if (loadedOnce && !force && cacheKey === key && root.dataset.filled === '1') {
-      bindShowcaseIdle();
-      scheduleIdleShowcase();
       return;
     }
-    stopShowcase();
-    clearIdleShowcase();
     showLoading(root, '正在加载部门进度…');
     summaryBar.textContent = '加载中…';
     try {
@@ -467,8 +307,8 @@
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
       const hint = canEdit()
-        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头 · 闲置自动滚动`
-        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读 · 闲置自动滚动`;
+        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头`
+        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读`;
       summaryBar.textContent = hint;
       summaryBar.dataset.baseText = hint;
       render(projects, lastColumns);
@@ -482,10 +322,5 @@
     }
   }
 
-  function pause() {
-    stopShowcase();
-    clearIdleShowcase();
-  }
-
-  window.DeptProgressApp = { load, pause };
+  window.DeptProgressApp = { load };
 })();

@@ -157,9 +157,6 @@
       scheduleIdleKiosk();
     } else {
       clearIdleKioskTimer();
-      if (!isDeptProgress && window.DeptProgressApp && typeof window.DeptProgressApp.pause === 'function') {
-        window.DeptProgressApp.pause();
-      }
       if (isDeptProgress) {
         if (window.DeptProgressApp) window.DeptProgressApp.load(true);
       } else if (isProjects) {

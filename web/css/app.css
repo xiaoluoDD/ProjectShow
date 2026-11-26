@@ -963,10 +963,6 @@ body.kiosk-mode .dash-table thead th {
   background: #fff;
 }
 
-.dept-progress-wrap.is-showcasing {
-  outline: 1px solid #90caf9;
-}
-
 .dept-progress-table {
   width: max-content;
   min-width: 100%;
