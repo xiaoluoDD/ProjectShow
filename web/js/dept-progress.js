@@ -475,7 +475,7 @@
 
   function openColumnsModal() {
     if (!columnsModal || !columnsList) return;
-    stopShowcase(true);
+    stopShowcase();
     clearIdleShowcase();
     const selected = new Set(
       (lastColumns || []).filter((c) => c && !c.fixed).map((c) => c.key)
