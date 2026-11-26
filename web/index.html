@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>项目管理看板 v1.2.26</title>
-  <link rel="stylesheet" href="css/app.css?v=1.2.26.2" />
+  <link rel="stylesheet" href="css/app.css?v=1.2.26.3" />
 </head>
 <body>
   <header class="app-header">
@@ -47,10 +47,31 @@
       <div class="dash-toolbar">
         <label for="deptProgressYear">年度</label>
         <select id="deptProgressYear"><option value="">全部</option></select>
+        <label for="deptProgressStatus">完成状态</label>
+        <select id="deptProgressStatus">
+          <option value="">全部</option>
+          <option value="待启动">待启动</option>
+          <option value="进行中">进行中</option>
+          <option value="已完结">已完结</option>
+        </select>
+        <button type="button" class="btn" id="deptProgressColumnsBtn" hidden>配置表头</button>
       </div>
       <p class="hint-bar" id="deptProgressSummaryBar">加载中…</p>
       <div id="deptProgressRoot"></div>
     </section>
+
+    <!-- 部门进度：自定义表头 -->
+    <div class="modal-mask" id="deptProgressColumnsModal" hidden>
+      <div class="modal-card dept-progress-columns-card" role="dialog" aria-modal="true" aria-labelledby="deptProgressColumnsTitle">
+        <h2 id="deptProgressColumnsTitle">配置部门进度表头</h2>
+        <p class="modal-hint">首列固定为「采购品进度」。勾选下方阶段作为后续列（按列表顺序）。项目没有该阶段时，单元格可标「—」。</p>
+        <div id="deptProgressColumnsList" class="dept-progress-columns-list"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn" id="deptProgressColumnsClose">取消</button>
+          <button type="button" class="btn btn-primary" id="deptProgressColumnsSave">保存表头</button>
+        </div>
+      </div>
+    </div>
 
     <!-- 项目列表 -->
     <section id="projectsView" hidden>
@@ -351,19 +372,19 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=1.2.26.2"></script>
-  <script src="js/status.js?v=1.2.26.2"></script>
-  <script src="js/utils.js?v=1.2.26.2"></script>
-  <script src="js/api.js?v=1.2.26.2"></script>
-  <script src="js/auth.js?v=1.2.26.2"></script>
-  <script src="js/dashboard.js?v=1.2.26.2"></script>
-  <script src="js/dept-progress.js?v=1.2.26.2"></script>
-  <script src="js/list.js?v=1.2.26.2"></script>
-  <script src="js/project-form.js?v=1.2.26.2"></script>
-  <script src="js/accounts.js?v=1.2.26.2"></script>
-  <script src="js/departments.js?v=1.2.26.2"></script>
-  <script src="js/members.js?v=1.2.26.2"></script>
-  <script src="js/admin-tools.js?v=1.2.26.2"></script>
-  <script src="js/app.js?v=1.2.26.2"></script>
+  <script src="js/config.js?v=1.2.26.3"></script>
+  <script src="js/status.js?v=1.2.26.3"></script>
+  <script src="js/utils.js?v=1.2.26.3"></script>
+  <script src="js/api.js?v=1.2.26.3"></script>
+  <script src="js/auth.js?v=1.2.26.3"></script>
+  <script src="js/dashboard.js?v=1.2.26.3"></script>
+  <script src="js/dept-progress.js?v=1.2.26.3"></script>
+  <script src="js/list.js?v=1.2.26.3"></script>
+  <script src="js/project-form.js?v=1.2.26.3"></script>
+  <script src="js/accounts.js?v=1.2.26.3"></script>
+  <script src="js/departments.js?v=1.2.26.3"></script>
+  <script src="js/members.js?v=1.2.26.3"></script>
+  <script src="js/admin-tools.js?v=1.2.26.3"></script>
+  <script src="js/app.js?v=1.2.26.3"></script>
 </body>
 </html>

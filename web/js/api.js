@@ -199,15 +199,20 @@ function syncWecomUsers() {
   return apiPost('/api/wecom/sync', {});
 }
 
-function fetchDepartmentProgress(year) {
+function fetchDepartmentProgress(year, status) {
   const q = new URLSearchParams();
   if (year) q.set('year', year);
+  if (status) q.set('status', status);
   const qs = q.toString();
   return apiGet(`/api/department-progress${qs ? `?${qs}` : ''}`);
 }
 
 function updateDepartmentProgress(payload) {
   return apiPut('/api/department-progress', payload);
+}
+
+function updateDepartmentProgressColumns(columns) {
+  return apiPut('/api/department-progress', { columns: columns || [] });
 }
 
 function updateWecomUser(payload) {

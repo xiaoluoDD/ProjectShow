@@ -946,35 +946,39 @@ body.kiosk-mode .dash-table thead th {
   white-space: nowrap;
 }
 
-.dept-progress-table .dept-progress-cell {
-  vertical-align: top;
+.dept-progress-wrap {
+  overflow-x: auto;
 }
 
-.dept-progress-chip {
+.dept-progress-table {
+  min-width: 100%;
+}
+
+.dept-progress-table th.dept-progress-col-head {
+  white-space: nowrap;
+  font-size: 12px;
+  max-width: 7.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dept-progress-table td.dept-progress-stage {
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: #0f766e;
+  min-width: 5.5em;
+}
+
+.dept-progress-table td.dept-progress-stage.is-na,
+.dept-progress-table td.dept-progress-stage.is-empty {
+  color: #94a3b8;
+}
+
+.dept-progress-editor {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin: 0 8px 6px 0;
-  padding: 4px 8px;
-  background: #f8fafc;
-  border: 1px solid #e8eef3;
-  border-radius: 8px;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.dept-progress-chip.is-editable {
-  background: #fff;
-}
-
-.dept-progress-name {
-  color: #334155;
-  font-weight: 600;
-}
-
-.dept-progress-value {
-  color: #0f766e;
-  font-variant-numeric: tabular-nums;
+  gap: 4px;
 }
 
 .dept-progress-input {
@@ -986,8 +990,61 @@ body.kiosk-mode .dash-table thead th {
   text-align: right;
 }
 
-.dept-progress-suffix {
+.dept-progress-input:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.dept-progress-na-btn {
+  min-width: 1.8em;
+  padding: 2px 6px;
+  border: 1px solid #cfd8dc;
+  border-radius: 4px;
+  background: #fff;
   color: #64748b;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.dept-progress-na-btn.is-active {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  color: #334155;
+  font-weight: 600;
+}
+
+.dept-progress-columns-card {
+  max-width: 520px;
+}
+
+.dept-progress-columns-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  max-height: 50vh;
+  overflow: auto;
+  margin: 12px 0;
+  padding: 4px;
+}
+
+.dept-progress-columns-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.dept-progress-columns-item input {
+  margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+  .dept-progress-columns-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .dash-table .col-extra {
