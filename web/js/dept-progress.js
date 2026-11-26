@@ -572,27 +572,14 @@
         summaryBar.textContent = hint;
         summaryBar.dataset.baseText = hint;
       }
-      const wasShowcasing = showcaseRunning;
-      if (wasShowcasing) {
-        // 静默重绘前先停表（不重建），避免旧 interval 打在已销毁节点上
-        showcaseRunning = false;
-        if (showcaseTimer) {
-          clearInterval(showcaseTimer);
-          showcaseTimer = null;
-        }
-      }
       render(projects, lastColumns);
       loadedOnce = true;
       cacheKey = key;
       root.dataset.filled = '1';
       startAutoRefresh();
       bindShowcaseIdle();
-      // 静默同步绝不能重置闲置计时；若刚才在展示则按总览方式重建无缝循环继续滚
-      if (!silent) {
-        scheduleIdleShowcase();
-      } else if (wasShowcasing) {
-        startShowcase();
-      }
+      // 静默同步不重置闲置计时（缓滚中已跳过本函数）
+      if (!silent) scheduleIdleShowcase();
     } catch (err) {
       if (!silent) {
         showError(root, err.message || '加载失败');
