@@ -16,6 +16,9 @@
 
   const viewEl = document.getElementById('deptProgressView');
   const AUTO_REFRESH_MS = 5 * 1000;
+  const IDLE_SHOWCASE_MS = 10 * 1000;
+  const SHOWCASE_SPEED = 0.22;
+  const SHOWCASE_EDGE_PAUSE_MS = 3200;
 
   let loadedOnce = false;
   let cacheKey = '';
@@ -23,6 +26,12 @@
   let lastColumns = [];
   let autoRefreshTimer = null;
   let loadInFlight = false;
+  let idleShowcaseTimer = null;
+  let showcaseRaf = null;
+  let showcaseDirY = 1;
+  let showcaseEdgePauseUntil = 0;
+  let showcaseRunning = false;
+  let showcaseBound = false;
 
   if (yearSelect) yearSelect.addEventListener('change', () => load(true));
   if (statusSelect) statusSelect.addEventListener('change', () => load(true));
@@ -34,6 +43,10 @@
   function isEditingCell() {
     const active = document.activeElement;
     return !!(active && active.classList && active.classList.contains('dept-progress-input'));
+  }
+
+  function getWrap() {
+    return root ? root.querySelector('.dept-progress-wrap') : null;
   }
 
   function stopAutoRefresh() {
@@ -56,6 +69,150 @@
       if (loadInFlight) return;
       load(true, { silent: true });
     }, AUTO_REFRESH_MS);
+  }
+
+  function stopShowcase() {
+    showcaseRunning = false;
+    if (showcaseRaf) {
+      cancelAnimationFrame(showcaseRaf);
+      showcaseRaf = null;
+    }
+    const wrap = getWrap();
+    if (wrap) wrap.classList.remove('is-showcasing');
+  }
+
+  function clearIdleShowcase() {
+    if (idleShowcaseTimer) {
+      clearTimeout(idleShowcaseTimer);
+      idleShowcaseTimer = null;
+    }
+  }
+
+  function scheduleIdleShowcase() {
+    clearIdleShowcase();
+    stopShowcase();
+    if (!isViewActive() || !getWrap()) return;
+    if (columnsModal && !columnsModal.hidden) return;
+    idleShowcaseTimer = setTimeout(() => {
+      idleShowcaseTimer = null;
+      if (!isViewActive()) return;
+      if (columnsModal && !columnsModal.hidden) {
+        scheduleIdleShowcase();
+        return;
+      }
+      if (isEditingCell()) {
+        scheduleIdleShowcase();
+        return;
+      }
+      startShowcase();
+    }, IDLE_SHOWCASE_MS);
+  }
+
+  function startShowcase() {
+    const wrap = getWrap();
+    if (!wrap || showcaseRunning) return;
+    const yMax = wrap.scrollHeight - wrap.clientHeight;
+    if (yMax <= 1) {
+      scheduleIdleShowcase();
+      return;
+    }
+    showcaseRunning = true;
+    showcaseDirY = 1;
+    showcaseEdgePauseUntil = 0;
+    wrap.classList.add('is-showcasing');
+
+    const tick = () => {
+      if (!showcaseRunning || !isViewActive()) {
+        stopShowcase();
+        return;
+      }
+      const el = getWrap();
+      if (!el) {
+        stopShowcase();
+        return;
+      }
+      const maxY = el.scrollHeight - el.clientHeight;
+      if (maxY <= 1) {
+        stopShowcase();
+        scheduleIdleShowcase();
+        return;
+      }
+      const now = performance.now();
+      if (now < showcaseEdgePauseUntil) {
+        showcaseRaf = requestAnimationFrame(tick);
+        return;
+      }
+      el.scrollTop += SHOWCASE_SPEED * showcaseDirY;
+      if (el.scrollTop >= maxY - 0.5) {
+        el.scrollTop = maxY;
+        showcaseDirY = -1;
+        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
+      } else if (el.scrollTop <= 0.5) {
+        el.scrollTop = 0;
+        showcaseDirY = 1;
+        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
+      }
+      showcaseRaf = requestAnimationFrame(tick);
+    };
+    showcaseRaf = requestAnimationFrame(tick);
+  }
+
+  function onUserActivity() {
+    if (!isViewActive()) return;
+    stopShowcase();
+    scheduleIdleShowcase();
+  }
+
+  function bindShowcaseIdle() {
+    if (showcaseBound || !viewEl) return;
+    showcaseBound = true;
+    // 仅用户真实操作重置；工具栏焦点不取消计时
+    ['pointerdown', 'wheel', 'touchstart'].forEach((type) => {
+      viewEl.addEventListener(
+        type,
+        (e) => {
+          if (e && e.isTrusted === false) return;
+          onUserActivity();
+        },
+        { passive: true, capture: true }
+      );
+    });
+    viewEl.addEventListener(
+      'keydown',
+      (e) => {
+        if (e && e.isTrusted === false) return;
+        if (!isEditingCell() && e.target && e.target.matches && e.target.matches('select,button')) {
+          // 改筛选也算操作，重新计时
+          onUserActivity();
+          return;
+        }
+        if (isEditingCell() || (e.target && e.target.classList && e.target.classList.contains('dept-progress-input'))) {
+          stopShowcase();
+          clearIdleShowcase();
+        }
+      },
+      true
+    );
+    viewEl.addEventListener(
+      'focusin',
+      (e) => {
+        if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
+        stopShowcase();
+        clearIdleShowcase();
+      },
+      true
+    );
+    viewEl.addEventListener(
+      'focusout',
+      (e) => {
+        if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
+        setTimeout(() => {
+          if (!isViewActive() || isEditingCell()) return;
+          scheduleIdleShowcase();
+        }, 0);
+      },
+      true
+    );
   }
 
   if (columnsBtn) {
@@ -284,12 +441,15 @@
     if (nextWrap) {
       nextWrap.scrollTop = scrollTop;
       nextWrap.scrollLeft = scrollLeft;
+      if (showcaseRunning) nextWrap.classList.add('is-showcasing');
     }
     bindEditors();
   }
 
   function openColumnsModal() {
     if (!columnsModal || !columnsList) return;
+    stopShowcase();
+    clearIdleShowcase();
     const selected = new Set(
       (lastColumns || []).filter((c) => c && !c.fixed).map((c) => c.key)
     );
@@ -311,6 +471,7 @@
 
   function closeColumnsModal() {
     if (columnsModal) columnsModal.hidden = true;
+    if (isViewActive()) scheduleIdleShowcase();
   }
 
   async function saveColumns() {
@@ -340,11 +501,15 @@
     const key = `${year}|${status}|${canEdit() ? 'edit' : 'view'}`;
     if (loadedOnce && !force && cacheKey === key && root.dataset.filled === '1') {
       startAutoRefresh();
+      bindShowcaseIdle();
+      scheduleIdleShowcase();
       return;
     }
     if (loadInFlight) return;
     loadInFlight = true;
     if (!silent) {
+      stopShowcase();
+      clearIdleShowcase();
       showLoading(root, '正在加载部门进度…');
       summaryBar.textContent = '加载中…';
     }
@@ -362,8 +527,8 @@
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
       const hint = canEdit()
-        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头 · 约5秒自动同步`
-        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读 · 约5秒自动同步`;
+        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 约5秒同步 · 闲置10秒自动缓滚`
+        : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读 · 约5秒同步 · 闲置10秒自动缓滚`;
       if (!silent || !summaryBar.dataset.baseText) {
         summaryBar.textContent = hint;
         summaryBar.dataset.baseText = hint;
@@ -376,6 +541,9 @@
       cacheKey = key;
       root.dataset.filled = '1';
       startAutoRefresh();
+      bindShowcaseIdle();
+      if (!silent) scheduleIdleShowcase();
+      else if (!showcaseRunning) scheduleIdleShowcase();
     } catch (err) {
       if (!silent) {
         showError(root, err.message || '加载失败');
@@ -389,6 +557,8 @@
 
   function pause() {
     stopAutoRefresh();
+    stopShowcase();
+    clearIdleShowcase();
   }
 
   window.DeptProgressApp = { load, pause };
