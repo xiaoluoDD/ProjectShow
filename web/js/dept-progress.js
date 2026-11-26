@@ -17,7 +17,8 @@
   const viewEl = document.getElementById('deptProgressView');
   const AUTO_REFRESH_MS = 5 * 1000;
   const IDLE_SHOWCASE_MS = 10 * 1000;
-  const SHOWCASE_SPEED = 0.22;
+  // 浏览器 scrollTop 多为整数；小于 1px/帧会加不上，必须累计到整像素再滚
+  const SHOWCASE_SPEED = 0.55;
   const SHOWCASE_EDGE_PAUSE_MS = 3200;
 
   let loadedOnce = false;
@@ -29,6 +30,7 @@
   let idleShowcaseTimer = null;
   let showcaseRaf = null;
   let showcaseDirY = 1;
+  let showcaseCarry = 0;
   let showcaseEdgePauseUntil = 0;
   let showcaseRunning = false;
   let showcaseBound = false;
