@@ -19,17 +19,17 @@
       <option value="tools" id="optTools" hidden>运维工具</option>
     </select>
     <span class="app-version" id="appVersion"></span>
-    <button type="button" class="btn" id="btnFilter" hidden>筛�?/button>
+    <button type="button" class="btn" id="btnFilter" hidden>筛选</button>
     <button type="button" class="btn btn-primary" id="btnAddProject" hidden>新增项目</button>
     <button type="button" class="btn" id="btnKiosk">全屏展示</button>
     <button type="button" class="btn btn-primary" id="btnRefresh">刷新</button>
     <button type="button" class="btn" id="btnLogin">登录</button>
     <button type="button" class="btn" id="btnChangePassword" hidden>修改密码</button>
-    <button type="button" class="btn" id="btnLogout" hidden>退�?/button>
+    <button type="button" class="btn" id="btnLogout" hidden>退出</button>
   </header>
   <p class="auth-user-bar" id="authUserBar" hidden></p>
 
-  <button type="button" class="btn btn-kiosk-exit" id="btnKioskExit" hidden title="退出全屏展�?>退出全�?/button>
+  <button type="button" class="btn btn-kiosk-exit" id="btnKioskExit" hidden title="退出全屏展示">退出全屏</button>
 
   <main class="app-main">
     <!-- 总览看板 -->
@@ -38,7 +38,7 @@
         <label for="dashYear">年度</label>
         <select id="dashYear"><option value="">全部</option></select>
       </div>
-      <p class="hint-bar" id="dashSummaryBar">加载中�?/p>
+      <p class="hint-bar" id="dashSummaryBar">加载中…</p>
       <div id="dashboardRoot"></div>
     </section>
 
@@ -47,16 +47,16 @@
       <div class="dash-toolbar">
         <label for="deptProgressYear">年度</label>
         <select id="deptProgressYear"><option value="">全部</option></select>
-        <label for="deptProgressStatus">完成状�?/label>
+        <label for="deptProgressStatus">完成状态</label>
         <select id="deptProgressStatus">
           <option value="">全部</option>
-          <option value="待启�?>待启�?/option>
-          <option value="进行�?>进行�?/option>
-          <option value="已完�?>已完�?/option>
+          <option value="待启动">待启动</option>
+          <option value="进行中">进行中</option>
+          <option value="已完结">已完结</option>
         </select>
         <button type="button" class="btn" id="deptProgressColumnsBtn" hidden>配置表头</button>
       </div>
-      <p class="hint-bar" id="deptProgressSummaryBar">加载中�?/p>
+      <p class="hint-bar" id="deptProgressSummaryBar">加载中…</p>
       <div id="deptProgressRoot"></div>
     </section>
 
@@ -64,7 +64,7 @@
     <div class="modal-mask" id="deptProgressColumnsModal" hidden>
       <div class="modal-card dept-progress-columns-card" role="dialog" aria-modal="true" aria-labelledby="deptProgressColumnsTitle">
         <h2 id="deptProgressColumnsTitle">配置部门进度表头</h2>
-        <p class="modal-hint">首列固定为「采购品进度」。勾选下方阶段作为后续列（按列表顺序）。项目没有该阶段时，单元格可标「—」�?/p>
+        <p class="modal-hint">首列固定为「采购品进度」。勾选下方阶段作为后续列（按列表顺序）。项目没有该阶段时，单元格可标「—」。</p>
         <div id="deptProgressColumnsList" class="dept-progress-columns-list"></div>
         <div class="modal-actions">
           <button type="button" class="btn" id="deptProgressColumnsClose">取消</button>
@@ -75,30 +75,30 @@
 
     <!-- 项目列表 -->
     <section id="projectsView" hidden>
-      <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷�?/p>
+      <p class="pull-hint" id="projectsHint">只读查看 · 下拉页面可刷新</p>
 
       <section class="filter-panel" id="filterPanel">
         <label for="filterName">项目名称</label>
-        <input id="filterName" type="text" autocomplete="off" placeholder="输入项目名称关键字查�? />
+        <input id="filterName" type="text" autocomplete="off" placeholder="输入项目名称关键字查找" />
 
         <label for="filterYear">年度</label>
         <select id="filterYear"><option value="">全部</option></select>
-        <input id="filterYearSearch" type="text" autocomplete="off" placeholder="或直接输入年度查�? />
+        <input id="filterYearSearch" type="text" autocomplete="off" placeholder="或直接输入年度查找" />
 
-        <label for="filterWorkNo">工番�?/label>
+        <label for="filterWorkNo">工番号</label>
         <select id="filterWorkNo"><option value="">全部</option></select>
         <input id="filterWorkNoSearch" type="text" autocomplete="off" placeholder="或直接输入工番号查找" />
 
-        <label for="filterManager">项目负责�?/label>
+        <label for="filterManager">项目负责人</label>
         <select id="filterManager"><option value="">全部</option></select>
         <input id="filterManagerSearch" type="text" autocomplete="off" placeholder="或直接输入负责人姓名查找" />
 
-        <label for="filterStatus">项目状�?/label>
+        <label for="filterStatus">项目状态</label>
         <select id="filterStatus">
           <option value="">全部</option>
-          <option value="待启�?>待启�?/option>
-          <option value="进行�?>进行�?/option>
-          <option value="已完�?>已完�?/option>
+          <option value="待启动">待启动</option>
+          <option value="进行中">进行中</option>
+          <option value="已完结">已完结</option>
         </select>
         <input id="filterStatusSearch" type="text" autocomplete="off" placeholder="或直接输入状态关键字查找" />
 
@@ -108,14 +108,14 @@
         </div>
       </section>
 
-      <p class="hint-bar" id="summaryBar">加载中�?/p>
+      <p class="hint-bar" id="summaryBar">加载中…</p>
       <div id="listRoot"></div>
     </section>
 
     <!-- 账户管理 -->
     <section id="accountsView" hidden>
       <div class="accounts-toolbar">
-        <p class="hint-bar" id="accountsSummaryBar">仅管理员可管理账�?/p>
+        <p class="hint-bar" id="accountsSummaryBar">仅管理员可管理账户</p>
         <button type="button" class="btn btn-primary" id="btnAddAccount">新增账户</button>
       </div>
       <div id="accountsRoot"></div>
@@ -124,7 +124,7 @@
     <!-- 部门管理 -->
     <section id="departmentsView" hidden>
       <div class="accounts-toolbar">
-        <p class="hint-bar" id="departmentsSummaryBar">部门自动跟随企业微信通讯录，点击「成员管理」同步即可更�?/p>
+        <p class="hint-bar" id="departmentsSummaryBar">部门自动跟随企业微信通讯录，点击「成员管理」同步即可更新</p>
         <button type="button" class="btn btn-danger" id="btnCleanupManualDept">清理手动创建的旧部门</button>
       </div>
       <div id="departmentsRoot"></div>
@@ -141,12 +141,12 @@
         id="memberSearchInput"
         class="member-search-input"
         autocomplete="off"
-        placeholder="搜索姓名 / UserID / 手机�?/ 部门"
+        placeholder="搜索姓名 / UserID / 手机号 / 部门"
       />
       <div id="membersRoot"></div>
     </section>
 
-    <!-- 运维工具：设�?/ 本地数据 / 日志 -->
+    <!-- 运维工具：设置 / 本地数据 / 日志 -->
     <section id="toolsView" hidden>
       <div class="tools-tabs" role="tablist">
         <button type="button" class="btn tools-tab active" id="toolsTabSettings" aria-selected="true">设置</button>
@@ -155,7 +155,7 @@
       </div>
 
       <div id="toolsPanelSettings">
-        <p class="hint-bar">提醒与服务器配置（对应桌面调试→设置�?/p>
+        <p class="hint-bar">提醒与服务器配置（对应桌面调试→设置）</p>
         <div class="tools-form">
           <label for="settingServerBaseUrl">服务器根地址</label>
           <input id="settingServerBaseUrl" type="text" autocomplete="off" placeholder="例如 http://8.134.255.174:8081" />
@@ -169,16 +169,16 @@
           <p class="modal-error" id="settingsError" hidden></p>
           <div class="filter-actions">
             <button type="button" class="btn btn-primary" id="btnSaveSettings">保存设置</button>
-            <button type="button" class="btn" id="btnRunReminder">立即跑提�?/button>
+            <button type="button" class="btn" id="btnRunReminder">立即跑提醒</button>
           </div>
         </div>
       </div>
 
       <div id="toolsPanelData" hidden>
-        <p class="hint-bar">导出快照或下载数据库（对应桌面调试→本地数据�?/p>
+        <p class="hint-bar">导出快照或下载数据库（对应桌面调试→本地数据）</p>
         <div class="filter-actions">
           <button type="button" class="btn btn-primary" id="btnExportJson">导出 JSON 快照</button>
-          <button type="button" class="btn" id="btnDownloadDb">下载数据�?/button>
+          <button type="button" class="btn" id="btnDownloadDb">下载数据库</button>
           <button type="button" class="btn" id="btnOpenChangelog">变更记录</button>
         </div>
         <p class="hint-bar" id="exportSummary">尚未导出</p>
@@ -186,7 +186,7 @@
 
       <div id="toolsPanelLogs" hidden>
         <div class="accounts-toolbar">
-          <p class="hint-bar" id="logsSummaryBar">服务器日�?/p>
+          <p class="hint-bar" id="logsSummaryBar">服务器日志</p>
           <button type="button" class="btn" id="btnRefreshLogs">刷新日志列表</button>
         </div>
         <div id="logsRoot"></div>
@@ -199,9 +199,9 @@
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
       <h2 id="loginTitle">登录</h2>
       <label for="loginUsername">账号</label>
-      <input id="loginUsername" type="text" autocomplete="username" placeholder="请输入账�? />
+      <input id="loginUsername" type="text" autocomplete="username" placeholder="请输入账号" />
       <label for="loginPassword">密码</label>
-      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="请输入密�? />
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="请输入密码" />
       <p class="modal-error" id="loginError" hidden></p>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnLoginCancel">取消</button>
@@ -214,11 +214,11 @@
   <div class="modal-mask" id="passwordModal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
       <h2 id="passwordTitle">修改密码</h2>
-      <p class="modal-hint">无需原密码，直接设置新密码并写入数据库�?/p>
-      <label for="newPassword">新密�?/label>
-      <input id="newPassword" type="password" autocomplete="new-password" placeholder="至少 4 �? />
-      <label for="newPasswordConfirm">确认新密�?/label>
-      <input id="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="再输入一�? />
+      <p class="modal-hint">无需原密码，直接设置新密码并写入数据库。</p>
+      <label for="newPassword">新密码</label>
+      <input id="newPassword" type="password" autocomplete="new-password" placeholder="至少 4 位" />
+      <label for="newPasswordConfirm">确认新密码</label>
+      <input id="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="再输入一次" />
       <p class="modal-error" id="passwordError" hidden></p>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnPasswordCancel">取消</button>
@@ -232,18 +232,18 @@
     <div class="modal-card" role="dialog" aria-modal="true">
       <h2 id="accountModalTitle">新增账户</h2>
       <input type="hidden" id="accountEditId" value="" />
-      <label for="accountUsername">用户�?/label>
+      <label for="accountUsername">用户名</label>
       <input id="accountUsername" type="text" autocomplete="off" />
-      <label for="accountDisplayName">显示�?/label>
+      <label for="accountDisplayName">显示名</label>
       <input id="accountDisplayName" type="text" autocomplete="off" />
       <label for="accountRole">权限</label>
       <select id="accountRole">
         <option value="user">普通（可增改项目）</option>
-        <option value="admin">管理员（可增改项�?+ 管理账户�?/option>
+        <option value="admin">管理员（可增改项目 + 管理账户）</option>
       </select>
       <label for="accountPassword" id="accountPasswordLabel">密码</label>
       <input id="accountPassword" type="password" autocomplete="new-password" />
-      <p class="modal-hint" id="accountPasswordHint" hidden>留空表示不修改密�?/p>
+      <p class="modal-hint" id="accountPasswordHint" hidden>留空表示不修改密码</p>
       <p class="modal-error" id="accountError" hidden></p>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnAccountCancel">取消</button>
@@ -256,7 +256,7 @@
   <div class="modal-mask" id="loginHistoryModal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="loginHistoryTitle">
       <h2 id="loginHistoryTitle">登录记录</h2>
-      <p class="modal-hint" id="loginHistoryHint">最�?10 次登录时�?/p>
+      <p class="modal-hint" id="loginHistoryHint">最近 10 次登录时间</p>
       <div id="loginHistoryList" class="login-history-list"></div>
       <div class="modal-actions">
         <button type="button" class="btn btn-primary" id="btnLoginHistoryClose">关闭</button>
@@ -295,7 +295,7 @@
   <div class="modal-mask" id="changelogModal" hidden>
     <div class="modal-card modal-card-wide" role="dialog" aria-modal="true" aria-labelledby="changelogModalTitle">
       <h2 id="changelogModalTitle">版本变更记录</h2>
-      <p class="modal-hint" id="changelogSummaryBar">从云�?GET /api/changelog 读取</p>
+      <p class="modal-hint" id="changelogSummaryBar">从云端 GET /api/changelog 读取</p>
       <div id="changelogRoot" class="changelog-root modal-scroll"></div>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnRefreshChangelog">刷新</button>
@@ -314,7 +314,7 @@
       <input id="memberName" type="text" readonly />
       <label for="memberMobile">手机</label>
       <input id="memberMobile" type="text" autocomplete="off" />
-      <label>所属部门（同步后仅保留企微主部门；仍可手工调整�?/label>
+      <label>所属部门（同步后仅保留企微主部门；仍可手工调整）</label>
       <div class="member-checklist" id="memberDepartmentList" aria-live="polite"></div>
       <p class="modal-error" id="memberError" hidden></p>
       <div class="modal-actions">
@@ -324,7 +324,7 @@
     </div>
   </div>
 
-  <!-- 新建项目弹窗（字段对�?Qt 桌面�?-->
+  <!-- 新建项目弹窗（字段对齐 Qt 桌面） -->
   <div class="modal-mask" id="projectModal" hidden>
     <div class="modal-card modal-card-form" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
       <h2 id="projectModalTitle">新建项目</h2>
@@ -332,18 +332,18 @@
         <label for="projectYear">年度</label>
         <input id="projectYear" type="text" inputmode="numeric" autocomplete="off" />
 
-        <label for="projectWorkNo">工番�?/label>
+        <label for="projectWorkNo">工番号</label>
         <input id="projectWorkNo" type="text" autocomplete="off" />
 
         <label for="projectName">项目名称</label>
         <input id="projectName" type="text" autocomplete="off" />
 
-        <label for="projectManagerDept">负责人部�?/label>
+        <label for="projectManagerDept">负责人部门</label>
         <select id="projectManagerDept"></select>
 
-        <label for="projectManager">项目负责�?/label>
+        <label for="projectManager">项目负责人</label>
         <select id="projectManager" disabled>
-          <option value="">（未指定�?/option>
+          <option value="">（未指定）</option>
         </select>
 
         <label for="projectMemberDept">成员部门</label>
@@ -351,7 +351,7 @@
 
         <label>项目成员</label>
         <div class="member-checklist" id="projectMemberList" aria-live="polite"></div>
-        <p class="modal-hint" id="projectSelectedCount">已选成员：0 �?/p>
+        <p class="modal-hint" id="projectSelectedCount">已选成员：0 人</p>
         <p class="modal-hint" id="projectSelectedSummary">（暂无）</p>
 
         <label for="projectStartDate">项目启动日期</label>
@@ -360,9 +360,9 @@
         <label for="projectEndDate">实际完结日期</label>
         <input id="projectEndDate" type="date" />
 
-        <p class="modal-hint">项目状态由启动日期与实际完结日期自动计算（待启�?/ 进行�?/ 已完结）�?/p>
-        <p class="modal-hint">项目任务由子任务组成，创建后可在详情页管理子任务�?/p>
-        <p class="modal-hint">选负责人：先选部门再选人；选成员：先选部门再勾选，可切换部门继续添加。新建或新增成员后将发送项目加入提醒�?/p>
+        <p class="modal-hint">项目状态由启动日期与实际完结日期自动计算（待启动 / 进行中 / 已完结）。</p>
+        <p class="modal-hint">项目任务由子任务组成，创建后可在详情页管理子任务。</p>
+        <p class="modal-hint">选负责人：先选部门再选人；选成员：先选部门再勾选，可切换部门继续添加。新建或新增成员后将发送项目加入提醒。</p>
       </div>
       <p class="modal-error" id="projectError" hidden></p>
       <div class="modal-actions">
