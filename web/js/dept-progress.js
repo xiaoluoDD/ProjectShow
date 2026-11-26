@@ -593,7 +593,7 @@
 
   function pause() {
     stopAutoRefresh();
-    stopShowcase(true);
+    stopShowcase();
     clearIdleShowcase();
   }
 
