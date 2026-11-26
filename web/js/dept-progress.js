@@ -25,6 +25,7 @@
   let lastCatalog = [];
   let lastColumns = [];
   let lastProjects = [];
+  let lastDataFingerprint = '';
   let autoRefreshTimer = null;
   let loadInFlight = false;
   let idleShowcaseTimer = null;
@@ -468,7 +469,7 @@
 
   function openColumnsModal() {
     if (!columnsModal || !columnsList) return;
-    stopShowcase();
+    stopShowcase(true);
     clearIdleShowcase();
     const selected = new Set(
       (lastColumns || []).filter((c) => c && !c.fixed).map((c) => c.key)
@@ -591,7 +592,7 @@
 
   function pause() {
     stopAutoRefresh();
-    stopShowcase();
+    stopShowcase(true);
     clearIdleShowcase();
   }
 
