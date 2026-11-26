@@ -66,6 +66,22 @@
     return `${Math.max(0, Math.min(100, Math.round(n)))}%`;
   }
 
+  function applyNaState(input, isNA) {
+    if (!input) return;
+    if (isNA) {
+      input.value = '—';
+      input.dataset.saved = 'na';
+      input.readOnly = true;
+      input.classList.add('is-na');
+      input.title = '右键取消横杠，恢复填写';
+    } else {
+      if (input.dataset.saved === 'na') input.value = '';
+      input.readOnly = false;
+      input.classList.remove('is-na');
+      input.title = '填写 0–100；右键标为横杠（不适用）';
+    }
+  }
+
   function renderCell(project, stageKey, cell, editable) {
     const pid = project.project_id;
     if (!editable) {
@@ -75,35 +91,27 @@
     }
     const isNA = !!(cell && cell.is_na);
     const val =
-      !isNA && cell && cell.progress != null && Number.isFinite(Number(cell.progress))
-        ? String(cell.progress)
-        : '';
+      isNA
+        ? '—'
+        : cell && cell.progress != null && Number.isFinite(Number(cell.progress))
+          ? String(cell.progress)
+          : '';
     const saved = isNA ? 'na' : val;
     return `<td class="dept-progress-stage is-editable">
-      <div class="dept-progress-editor">
-        <input
-          type="number"
-          class="dept-progress-input"
-          min="0"
-          max="100"
-          step="1"
-          inputmode="numeric"
-          data-project-id="${escapeHtml(String(pid))}"
-          data-stage-key="${escapeHtml(stageKey)}"
-          data-saved="${escapeHtml(saved)}"
-          value="${escapeHtml(val)}"
-          ${isNA ? 'disabled' : ''}
-          placeholder="%"
-          aria-label="${escapeHtml(stageKey)}"
-        />
-        <button
-          type="button"
-          class="dept-progress-na-btn${isNA ? ' is-active' : ''}"
-          data-project-id="${escapeHtml(String(pid))}"
-          data-stage-key="${escapeHtml(stageKey)}"
-          title="标记为不适用（横杠）"
-        >—</button>
-      </div>
+      <input
+        type="text"
+        class="dept-progress-input${isNA ? ' is-na' : ''}"
+        inputmode="numeric"
+        autocomplete="off"
+        data-project-id="${escapeHtml(String(pid))}"
+        data-stage-key="${escapeHtml(stageKey)}"
+        data-saved="${escapeHtml(saved)}"
+        value="${escapeHtml(val)}"
+        ${isNA ? 'readonly' : ''}
+        placeholder="%"
+        title="${isNA ? '右键取消横杠，恢复填写' : '填写 0–100；右键标为横杠（不适用）'}"
+        aria-label="${escapeHtml(stageKey)}"
+      />
     </td>`;
   }
 
@@ -137,11 +145,12 @@
 
     root.querySelectorAll('.dept-progress-input').forEach((input) => {
       const save = async () => {
+        if (input.readOnly || input.dataset.saved === 'na') return;
         const projectId = Number(input.getAttribute('data-project-id'));
         const stageKey = input.getAttribute('data-stage-key') || '';
         const raw = String(input.value || '').trim();
         const prev = input.dataset.saved || '';
-        if (raw === '') {
+        if (raw === '' || raw === '—') {
           if (prev === '' || prev === 'na') return;
           const ok = await persistCell(projectId, stageKey, { clear: true }, input);
           if (ok) input.dataset.saved = '';
@@ -155,55 +164,39 @@
         }
         if (prev === String(progress)) return;
         const ok = await persistCell(projectId, stageKey, { progress, is_na: false }, input);
-        if (ok) {
-          input.dataset.saved = String(progress);
-          const btn = input.parentElement && input.parentElement.querySelector('.dept-progress-na-btn');
-          if (btn) btn.classList.remove('is-active');
-        } else if (prev === 'na') {
-          input.value = '';
-        } else {
-          input.value = prev;
-        }
+        if (ok) input.dataset.saved = String(progress);
+        else input.value = prev === 'na' ? '—' : prev;
       };
+
+      input.addEventListener('contextmenu', async (e) => {
+        e.preventDefault();
+        const projectId = Number(input.getAttribute('data-project-id'));
+        const stageKey = input.getAttribute('data-stage-key') || '';
+        const isNA = input.dataset.saved === 'na';
+        if (isNA) {
+          const ok = await persistCell(projectId, stageKey, { clear: true }, input);
+          if (!ok) return;
+          input.dataset.saved = '';
+          applyNaState(input, false);
+          input.value = '';
+          input.focus();
+          return;
+        }
+        const ok = await persistCell(projectId, stageKey, { is_na: true }, input);
+        if (!ok) return;
+        applyNaState(input, true);
+      });
+
       input.addEventListener('keydown', (e) => {
+        if (input.readOnly) return;
         if (e.key === 'Enter') {
           e.preventDefault();
           save();
         }
       });
       input.addEventListener('blur', () => {
-        if (input.disabled) return;
+        if (input.readOnly) return;
         save();
-      });
-    });
-
-    root.querySelectorAll('.dept-progress-na-btn').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const projectId = Number(btn.getAttribute('data-project-id'));
-        const stageKey = btn.getAttribute('data-stage-key') || '';
-        const editor = btn.parentElement;
-        const input = editor && editor.querySelector('.dept-progress-input');
-        const active = btn.classList.contains('is-active');
-        if (active) {
-          const ok = await persistCell(projectId, stageKey, { clear: true }, btn);
-          if (!ok) return;
-          btn.classList.remove('is-active');
-          if (input) {
-            input.disabled = false;
-            input.value = '';
-            input.dataset.saved = '';
-            input.focus();
-          }
-          return;
-        }
-        const ok = await persistCell(projectId, stageKey, { is_na: true }, btn);
-        if (!ok) return;
-        btn.classList.add('is-active');
-        if (input) {
-          input.value = '';
-          input.disabled = true;
-          input.dataset.saved = 'na';
-        }
       });
     });
   }
@@ -350,7 +343,7 @@
       if (year && yearSelect) yearSelect.value = year;
       const colCount = (lastColumns || []).length;
       const hint = canEdit()
-        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100 或点「—」标不适用 · 可配置表头`
+        ? `共 ${projects.length} 个项目 · ${colCount} 列 · 填 0–100；右键标横杠 · 可配置表头`
         : `共 ${projects.length} 个项目 · ${colCount} 列 · 只读`;
       summaryBar.textContent = hint;
       summaryBar.dataset.baseText = hint;
