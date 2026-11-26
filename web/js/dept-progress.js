@@ -51,6 +51,24 @@
     return root ? root.querySelector('.dept-progress-wrap') : null;
   }
 
+  // 静默同步用：进度/表头没变就不整表重绘，避免每隔几秒卡一下
+  function dataFingerprint(projects, columns) {
+    const colKeys = (columns || []).map((c) => c.key).join('\t');
+    const rows = (projects || []).map((p) => {
+      const cells = p.cells || {};
+      const parts = Object.keys(cells)
+        .sort()
+        .map((k) => {
+          const c = cells[k] || {};
+          if (c.is_na) return `${k}:na`;
+          if (c.progress == null) return `${k}:`;
+          return `${k}:${c.progress}`;
+        });
+      return `${p.project_id}|${p.status || ''}|${parts.join(',')}`;
+    });
+    return `${colKeys}\n${rows.join('\n')}`;
+  }
+
   function stopAutoRefresh() {
     if (autoRefreshTimer) {
       clearInterval(autoRefreshTimer);
