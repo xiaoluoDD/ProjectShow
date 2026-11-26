@@ -16,7 +16,8 @@
 
   const viewEl = document.getElementById('deptProgressView');
   const IDLE_SHOWCASE_MS = 10 * 1000;
-  const SHOWCASE_SPEED = 1.2;
+  const SHOWCASE_SPEED = 0.18;
+  const SHOWCASE_EDGE_PAUSE_MS = 2800;
 
   let loadedOnce = false;
   let cacheKey = '';
@@ -25,7 +26,7 @@
   let idleShowcaseTimer = null;
   let showcaseRaf = null;
   let showcaseDirY = 1;
-  let showcaseDirX = 1;
+  let showcaseEdgePauseUntil = 0;
   let showcaseBound = false;
 
   if (yearSelect) yearSelect.addEventListener('change', () => load(true));
@@ -100,14 +101,16 @@
     const wrap = getWrap();
     if (!wrap || showcaseRaf) return;
     const maxY = wrap.scrollHeight - wrap.clientHeight;
-    const maxX = wrap.scrollWidth - wrap.clientWidth;
-    if (maxY <= 1 && maxX <= 1) {
-      // 尚未形成滚动区域时稍后重试，避免静默失败
+    if (maxY <= 1) {
+      // 纵向无可滚内容时稍后重试，避免静默失败
       scheduleIdleShowcase();
       return;
     }
 
     wrap.classList.add('is-showcasing');
+    showcaseEdgePauseUntil = 0;
+    showcaseDirY = 1;
+    // 只纵向缓滚，避免列快速横移看不清；到顶/底停顿再折返
     const tick = () => {
       if (!isViewActive()) {
         stopShowcase();
@@ -119,27 +122,24 @@
         return;
       }
       const yMax = el.scrollHeight - el.clientHeight;
-      const xMax = el.scrollWidth - el.clientWidth;
-
-      if (yMax > 1) {
-        el.scrollTop += SHOWCASE_SPEED * showcaseDirY;
-        if (el.scrollTop >= yMax - 0.5) {
-          el.scrollTop = yMax;
-          showcaseDirY = -1;
-        } else if (el.scrollTop <= 0.5) {
-          el.scrollTop = 0;
-          showcaseDirY = 1;
-        }
+      if (yMax <= 1) {
+        scheduleIdleShowcase();
+        return;
       }
-      if (xMax > 1) {
-        el.scrollLeft += SHOWCASE_SPEED * showcaseDirX;
-        if (el.scrollLeft >= xMax - 0.5) {
-          el.scrollLeft = xMax;
-          showcaseDirX = -1;
-        } else if (el.scrollLeft <= 0.5) {
-          el.scrollLeft = 0;
-          showcaseDirX = 1;
-        }
+      const now = performance.now();
+      if (now < showcaseEdgePauseUntil) {
+        showcaseRaf = requestAnimationFrame(tick);
+        return;
+      }
+      el.scrollTop += SHOWCASE_SPEED * showcaseDirY;
+      if (el.scrollTop >= yMax - 0.5) {
+        el.scrollTop = yMax;
+        showcaseDirY = -1;
+        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
+      } else if (el.scrollTop <= 0.5) {
+        el.scrollTop = 0;
+        showcaseDirY = 1;
+        showcaseEdgePauseUntil = now + SHOWCASE_EDGE_PAUSE_MS;
       }
       showcaseRaf = requestAnimationFrame(tick);
     };
