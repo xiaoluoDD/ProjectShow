@@ -946,13 +946,25 @@ body.kiosk-mode .dash-table thead th {
   white-space: nowrap;
 }
 
+#deptProgressRoot {
+  max-width: 100%;
+  min-width: 0;
+}
+
 .dept-progress-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow: auto;
   max-height: min(70vh, calc(100dvh - 220px));
   -webkit-overflow-scrolling: touch;
   border: 1px solid #e8eef3;
   border-radius: 8px;
   background: #fff;
+}
+
+.dept-progress-wrap.is-showcasing {
+  outline: 1px solid #90caf9;
 }
 
 .dept-progress-table {

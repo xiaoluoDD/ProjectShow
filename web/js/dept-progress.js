@@ -16,7 +16,7 @@
 
   const viewEl = document.getElementById('deptProgressView');
   const IDLE_SHOWCASE_MS = 10 * 1000;
-  const SHOWCASE_SPEED = 0.45;
+  const SHOWCASE_SPEED = 1.2;
 
   let loadedOnce = false;
   let cacheKey = '';
@@ -54,13 +54,6 @@
     return root ? root.querySelector('.dept-progress-wrap') : null;
   }
 
-  function stopShowcase() {
-    if (showcaseRaf) {
-      cancelAnimationFrame(showcaseRaf);
-      showcaseRaf = null;
-    }
-  }
-
   function clearIdleShowcase() {
     if (idleShowcaseTimer) {
       clearTimeout(idleShowcaseTimer);
@@ -71,6 +64,11 @@
   function pauseShowcaseAndRearm() {
     stopShowcase();
     scheduleIdleShowcase();
+  }
+
+  function isEditingCell() {
+    const active = document.activeElement;
+    return !!(active && active.classList && active.classList.contains('dept-progress-input'));
   }
 
   function scheduleIdleShowcase() {
@@ -85,10 +83,14 @@
         scheduleIdleShowcase();
         return;
       }
-      const active = document.activeElement;
-      if (active && root && root.contains(active) && active.matches('input,button,select,textarea')) {
+      // 仅在正在改单元格进度时推迟；工具栏下拉框有焦点不阻止展示
+      if (isEditingCell()) {
         scheduleIdleShowcase();
         return;
+      }
+      const active = document.activeElement;
+      if (active && viewEl && viewEl.contains(active) && typeof active.blur === 'function') {
+        if (active.matches('select,button')) active.blur();
       }
       startShowcase();
     }, IDLE_SHOWCASE_MS);
@@ -99,8 +101,13 @@
     if (!wrap || showcaseRaf) return;
     const maxY = wrap.scrollHeight - wrap.clientHeight;
     const maxX = wrap.scrollWidth - wrap.clientWidth;
-    if (maxY <= 1 && maxX <= 1) return;
+    if (maxY <= 1 && maxX <= 1) {
+      // 尚未形成滚动区域时稍后重试，避免静默失败
+      scheduleIdleShowcase();
+      return;
+    }
 
+    wrap.classList.add('is-showcasing');
     const tick = () => {
       if (!isViewActive()) {
         stopShowcase();
@@ -139,11 +146,22 @@
     showcaseRaf = requestAnimationFrame(tick);
   }
 
+  function stopShowcase() {
+    if (showcaseRaf) {
+      cancelAnimationFrame(showcaseRaf);
+      showcaseRaf = null;
+    }
+    const wrap = getWrap();
+    if (wrap) wrap.classList.remove('is-showcasing');
+  }
+
   function bindShowcaseIdle() {
     if (showcaseBound || !viewEl) return;
     showcaseBound = true;
-    const onActivity = () => {
+    const onActivity = (e) => {
       if (!isViewActive()) return;
+      // 自动滚动本身不产生这些事件；用户操作则重置计时
+      if (e && e.isTrusted === false) return;
       pauseShowcaseAndRearm();
     };
     ['pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((type) => {
@@ -151,7 +169,8 @@
     });
     viewEl.addEventListener(
       'focusin',
-      () => {
+      (e) => {
+        if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
         stopShowcase();
         clearIdleShowcase();
       },
@@ -159,11 +178,10 @@
     );
     viewEl.addEventListener(
       'focusout',
-      () => {
+      (e) => {
+        if (!e.target || !e.target.classList || !e.target.classList.contains('dept-progress-input')) return;
         setTimeout(() => {
-          if (!isViewActive()) return;
-          const active = document.activeElement;
-          if (active && viewEl.contains(active) && active.matches('input,button,select,textarea')) return;
+          if (!isViewActive() || isEditingCell()) return;
           scheduleIdleShowcase();
         }, 0);
       },
