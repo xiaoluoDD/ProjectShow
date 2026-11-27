@@ -1046,6 +1046,21 @@ body.kiosk-mode .dash-table thead th {
   background: #fafbfc;
 }
 
+/* 全屏时总览 .dash-table thead 会被压到 z-index:1，左侧粘性列会盖住表头，这里抬回层级 */
+body.kiosk-mode .dept-progress-table thead th {
+  z-index: 3;
+  background: #fafbfc;
+}
+
+body.kiosk-mode .dept-progress-table thead .dept-progress-sticky {
+  z-index: 5;
+  background: #fafbfc;
+}
+
+body.kiosk-mode .dept-progress-table tbody .dept-progress-sticky {
+  z-index: 2;
+}
+
 .dept-progress-table .col-work {
   left: 0;
   width: 7.5em;
