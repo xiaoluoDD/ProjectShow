@@ -155,14 +155,15 @@
         }
       }
       scheduleIdleKiosk();
+    } else if (isDeptProgress) {
+      if (window.DeptProgressApp) window.DeptProgressApp.load(true);
+      scheduleIdleKiosk();
     } else {
       clearIdleKioskTimer();
-      if (!isDeptProgress && window.DeptProgressApp && typeof window.DeptProgressApp.pause === 'function') {
+      if (window.DeptProgressApp && typeof window.DeptProgressApp.pause === 'function') {
         window.DeptProgressApp.pause();
       }
-      if (isDeptProgress) {
-        if (window.DeptProgressApp) window.DeptProgressApp.load(true);
-      } else if (isProjects) {
+      if (isProjects) {
         if (window.ProjectListApp) window.ProjectListApp.load(true);
       } else if (isAccounts) {
         if (window.AccountsApp) window.AccountsApp.load(true);
@@ -405,14 +406,27 @@
     return !!(viewSwitch && viewSwitch.value === 'dashboard');
   }
 
+  function isOnDeptProgressView() {
+    return !!(viewSwitch && viewSwitch.value === 'dept-progress');
+  }
+
+  /** 总览看板、部门进度支持全屏展示 */
+  function isKioskableView() {
+    return isOnDashboardView() || isOnDeptProgressView();
+  }
+
+  function currentKioskTargetView() {
+    return isOnDeptProgressView() ? 'dept-progress' : 'dashboard';
+  }
+
   function scheduleIdleKiosk() {
     clearIdleKioskTimer();
     if (!isDesktopLayout()) return;
-    // 仅总览看板才自动进全屏；其它界面不计时
-    if (!isOnDashboardView()) return;
+    // 总览看板 / 部门进度：闲置后自动进全屏
+    if (!isKioskableView()) return;
     idleKioskTimer = setTimeout(() => {
       idleKioskTimer = null;
-      if (!isDesktopLayout() || !isOnDashboardView()) return;
+      if (!isDesktopLayout() || !isKioskableView()) return;
       if (kioskMode || anyModalOpen()) {
         scheduleIdleKiosk();
         return;
@@ -422,17 +436,17 @@
   }
 
   function onUserActivityForIdleKiosk() {
-    if (!isOnDashboardView()) {
+    if (!isKioskableView()) {
       clearIdleKioskTimer();
       return;
     }
     scheduleIdleKiosk();
   }
 
-  function syncKioskUrl(on) {
+  function syncKioskUrl(on, view) {
     const url = new URL(window.location.href);
     if (on) {
-      url.searchParams.set('view', 'dashboard');
+      url.searchParams.set('view', view || 'dashboard');
       url.searchParams.set('kiosk', '1');
     } else {
       url.searchParams.delete('kiosk');
@@ -497,11 +511,15 @@
     if (btnKioskExit) btnKioskExit.hidden = !kioskMode;
 
     if (kioskMode) {
-      setView('dashboard', false);
-      syncKioskUrl(true);
+      const view = currentKioskTargetView();
+      setView(view, false);
+      syncKioskUrl(true, view);
       if (options.browserFullscreen !== false) requestBrowserFullscreen();
-      if (window.DashboardApp && typeof window.DashboardApp.onKioskChange === 'function') {
+      if (view === 'dashboard' && window.DashboardApp && typeof window.DashboardApp.onKioskChange === 'function') {
         window.DashboardApp.onKioskChange(true);
+      }
+      if (view === 'dept-progress' && window.DeptProgressApp && typeof window.DeptProgressApp.onKioskChange === 'function') {
+        window.DeptProgressApp.onKioskChange(true);
       }
     } else {
       clearPromoteFullscreen();
@@ -509,6 +527,9 @@
       if (options.browserFullscreen !== false) exitBrowserFullscreen();
       if (window.DashboardApp && typeof window.DashboardApp.onKioskChange === 'function') {
         window.DashboardApp.onKioskChange(false);
+      }
+      if (window.DeptProgressApp && typeof window.DeptProgressApp.onKioskChange === 'function') {
+        window.DeptProgressApp.onKioskChange(false);
       }
     }
     // 进入或退出全屏后都重新计时：退出后满 20 秒无操作会再进全屏
@@ -539,7 +560,7 @@
     document.addEventListener(evt, onUserActivityForIdleKiosk, { passive: true });
   });
   window.addEventListener('resize', () => {
-    if (isDesktopLayout() && isOnDashboardView()) scheduleIdleKiosk();
+    if (isDesktopLayout() && isKioskableView()) scheduleIdleKiosk();
     else clearIdleKioskTimer();
   });
 

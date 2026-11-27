@@ -597,7 +597,18 @@
       startAutoRefresh();
       bindShowcaseIdle();
       // 静默同步不重置闲置计时（缓滚中已跳过本函数）
-      if (!silent) scheduleIdleShowcase();
+      if (!silent) {
+        if (isKioskMode()) {
+          clearIdleShowcase();
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (isViewActive() && isKioskMode()) startShowcase();
+            });
+          });
+        } else {
+          scheduleIdleShowcase();
+        }
+      }
     } catch (err) {
       if (!silent) {
         showError(root, err.message || '加载失败');
@@ -615,5 +626,26 @@
     clearIdleShowcase();
   }
 
-  window.DeptProgressApp = { load, pause };
+  function isKioskMode() {
+    return document.body.classList.contains('kiosk-mode');
+  }
+
+  function onKioskChange(enabled) {
+    if (!enabled) {
+      stopShowcase();
+      if (isViewActive()) scheduleIdleShowcase();
+      return;
+    }
+    // 全屏后立刻缓滚（与总览一致），等布局撑开再启动
+    stopShowcase();
+    clearIdleShowcase();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!isViewActive() || !isKioskMode()) return;
+        startShowcase();
+      });
+    });
+  }
+
+  window.DeptProgressApp = { load, pause, onKioskChange };
 })();
