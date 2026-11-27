@@ -691,8 +691,8 @@ body.kiosk-mode #deptProgressSummaryBar {
   display: none !important;
 }
 
-/* 部门进度全屏：铺满视口，表格吃剩余高度 */
-body.kiosk-mode #deptProgressView {
+/* 部门进度全屏：铺满视口，表格吃剩余高度（必须尊重 [hidden]，否则会盖过隐藏属性把空白层撑满） */
+body.kiosk-mode #deptProgressView:not([hidden]) {
   height: 100%;
   min-height: 0;
   display: flex;
@@ -734,9 +734,11 @@ body.kiosk-mode .app-main {
   min-height: 0;
   box-sizing: border-box;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-body.kiosk-mode #dashboardView {
+body.kiosk-mode #dashboardView:not([hidden]) {
   height: 100%;
   min-height: 0;
   display: flex;
